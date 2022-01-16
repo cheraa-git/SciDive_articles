@@ -3,9 +3,9 @@ export interface Article {
   date: string
   views: number
   tags?: string
+  blog_id: number
   author: {
-    id: number
-    name: string
+    login: string
     avatar: string
   }
   info: {
@@ -13,4 +13,8 @@ export interface Article {
     content: string
     image?: string
   }
+}
+
+export interface IArticleInitialState {
+  articles: Article[]
 }

@@ -1,11 +1,12 @@
 import React from 'react'
 import { ArticlesCardList } from '../components/ArticlesCardList/ArticlesCardList'
+import { HomeNavBar } from '../components/UI/HomeNavBar'
 import { staticArticles } from '../staticArticles'
 
 export const HomePage: React.FC = () => {
   return (
     <div>
-      <h1>Home Page</h1>
+      <HomeNavBar/>
       <ArticlesCardList articles={staticArticles} />
     </div>
   )

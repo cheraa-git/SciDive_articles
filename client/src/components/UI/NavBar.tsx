@@ -4,7 +4,7 @@ import logo from '../../asserts/logotip.png'
 
 export const NavBar: React.FC = () => {
   return (
-    <nav className="navbar navbar-expand-lg navbar-light bg-light">
+    <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
       <div className="container-fluid">
         <a className="navbar-brand " href="/">
           <img src={logo} alt="Логотип" width="30" height="24" className="d-inline-block align-text-top" /> Статьи

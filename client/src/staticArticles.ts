@@ -7,9 +7,9 @@ export const staticArticles = [
     id: 1,
     date: '16-01-2022',
     views: 7,
+    blog_id: 1, 
     author: {
-      id: 1, 
-      name: 'AYE88',
+      login: 'AYE88',
       avatar: 'https://www.meme-arsenal.com/memes/2b82b7b7185ebf3bd61f4e6350511fd7.jpg'
     },
     info: {
@@ -23,9 +23,9 @@ export const staticArticles = [
     id: 2,
     date: '16-01-2022',
     views: 132,
+    blog_id: 2, 
     author: {
-      id: 2, 
-      name: 'Alex',
+      login: 'Alex',
       avatar: ''
     },
     info: {
@@ -37,9 +37,9 @@ export const staticArticles = [
     id: 3,
     date: '16-01-2022',
     views: 37,
+    blog_id: 1, 
     author: {
-      id: 1, 
-      name: 'AYE88',
+      login: 'AYE88',
       avatar: 'https://i.pinimg.com/originals/2d/01/1e/2d011e1e07cf0f073bfcec47a6841c24.jpg'
     },
     info: {
@@ -53,9 +53,9 @@ export const staticArticles = [
     id: 4,
     date: '16-01-2022',
     views: 71,
+    blog_id: 2, 
     author: {
-      id: 2, 
-      name: 'Alex',
+      login: 'Alex',
       avatar: ''
     },
     info: {
