@@ -10,7 +10,7 @@ export const staticArticles = [
     author: {
       id: 1, 
       name: 'AYE88',
-      avatar: ''
+      avatar: 'https://www.meme-arsenal.com/memes/2b82b7b7185ebf3bd61f4e6350511fd7.jpg'
     },
     info: {
       title: 'Article long long long long long long long title',
@@ -40,7 +40,7 @@ export const staticArticles = [
     author: {
       id: 1, 
       name: 'AYE88',
-      avatar: ''
+      avatar: 'https://i.pinimg.com/originals/2d/01/1e/2d011e1e07cf0f073bfcec47a6841c24.jpg'
     },
     info: {
       title: 'Article Title',

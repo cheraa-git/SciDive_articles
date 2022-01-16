@@ -5,7 +5,7 @@ import { HomePage } from './pages/HomePage'
 import { CreateArticle } from './pages/CreateArticle'
 import { MyArticles } from './pages/MyArticles'
 import { Profile } from './pages/Profile'
-import { Article } from './pages/Article'
+import { ArticlePage } from './pages/ArticlePage'
 
 function App() {
 ;
@@ -18,7 +18,7 @@ function App() {
           <Route element={<CreateArticle/>} path="/create_article"/>
           <Route element={<MyArticles/>} path="/my_articles"/>
           <Route element={<Profile/>} path="/profile"/>
-          <Route element={<Article/>} path="/article/:id"/>
+          <Route element={<ArticlePage/>} path="/article/:id"/>
         </Routes>
       </div>
     </BrowserRouter>
