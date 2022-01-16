@@ -1,7 +1,37 @@
-import React from "react"
+import React from 'react'
+import { NavLink } from 'react-router-dom'
+import { Article } from '../../types/interfaces'
+import noImage from '../../asserts/no_image.png'
+import defaultAvatar from '../../asserts/default_avatar.png'
 
-export const ArticleItem: React.FC = () => {
+interface ArticleItemProps {
+  article: Article
+}
+
+export const ArticleItem: React.FC<ArticleItemProps> = ({article}) => {
+
+  const articleImage = article.info.image ? article.info.image : noImage
+  const avatarImage = article.author.avatar ? article.author.avatar : defaultAvatar
+  const previewText = article.info.content.split(' ').slice(0, 20).join(' ')
   return (
-    <div className=""></div>
+    <div className="card m-2 p-0" style={{ width: '40%', minWidth: '20rem' }}>
+      <div className="card-header">
+        <img className="float-start rounded-circle" src={avatarImage} width={30} height={30} />
+        <strong className="float-start ms-2">{article.author.name}</strong>
+        <p className="float-end mb-0 fw-light">{article.date}</p>
+      </div>
+      <div className="card-body">
+        <h2 className="card-title">{article.info.title}</h2>
+        <img src={articleImage} className="card-img-top" alt="" />
+        <p className="card-text">{previewText}...</p>
+        <NavLink to={`/article/${article.id}`} className="btn btn-primary">
+          Читать далее
+        </NavLink>
+      </div>
+      <div className="card-footer text-muted text-end">
+        <i className="bi bi-eye"></i>
+        {article.views}
+      </div>
+    </div>
   )
 }
