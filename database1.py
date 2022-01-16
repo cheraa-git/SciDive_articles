@@ -35,13 +35,14 @@ class Articles(Base):
     __tablename__ = 'articles'
     id = Column(Integer, primary_key=True)
     blog_id = Column(Integer, ForeignKey('blog.id', ondelete='CASCADE'), nullable=False)
+    name = Column(String(150), nullable=False, unique=False)
     info = Column(String(65000), nullable=False, unique=False)
     # поставил такое ограничение просто так
     tags = Column(String(50), nullable=False)
     # будем редактировать ограничение исходя из длины всех тегов
-    time = Column(DateTime, default=datetime.datetime.utcnow, nullable=False)
+    date = Column(DateTime, default=datetime.datetime.utcnow, nullable=False)
     # время создания
-    num_of_views = Column(Integer, default=0, nullable=False)
+    views = Column(Integer, default=0, nullable=False)
     blog = relationship("Blog")
 
 class Subscriptions(Base):
@@ -73,24 +74,37 @@ def get_article(article_id):
     engine = create_engine('sqlite:///info_data_base.db', echo=True)
     session = Session(bind=engine)
     article = session.query(Articles).get(article_id)
+    blog = session.query(Blog).get(article.blog_id)
+    author = session.query(User).get(blog.user_id)
     session.close()
-    return article
+    return article, author
 
 def get_articles_subscriptions(user_id):
     engine = create_engine('sqlite:///info_data_base.db', echo=True)
     session = Session(bind=engine)
-    subscription_s = session.query(Subscriptions).filter_by(user_id=user_id)
-    sub = [i.blog.articles for i in subscription_s]
+    subscription_s = session.query(Subscriptions).filter_by(user_id=user_id).all()
+    sub = [i.blog for i in subscription_s]
+    sub_s = []
+    for i in sub:
+        for k in i.articles:
+            a = {}
+            a["name"] = k.name
+            a["tags"] = k.tags
+            a["views"] = k.views
+            a["author"] = {'login': k.blog.user.login, "avatar": k.blog.user.avatar}
+            sub_s.append(a)
+    print(a)
     session.close()
-    return sub
+    return sub_s
 
 def get_articles_blog(user_id):
     engine = create_engine('sqlite:///info_data_base.db', echo=True)
     session = Session(bind=engine)
     user = session.query(User).get(user_id)
-    articles = user.blog.articles
+    blog_articles = session.query(Blog).filter_by(user_id=user_id).all()
+    articles = [i.articles for i in blog_articles]
     session.close()
-    return articles
+    return articles, user
 
 def set_article(user_id, info, tags):
     engine = create_engine('sqlite:///info_data_base.db', echo=True)
@@ -156,3 +170,5 @@ def add_user(login, email, password):
     session.commit()
     session.close()
 # add_user("AYE88", 'sss@mail.ru', "2281337")
+
+get_articles_subscriptions(1)
