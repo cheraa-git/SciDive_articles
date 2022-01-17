@@ -1,5 +1,5 @@
 import React from 'react'
-import { Article } from '../../types/ArticleInterfaces'
+import { Article } from '../../types/interfaces'
 import { ArticleItem } from './ArticleItem'
 
 interface ArticlesCardListProps {

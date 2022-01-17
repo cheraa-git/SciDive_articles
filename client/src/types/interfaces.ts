@@ -3,7 +3,7 @@ export interface Article {
   date: string
   views: number
   tags?: string
-  blog_id: number
+  blogId: number
   author: {
     login: string
     avatar: string
@@ -17,4 +17,12 @@ export interface Article {
 
 export interface IArticleInitialState {
   articles: Article[]
+}
+
+////////////////////////////////////////////////////
+
+export interface IUserInitialState {
+  login: string
+  blogId: number
+  subscribes: number[]
 }

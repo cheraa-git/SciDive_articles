@@ -1,15 +1,16 @@
 import React from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { ArticlesCardList } from '../components/ArticlesCardList/ArticlesCardList'
-import { staticArticles } from '../staticArticles'
+import { clearArticles } from '../store/actions/ArticleActions'
+import { RootState } from '../store/reducers/rootReducer'
 
 export const MyArticles: React.FC = () => {
-  const blog_id = 2
-  const articles = staticArticles.filter((art) => art.blog_id === blog_id)
+  const dispatch = useDispatch()
+  const {articles} = useSelector((state: RootState) => state.article)
   return (
     <div>
+      <button onClick={() => dispatch(clearArticles())}>clear</button>
       <ArticlesCardList articles={articles} />
     </div>
   )
 }
-
-// sda

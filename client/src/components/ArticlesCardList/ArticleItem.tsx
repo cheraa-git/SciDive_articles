@@ -1,6 +1,6 @@
 import React from 'react'
 import { NavLink } from 'react-router-dom'
-import { Article } from '../../types/ArticleInterfaces'
+import { Article } from '../../types/interfaces'
 import noImage from '../../asserts/no_image.png'
 import defaultAvatar from '../../asserts/default_avatar.png'
 
