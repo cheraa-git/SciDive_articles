@@ -4,8 +4,22 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, Session, backref
 from sqlalchemy.exc import IntegrityError
 from werkzeug.security import generate_password_hash
+import numpy as np
+
+
+a = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
 engine = create_engine('sqlite:///info_data_base.db', echo=True)
 Base = declarative_base(bind=engine)
+
+class AccountNotFound(Exception):
+    '''
+    Authentification pair not found in db
+    '''
+
+class AccountExists(Exception):
+    '''
+    Authentification pair already in db
+    '''
 
 class User(Base):
     __tablename__ = 'users'
@@ -220,6 +234,103 @@ def add_user(login, email, password):
     session.add(blog)
     session.commit()
     session.close()
+
+def get_user_id(login):
+    engine = create_engine('sqlite:///info_data_base.db', echo=True)
+    session = Session(bind=engine)
+    try:
+        user_id = session.query(User.id).filter_by(login=login).first()[0]
+    except TypeError:
+        raise AccountNotFound
+    finally:
+        session.close()
+    return user_id
+
+def request_user_avatar(login):
+    engine = create_engine('sqlite:///info_data_base.db', echo=True)
+    session = Session(bind=engine)
+    avatar = session.query(User.avatar).filter_by(login=login).first()[0]
+    session.close()
+    return avatar
+
+def request_user(login):
+    engine = create_engine('sqlite:///info_data_base.db', echo=True)
+    session = Session(bind=engine)
+    user = session.query(User).filter_by(login=login).first()
+    session.close()
+    if not user:
+        raise AccountNotFound
+    return user.login, user.password
+
+def check_admin(login_id):
+    engine = create_engine('sqlite:///info_data_base.db', echo=True)
+    session = Session(bind=engine)
+    user = session.query(User).get(login_id)
+    is_admin = user.admin
+    session.close()
+    return is_admin
+
+def check_user_by_email(email):
+    engine = create_engine('sqlite:///info_data_base.db', echo=True)
+    session = Session(bind=engine)
+    user = session.query(User).filter_by(email=email).first()
+    session.close()
+    if not user:
+        raise AccountNotFound
+    return email
+
+#Добавление кода восстановления в базу
+def add_check_password(email):
+    engine = create_engine('sqlite:///info_data_base.db', echo=True)
+    session = Session(bind=engine)
+    user = session.query(User).filter_by(email=email).first()
+    list_code = np.random.choice(a, 10).tolist()
+    user.forgot_code = ''.join(list_code)
+    code = user.forgot_code
+    # print(code) для проверки
+    session.commit()
+    session.close()
+    return code
+
+def get_check_password(email):
+    engine = create_engine('sqlite:///info_data_base.db', echo=True)
+    session = Session(bind=engine)
+    code = session.query(User.forgot_code).filter_by(email=email).first()[0]
+    session.close()
+    return code
+
+def request_user_login(email):
+    engine = create_engine('sqlite:///info_data_base.db', echo=True)
+    session = Session(bind=engine)
+    user = session.query(User).filter_by(email=email).first()
+    session.close()
+    if not user:
+        raise AccountNotFound
+    return user.login
+
+def change_user_password(email, password_new):
+    engine = create_engine('sqlite:///info_data_base.db', echo=True)
+    session = Session(bind=engine)
+    user = session.query(User).filter_by(email=email).first()
+    user.password = generate_password_hash(password_new)
+    session.commit()
+    session.close()
+
+def remove_check_password(email):
+    engine = create_engine('sqlite:///info_data_base.db', echo=True)
+    session = Session(bind=engine)
+    user = session.query(User).filter_by(email=email).first()
+    code = user.forgot_code
+    code = 0
+    session.commit()
+    session.close()
+
+
+
+
+
+
+
 # add_user("AYE88", 'sss@mail.ru', "2281337")
 
 # get_articles_subscriptions(1)
