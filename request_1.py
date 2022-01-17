@@ -97,15 +97,15 @@ def show_articles_by_subscriptions():
 
 @app.route('/blog/<int:blog_id>', methods=["GET"])
 def show_user_blog(blog_id):
-    token = jwt.decode(bytes(request.args.get("token", 1), encoding='utf-8'), app.secret_key, algorithms=['HS256'])
-    print(token)
-    user_id = token["login"]
-    articles, author = get_articles_blog(user_id)
+    # token = jwt.decode(bytes(request.args.get("token", 1), encoding='utf-8'), app.secret_key, algorithms=['HS256'])
+    # print(token)
+    # user_id = token["login"]
+    articles = get_articles_blog(blog_id)
     print(articles)
-    result = {}
-    result["articles"] = json.loads(articles_m.dumps(articles))
-    print(result)
-    result["author"] = login_u.dump(author)
+    result = articles
+    # result["articles"] = json.loads(articles_m.dumps(articles))
+    # print(result)
+    # result["author"] = login_u.dump(author)
     return jsonify(result)
 
 @app.route('/edit/article', methods=["POST"])

@@ -111,14 +111,28 @@ def get_articles_blog(user_id):
     engine = create_engine('sqlite:///info_data_base.db', echo=True)
     session = Session(bind=engine)
     user = session.query(User).get(user_id)
-    # blog_articles = session.query(Blog).filter_by(user_id=user_id).all()
-    # articles = [i.articles for i in blog_articles]
     blog_articles = session.query(Blog).filter_by(user_id=user_id).all()
     articles = []
+    # for i in blog_articles:
+        # articles.append(session.query(Articles).get(i.id))
     for i in blog_articles:
-        articles.append(session.query(Articles).get(i.id))
+        a = {}
+        article = session.query(Articles).get(i.id)
+        a["id"] = article.id
+        a["blog_id"] = article.blog_id
+        a["title"] = article.title
+        a["image"] = article.image
+        a["prev_content"] = article.prev_content
+        # a["content"] = article.content
+        a["category"] = article.category
+        a["tags"] = article.tags
+        a["date"] = article.date
+        a["views"] = article.views
+        a["author"] = {'login': user.login, "avatar": user.avatar}
+        articles.append(a)
+
     session.close()
-    return articles, user
+    return articles
 
 def set_article(user_id, info, tags):
     engine = create_engine('sqlite:///info_data_base.db', echo=True)
