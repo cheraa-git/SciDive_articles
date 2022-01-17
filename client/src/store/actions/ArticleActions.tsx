@@ -21,6 +21,7 @@ export function fetchMyArticles() {
     const response = await axiosApp.get('/blog/1' + token)
     const data = response.data
     console.log(data);
+    dispatch(setMyArticles(data))
 
     
   }
@@ -30,6 +31,16 @@ export function fetchArticle(id: number) {
     const response = await axiosApp.get(`/article/${id}${token}`)
     const data = response.data
     dispatch(setMyArticles([data]))
+    
+  }
+}
+export function fetchSubscribe() {
+  return async (dispatch: any) => {
+    const response = await axiosApp.get(`/tape${token}`)
+    const data = response.data
+    console.log(data);
+    
+    dispatch(setMyArticles(data))
     
   }
 }

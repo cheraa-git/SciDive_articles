@@ -12,10 +12,12 @@ interface ArticleItemProps {
 export const ArticleItem: React.FC<ArticleItemProps> = ({ article, mode }) => {
   const articleImage = article.image ? article.image : noImage
   const avatarImage = article.author.avatar ? article.author.avatar : defaultAvatar
+  // console.log(article.date.slice(0, 16).replace('T', ' '))
+
   let text = '...'
   let style = {}
   if (mode === 'preview') {
-    text = article.content.split(' ').slice(0, 20).join(' ')
+    text = article.prev_content + '...'
     style = { width: '40%', minWidth: '20rem' }
   } else if (mode === 'full') {
     text = article.content
@@ -32,7 +34,7 @@ export const ArticleItem: React.FC<ArticleItemProps> = ({ article, mode }) => {
       <div className="card-body">
         <h2 className="card-title">{article.title}</h2>
         <img src={articleImage} className="card-img-top" alt="" />
-        <p className="card-text">{text}...</p>
+        <p className="card-text">{text}</p>
         {mode === 'preview' && (
           <NavLink to={`/article/${article.id}`} className="btn btn-primary">
             Читать далее

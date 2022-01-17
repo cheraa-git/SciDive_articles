@@ -1,12 +1,17 @@
-import React from 'react'
-import { useSelector } from 'react-redux'
+import React, { useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { ArticlesCardList } from '../components/ArticlesCardList/ArticlesCardList'
 import { SecondNavBar } from '../components/UI/SecondNavBar'
+import { fetchSubscribe } from '../store/actions/ArticleActions'
 import { RootState } from '../store/reducers/rootReducer'
 
 export const SubscribePage: React.FC = () => {
+  const dispatch = useDispatch()
   const { articles, currentCategory } = useSelector((state: RootState) => state.article)
 
+  useEffect(() => {
+    dispatch(fetchSubscribe())
+  }, [dispatch])
   return (
     <div>
       <SecondNavBar />

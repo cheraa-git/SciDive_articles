@@ -6,20 +6,20 @@ export const staticUsers = [
     login: 'AYE88',
     avatar: 'https://www.meme-arsenal.com/memes/2b82b7b7185ebf3bd61f4e6350511fd7.jpg',
     email: 'aye88@mail.ru',
-    blogId: 1
+    blog_id: 1,
   },
   {
     login: 'Alex',
     avatar: '',
     email: 'aye88@mail.ru',
-    blogId: 1
+    blog_id: 1,
   },
 ]
 
 export const staticArticles = [
   {
     id: 1,
-    blogId: 1,
+    blog_id: 1,
     date: '16-01-2022',
     views: 77,
     title: 'Article long long long long long long long title',
@@ -27,7 +27,7 @@ export const staticArticles = [
     image:
       'https://upload.wikimedia.org/wikipedia/commons/thumb/9/99/Unofficial_JavaScript_logo_2.svg/1200px-Unofficial_JavaScript_logo_2.svg.png',
     category: 'Разработка',
-    prevContent:
+    prev_content:
       'В октябре 2021 года меня пригласили провести стратегическую сессию для одной компании, которая занимается комплексным озеленением общественных и корпоративных пространств.',
     author: {
       login: 'AYE88',
@@ -36,7 +36,7 @@ export const staticArticles = [
   },
   {
     id: 2,
-    blogId: 1,
+    blog_id: 1,
     date: '16-01-2022',
     views: 17,
     title: 'Article title',
@@ -44,7 +44,7 @@ export const staticArticles = [
     image:
       'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRnYamVz5MF7V4_-1fZidUS8lvWXdeFNdWYqNardatW-1yzVCr6OKSwuPx2cCPcpR3D7AY&usqp=CAU',
     category: 'Финансы',
-    prevContent:
+    prev_content:
       'В октябре 2021 года меня пригласили провести стратегическую сессию для одной компании, которая занимается комплексным озеленением общественных и корпоративных пространств.',
     author: {
       login: 'AYE88',
@@ -53,14 +53,14 @@ export const staticArticles = [
   },
   {
     id: 3,
-    blogId: 2,
+    blog_id: 2,
     date: '16-01-2022',
     views: 27,
     title: 'Article title',
     content: txt,
     image: '',
     category: 'Разработка',
-    prevContent:
+    prev_content:
       'В октябре 2021 года меня пригласили провести стратегическую сессию для одной компании, которая занимается комплексным озеленением общественных и корпоративных пространств.',
     author: {
       login: 'Alex',
@@ -69,14 +69,14 @@ export const staticArticles = [
   },
   {
     id: 1,
-    blogId: 1,
+    blog_id: 1,
     date: '16-01-2022',
     views: 7,
     title: 'Article title',
     content: txt,
     image: 'https://storge.pic2.me/c/1360x800/299/5a9ee783c3f3a.jpg',
     category: 'Финансы',
-    prevContent:
+    prev_content:
       'В октябре 2021 года меня пригласили провести стратегическую сессию для одной компании, которая занимается комплексным озеленением общественных и корпоративных пространств.',
     author: {
       login: 'Alex',
