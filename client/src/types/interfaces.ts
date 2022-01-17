@@ -1,6 +1,6 @@
 export interface Article {
   id: number
-  blogId: number
+  blog_id: number
   date: string
   views: number
   tags?: string
@@ -8,13 +8,11 @@ export interface Article {
   content: string
   image?: string
   category: string
-  prevContent: string
+  prev_content: string
   author: {
     login: string
     avatar: string
   }
 }
 
-
 ////////////////////////////////////////////////////
-

@@ -3,15 +3,15 @@ import { TEST } from '../actions/actionTypes'
 
 interface IUserInitialState {
   login: string
-  blogId: number
+  blog_id: number
   subscribes: number[]
   avatar?: string
 }
 const initialState: IUserInitialState = {
   login: 'Alex',
-  blogId: 2,
+  blog_id: 2,
   subscribes: [1, 2, 4, 6, 7],
-  avatar: ''
+  avatar: '',
 }
 
 export function userReducer(state = initialState, action: userActions) {
