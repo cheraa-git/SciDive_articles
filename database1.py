@@ -111,8 +111,12 @@ def get_articles_blog(user_id):
     engine = create_engine('sqlite:///info_data_base.db', echo=True)
     session = Session(bind=engine)
     user = session.query(User).get(user_id)
+    # blog_articles = session.query(Blog).filter_by(user_id=user_id).all()
+    # articles = [i.articles for i in blog_articles]
     blog_articles = session.query(Blog).filter_by(user_id=user_id).all()
-    articles = [i.articles for i in blog_articles]
+    articles = []
+    for i in blog_articles:
+        articles.append(session.query(Articles).get(i.id))
     session.close()
     return articles, user
 

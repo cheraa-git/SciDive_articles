@@ -102,7 +102,8 @@ def show_user_blog(blog_id):
     user_id = token["login"]
     articles, author = get_articles_blog(user_id)
     print(articles)
-    result = {"articles": json.loads(articles_m.dumps(articles))}
+    result = {}
+    result["articles"] = json.loads(articles_m.dumps(articles))
     print(result)
     result["author"] = login_u.dump(author)
     return jsonify(result)
