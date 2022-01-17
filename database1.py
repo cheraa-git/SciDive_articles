@@ -35,9 +35,12 @@ class Articles(Base):
     __tablename__ = 'articles'
     id = Column(Integer, primary_key=True)
     blog_id = Column(Integer, ForeignKey('blog.id', ondelete='CASCADE'), nullable=False)
-    name = Column(String(150), nullable=False, unique=False)
-    info = Column(String(65000), nullable=False, unique=False)
+    title = Column(String(150), nullable=False, unique=False)
+    image = Column(String, default='peppa.png', nullable=False)
+    prev_content = Column(String(160), nullable=False)
+    content = Column(String(65000), nullable=False, unique=False)
     # поставил такое ограничение просто так
+    category = Column(String(64), nullable=False)
     tags = Column(String(50), nullable=False)
     # будем редактировать ограничение исходя из длины всех тегов
     date = Column(DateTime, default=datetime.datetime.utcnow, nullable=False)
@@ -88,8 +91,15 @@ def get_articles_subscriptions(user_id):
     for i in sub:
         for k in i.articles:
             a = {}
-            a["name"] = k.name
+            a["id"] = k.id
+            a["blog_id"] = k.blog_id
+            a["title"] = k.title
+            a["image"] = k.image
+            a["prev_content"] = k.prev_content
+            # a["content"] = k.content
+            a["category"] = k.category
             a["tags"] = k.tags
+            a["date"] = k.date
             a["views"] = k.views
             a["author"] = {'login': k.blog.user.login, "avatar": k.blog.user.avatar}
             sub_s.append(a)
@@ -101,8 +111,12 @@ def get_articles_blog(user_id):
     engine = create_engine('sqlite:///info_data_base.db', echo=True)
     session = Session(bind=engine)
     user = session.query(User).get(user_id)
+    # blog_articles = session.query(Blog).filter_by(user_id=user_id).all()
+    # articles = [i.articles for i in blog_articles]
     blog_articles = session.query(Blog).filter_by(user_id=user_id).all()
-    articles = [i.articles for i in blog_articles]
+    articles = []
+    for i in blog_articles:
+        articles.append(session.query(Articles).get(i.id))
     session.close()
     return articles, user
 
@@ -171,4 +185,4 @@ def add_user(login, email, password):
     session.close()
 # add_user("AYE88", 'sss@mail.ru', "2281337")
 
-get_articles_subscriptions(1)
+# get_articles_subscriptions(1)
