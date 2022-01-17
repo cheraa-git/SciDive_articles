@@ -1,5 +1,5 @@
 import datetime
-from sqlalchemy import Column, Integer, String, Text, ForeignKey, Boolean, create_engine, DateTime
+from sqlalchemy import Column, Integer, String, Text, ForeignKey, Boolean, create_engine, DateTime, desc
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, Session, backref
 from sqlalchemy.exc import IntegrityError
@@ -59,6 +59,29 @@ class Subscriptions(Base):
 
 Base.metadata.create_all()
 
+
+def get_most_recent_articles():
+    engine = create_engine('sqlite:///info_data_base.db', echo=True)
+    session = Session(bind=engine)
+    articles = session.query(Articles).order_by(Articles.date).limit(30).all()
+    rez = []
+    for i in articles:
+        a = {}
+        author = session.query(User).get(i.blog.user_id)
+        a["id"] = i.id
+        a["blog_id"] = i.blog_id
+        a["title"] = i.title
+        a["image"] = i.image
+        a["prev_content"] = i.prev_content
+        # a["content"] = i.content
+        a["category"] = i.category
+        a["tags"] = i.tags
+        a["date"] = i.date
+        a["views"] = i.views
+        a["author"] = {'login': author.login, "avatar": author.avatar}
+        rez.append(a)
+
+    return rez
 
 def get_subscriptions(user_id):
     engine = create_engine('sqlite:///info_data_base.db', echo=True)

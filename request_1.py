@@ -2,7 +2,7 @@ from flask import Flask, request, session, jsonify, render_template, url_for
 from flask_caching import Cache
 from flask_sockets import Sockets
 from database1 import get_subscriptions, get_article, get_articles_subscriptions, get_articles_blog, set_article, \
-    set_subscription, del_article, del_subscription, update_article
+    set_subscription, del_article, del_subscription, update_article, get_most_recent_articles
 from flask_mail import Mail, Message
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_marshmallow import Marshmallow
@@ -64,6 +64,15 @@ class Author_m(ma.Schema):
 
 login_u = Author_m(many=False)
 
+
+@app.route("/main_page", methods=["GET"])
+def show_main_page():
+    # token = jwt.decode(bytes(request.args.get("token", 1), encoding='utf-8'), app.secret_key, algorithms=['HS256'])
+    # print(token)
+    # user_id = token["login"]
+    articles = get_most_recent_articles()
+    result = articles
+    return jsonify(result)
 
 @app.route("/article/<int:article_id>", methods=["GET"])
 def show_article(article_id):
@@ -230,5 +239,75 @@ def update_article_():
         return jsonify({"error": False})
     except:
         return jsonify({"error": True})
+
+
+# Страница авторизации/регистрации/восстановления пароля/подтверждения нового пароля
+# @app.route('/authorization/<form>', methods=['POST'])
+# def post(form):
+#     if form == "log_in":
+#         login = request.json['login']
+#         password = request.json['password']
+#         avatar = request_user_avatar(login)
+#         try:
+#             login, password_hash_valid = request_user(login)
+#             bool_hash = check_password_hash(password_hash_valid, password)
+#         except AccountNotFound:
+#             return jsonify({"error": True})
+#         if bool_hash:
+#             user_id = get_user_id(login)
+#             admin = check_admin(user_id)
+#             token = jwt.encode(
+#                 {'login': user_id}, key=app.secret_key, algorithm='HS256').decode('utf-8')
+#             print(token)
+#             return jsonify({'token': token, 'avatar': f"http://127.0.0.1:5000/static/{avatar}", "admin": admin})
+#         else:
+#             return jsonify({"error": True})
+
+#     elif form == "sign_up":
+
+#         login = request.json['login']
+#         email = request.json['email']
+#         password = request.json['password']
+#         fio = request.json['fio']
+#         try:
+#             add_user(login=login, email=email, password=password, fio=fio)
+#         except AccountExists:
+#             return jsonify({"error": True})
+#         return jsonify({"error": False})
+
+#     elif form == "forgot":
+#         email = request.json['email']
+#         try:
+#             email = check_user_by_email(email)
+#         except AccountNotFound:
+#             return jsonify({"error": True})
+#         code = add_check_password(email)
+#         msg = Message("Код подтверждения", recipients=[email])
+#         msg.body = code
+#         mail.send(msg)
+#         session["mail_confirm"] = email
+#         return jsonify({"error": False})
+
+#     elif form == "confirm_new_password":
+#         email = request.json["email"]
+#         code_valid = get_check_password(email)
+#         code = request.json["code"]
+#         login = request_user_login(email)
+#         old_password = request_user(login)[1]
+#         print(old_password)
+#         new_password = request.json['password']
+#         bool_hash = check_password_hash(old_password, new_password)
+#         print(bool_hash)
+#         if code_valid == code:
+#             if bool_hash:
+#                 return jsonify({'error': "Пароли совпадают"})
+#             else:
+#                 change_user_password(email, new_password)
+#                 remove_check_password(email)
+#                 login = request_user_login(email)
+#                 session['login'] = login
+#                 return jsonify({'error': False})
+#         else:
+#             return jsonify({'error': "Код подтверждения неверный"})
 
 app.run()
