@@ -42,13 +42,13 @@ ma = Marshmallow(app)
 
 class Article_m(ma.Schema):
     class Meta:
-        fields = ['id', 'blog_id', 'title', 'image', 'prev_content', 'content', 'tags', 'date', 'views']
+        fields = ['id', 'blog_id', 'title', 'image', 'prev_content', 'content', 'category', 'tags', 'date', 'views']
 
 article_m = Article_m(many=False)
 
 class Articles_m(ma.Schema):
     class Meta:
-        fields = ['id', 'blog_id', 'title', 'image', 'prev_content', 'tags', 'date', 'views']
+        fields = ['id', 'blog_id', 'title', 'image', 'prev_content', 'category', 'tags', 'date', 'views']
 
 articles_m = Articles_m(many=True)
 

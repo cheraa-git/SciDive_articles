@@ -91,8 +91,15 @@ def get_articles_subscriptions(user_id):
     for i in sub:
         for k in i.articles:
             a = {}
-            a["name"] = k.name
+            a["id"] = k.id
+            a["blog_id"] = k.blog_id
+            a["title"] = k.title
+            a["image"] = k.image
+            a["prev_content"] = k.prev_content
+            # a["content"] = k.content
+            a["category"] = k.category
             a["tags"] = k.tags
+            a["date"] = k.date
             a["views"] = k.views
             a["author"] = {'login': k.blog.user.login, "avatar": k.blog.user.avatar}
             sub_s.append(a)
