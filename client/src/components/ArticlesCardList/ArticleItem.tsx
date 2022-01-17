@@ -10,26 +10,27 @@ interface ArticleItemProps {
 }
 
 export const ArticleItem: React.FC<ArticleItemProps> = ({ article, mode }) => {
-  const articleImage = article.info.image ? article.info.image : noImage
+  const articleImage = article.image ? article.image : noImage
   const avatarImage = article.author.avatar ? article.author.avatar : defaultAvatar
   let text = '...'
   let style = {}
   if (mode === 'preview') {
-    text = article.info.content.split(' ').slice(0, 20).join(' ')
+    text = article.content.split(' ').slice(0, 20).join(' ')
     style = { width: '40%', minWidth: '20rem' }
   } else if (mode === 'full') {
-    text = article.info.content
-    style = { width: '60%', minWidth: '21rem',  }
+    text = article.content
+    style = { width: '60%', minWidth: '21rem' }
   }
   return (
     <div className="card m-2 p-0" style={style}>
       <div className="card-header">
-        <img className="float-start rounded-circle" src={avatarImage} width={30} height={30} />
+        <img className="float-start rounded-circle" src={avatarImage} width={30} height={30} alt="" />
         <strong className="float-start ms-2">{article.author.login}</strong>
-        <p className="float-end mb-0 fw-light">{article.date}</p>
+        <p className="float-start mb-0 ms-2 fw-light">{article.date}</p>
+        <p className="float-end mb-0 fst-italic">{article.category}</p>
       </div>
       <div className="card-body">
-        <h2 className="card-title">{article.info.title}</h2>
+        <h2 className="card-title">{article.title}</h2>
         <img src={articleImage} className="card-img-top" alt="" />
         <p className="card-text">{text}...</p>
         {mode === 'preview' && (
