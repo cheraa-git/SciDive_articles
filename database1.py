@@ -35,9 +35,12 @@ class Articles(Base):
     __tablename__ = 'articles'
     id = Column(Integer, primary_key=True)
     blog_id = Column(Integer, ForeignKey('blog.id', ondelete='CASCADE'), nullable=False)
-    name = Column(String(150), nullable=False, unique=False)
-    info = Column(String(65000), nullable=False, unique=False)
+    title = Column(String(150), nullable=False, unique=False)
+    image = Column(String, default='peppa.png', nullable=False)
+    prev_content = Column(String(160), nullable=False)
+    content = Column(String(65000), nullable=False, unique=False)
     # поставил такое ограничение просто так
+    category = Column(String(64), nullable=False)
     tags = Column(String(50), nullable=False)
     # будем редактировать ограничение исходя из длины всех тегов
     date = Column(DateTime, default=datetime.datetime.utcnow, nullable=False)
@@ -171,4 +174,4 @@ def add_user(login, email, password):
     session.close()
 # add_user("AYE88", 'sss@mail.ru', "2281337")
 
-get_articles_subscriptions(1)
+# get_articles_subscriptions(1)

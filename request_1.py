@@ -42,13 +42,13 @@ ma = Marshmallow(app)
 
 class Article_m(ma.Schema):
     class Meta:
-        fields = ['id', 'blog_id', 'info', 'tags', 'time', 'views']
+        fields = ['id', 'blog_id', 'title', 'image', 'prev_content', 'content', 'tags', 'date', 'views']
 
 article_m = Article_m(many=False)
 
 class Articles_m(ma.Schema):
     class Meta:
-        fields = ['id', 'blog_id', 'name' 'info', 'tags', 'time', 'views']
+        fields = ['id', 'blog_id', 'title', 'image', 'prev_content', 'tags', 'date', 'views']
 
 articles_m = Articles_m(many=True)
 
@@ -72,7 +72,7 @@ def show_article(article_id):
     article, author = get_article(article_id)
     result = article_m.dump(article)
     result["author"] = login_u.dump(author)
-    result["info"] = json.loads(result["info"])
+    # result["content"] = json.loads(result["content"])
     return jsonify(result)
 
 @app.route('/my_subscriptions', methods=["GET"])
