@@ -6,6 +6,7 @@ import { CreateArticle } from './pages/CreateArticle'
 import { MyArticles } from './pages/MyArticles'
 import { Profile } from './pages/Profile'
 import { ArticlePage } from './pages/ArticlePage'
+import { SubscribePage } from './pages/SubscribePage'
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
           <Route element={<MyArticles />} path="/my_articles" />
           <Route element={<Profile />} path="/profile" />
           <Route element={<ArticlePage />} path="/article/:id" />
+          <Route element={<SubscribePage/>} path='/subscribe' />
         </Routes>
       </div>
     </>
