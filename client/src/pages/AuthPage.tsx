@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
+import { postRegisterData } from '../store/actions/AuthActions'
 
 export const AuthPage: React.FC = () => {
   const dispatch = useDispatch()
@@ -8,7 +9,7 @@ export const AuthPage: React.FC = () => {
 
   useEffect(() => {
     // dispatch(authDataPost({login: 'Alex', password: '111111'}))
-    // dispatch(postRegisterData({login: 'Alex', password: '111111', email: 'Alex@mail.ru'}))
+    // dispatch(postRegisterData({login: 'User1', password: '111111', email: 'User1@mail.ru'}))
   }, [dispatch])
 
   const loginHandler = () => {
