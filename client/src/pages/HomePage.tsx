@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { ArticlesCardList } from '../components/ArticlesCardList/ArticlesCardList'
 import { SecondNavBar } from '../components/UI/SecondNavBar'
 import { fetchHome } from '../store/actions/ArticleActions'
-import { authDataPost } from '../store/actions/AuthActions'
+import { authDataPost, postRegisterData } from '../store/actions/AuthActions'
 import { RootState } from '../store/rootReducer'
 
 export const HomePage: React.FC = () => {
@@ -11,7 +11,8 @@ export const HomePage: React.FC = () => {
   const { articles, currentCategory } = useSelector((state: RootState) => state.article)
   useEffect(() => {
     dispatch(fetchHome())
-    // dispatch(authDataPost({login: 'AYE88', password: '111111'}))
+    // dispatch(authDataPost({login: 'Alex', password: '111111'}))
+    // dispatch(postRegisterData({login: 'Alex', password: '111111', email: 'Alex@mail.ru'}))
   }, [dispatch])
   return (
     <div>
