@@ -77,8 +77,8 @@ def show_main_page():
 
 @app.route("/article/<int:article_id>", methods=["GET"])
 def show_article(article_id):
-    token = jwt.decode(bytes(request.args.get("token", 1), encoding='utf-8'), app.secret_key, algorithms=['HS256'])
-    print(token)
+    # token = jwt.decode(bytes(request.args.get("token", 1), encoding='utf-8'), app.secret_key, algorithms=['HS256'])
+    # print(token)
     article, author = get_article(article_id)
     result = article_m.dump(article)
     result["author"] = login_u.dump(author)
