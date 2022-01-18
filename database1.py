@@ -1,4 +1,5 @@
 import datetime
+from nis import cat
 from sqlalchemy import Column, Integer, String, Text, ForeignKey, Boolean, create_engine, DateTime, desc
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, Session, backref
@@ -209,19 +210,25 @@ def del_subscription(user_id, blog_id):
     session.commit()
     session.close()
 
-def update_article(article_id, info, tags):
+def update_article(article_id, user_id, title, image, prev_content, content, category, tags):
     engine = create_engine('sqlite:///info_data_base.db', echo=True)
     session = Session(bind=engine)
     article = session.query(Articles).get(article_id)
-    if tags == "old" and info != "old":
-        article.info = info
-    elif info == "old" and tags != "old":
-        article.tags = tags
-    elif info == "old" and tags == "old":
-        pass
-    else:
-        article.info = info
-        article.tags = tags
+    user = session.query(User).get(user_id)
+
+    if user.id == article.blog_id:
+        if title != 'old':
+            article.title = title
+        if article.image != 'old':
+            article.image = image
+        if article.prev_content != 'old':
+            article.prev_content = prev_content
+        if article.content != 'old':
+            article.content = content
+        if article.category != 'old':
+            article.category = category
+        if article.tags != 'old':
+            article.tags = tags    
     session.commit()
     session.close()
 
