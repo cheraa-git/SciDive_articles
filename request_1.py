@@ -119,7 +119,7 @@ def show_user_blog(blog_id):
     return jsonify(result)
 
 @app.route('/my_articles', methods=["GET"])
-def show_user_blog():
+def show_my_articles():
     token = jwt.decode(bytes(request.args.get("token", 1), encoding='utf-8'), app.secret_key, algorithms=['HS256'])
     print(token)
     user_id = token["login"]
