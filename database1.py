@@ -126,6 +126,8 @@ def get_articles_subscriptions(user_id):
     subscription_s = session.query(Subscriptions).filter_by(user_id=user_id).all()
     sub = [i.blog for i in subscription_s]
     sub_s = []
+    # for i in sub:
+    #     sub_s.append(get_articles_blog(i))
     for i in sub:
         for k in i.articles:
             a = {}
@@ -141,7 +143,7 @@ def get_articles_subscriptions(user_id):
             a["views"] = k.views
             a["author"] = {'login': k.blog.user.login, "avatar": k.blog.user.avatar}
             sub_s.append(a)
-    print(a)
+    # # print(a)
     session.close()
     return sub_s
 
