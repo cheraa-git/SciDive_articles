@@ -171,12 +171,14 @@ def get_articles_blog(user_id):
     session.close()
     return articles
 
-def set_article(user_id, info, tags):
+def set_article(user_id, title, image, prev_content, content, category, tags):
     engine = create_engine('sqlite:///info_data_base.db', echo=True)
     session = Session(bind=engine)
     user = session.query(User).get(user_id)
     articles = user.blog.articles
-    articles.append(Articles(info=info, tags=tags))
+    if prev_content == '':
+        prev_content = content[:150]
+    articles.append(Articles(title=title, image=image, prev_content=prev_content, content=content, category=category, tags=tags))
     session.commit()
     article_id = articles[-1].id
     session.close()
