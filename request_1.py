@@ -269,9 +269,8 @@ def post(form):
         login = request.json['login']
         email = request.json['email']
         password = request.json['password']
-        fio = request.json['fio']
         try:
-            add_user(login=login, email=email, password=password, fio=fio)
+            add_user(login=login, email=email, password=password)
         except AccountExists:
             return jsonify({"error": True})
         return jsonify({"error": False})
