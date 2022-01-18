@@ -8,9 +8,11 @@ import { Profile } from './pages/Profile'
 import { ArticlePage } from './pages/ArticlePage'
 import { SubscribePage } from './pages/SubscribePage'
 import { AuthPage } from './pages/AuthPage'
+import { useSelector } from 'react-redux'
+import { RootState } from './store/rootReducer'
 
 function App() {
-  const isAuth = false
+  const {isAuth} = useSelector((state: RootState) => state.auth)
   const AuthRouterHandler = () => {
     if (isAuth) {
       return (

@@ -1,8 +1,12 @@
 import React from 'react'
+import { useSelector } from 'react-redux'
 import { NavLink } from 'react-router-dom'
 import logo from '../../asserts/logotip.png'
+import { RootState } from '../../store/rootReducer'
 
 export const NavBar: React.FC = () => {
+  const {isAuth} = useSelector((state: RootState) => state.auth)
+  const personIconHref = isAuth ? '/profile' : '/auth'
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
       <div className="container-fluid">
@@ -20,7 +24,7 @@ export const NavBar: React.FC = () => {
         >
           <span className="navbar-toggler-icon"></span>
         </button>
-        <div className="collapse navbar-collapse" id="navbarNav">
+        <div className="collapse navbar-collapse fs-5" id="navbarNav">
           <ul className="navbar-nav">
             <li className="nav-item">
               <NavLink className={`nav-link`} aria-current="page" to="/">
@@ -50,9 +54,9 @@ export const NavBar: React.FC = () => {
             </li>
           </ul>
           <div className="d-flex ms-auto">
-            <a className="btn btn-light btn-sm">Авторизация</a>
-            <div className="vr mx-1 opacity-75" ></div>
-            <a className="btn btn-light btn-sm">Авторизация</a>
+            <NavLink className="nav-link" to={personIconHref}>
+              <i className='bi bi-person fs-2'/>
+            </NavLink>
           </div>
         </div>
       </div>
