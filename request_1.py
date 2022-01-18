@@ -118,6 +118,20 @@ def show_user_blog(blog_id):
     # result["author"] = login_u.dump(author)
     return jsonify(result)
 
+@app.route('/my_articles', methods=["GET"])
+def show_user_blog():
+    token = jwt.decode(bytes(request.args.get("token", 1), encoding='utf-8'), app.secret_key, algorithms=['HS256'])
+    print(token)
+    user_id = token["login"]
+    articles = get_articles_blog(user_id)
+    print(articles)
+    result = articles
+    # result["articles"] = json.loads(articles_m.dumps(articles))
+    # print(result)
+    # result["author"] = login_u.dump(author)
+    return jsonify(result)
+
+
 @app.route('/edit/article', methods=["POST"])
 def add_article():
     data = dict(request.form)
