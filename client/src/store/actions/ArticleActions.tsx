@@ -18,7 +18,7 @@ export function setCurrentCategory(category: string): articleActions {
 
 export function fetchMyArticles() {
   return async (dispatch: any) => {
-    const response = await axiosApp.get('/blog/1' + token)
+    const response = await axiosApp.get('/my_articles' + token)
     const data = response.data
     console.log(data);
     dispatch(setMyArticles(data))

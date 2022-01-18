@@ -44,11 +44,16 @@ export const NavBar: React.FC = () => {
               </NavLink>
             </li>
             <li className="nav-item">
-              <NavLink className={`nav-link ${document.location.pathname === '/profile' && 'active'}`} to="/profile">
+              <NavLink className={`nav-link `} to="/profile">
                 Профиль
               </NavLink>
             </li>
           </ul>
+          <div className="d-flex ms-auto">
+            <a className="btn btn-light btn-sm">Авторизация</a>
+            <div className="vr mx-1 opacity-75" ></div>
+            <a className="btn btn-light btn-sm">Авторизация</a>
+          </div>
         </div>
       </div>
     </nav>
