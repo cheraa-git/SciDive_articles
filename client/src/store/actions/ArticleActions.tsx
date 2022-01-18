@@ -1,7 +1,7 @@
 import axiosApp from '../../axios/axiosApp'
-import { articleActions } from '../../types/ArticleAcrionTypes'
+import { articleActions } from '../../types/ArticleTypes'
 import { Article } from '../../types/interfaces'
-import { CLEAR_ARTICLES, SET_CURRENT_CATEGORY, SET_MY_ARTICLES } from './actionTypes'
+import { CLEAR_ARTICLES, SET_CURRENT_CATEGORY, SET_MY_ARTICLES } from '../actionTypes'
 const token = '?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJsb2dpbiI6MX0._6J5Yzv2a4JEXHOLOSvVf1kkyPsDCfbkkatcaq_uios'
 export function clearArticles(): articleActions {
   return {
@@ -39,7 +39,15 @@ export function fetchSubscribe() {
     const response = await axiosApp.get(`/tape${token}`)
     const data = response.data
     console.log(data);
+    dispatch(setMyArticles(data))
     
+  }
+}
+export function fetchHome() {
+  return async (dispatch: any) => {
+    const response = await axiosApp.get(`/main_page${token}`)
+    const data = response.data
+    console.log(data);
     dispatch(setMyArticles(data))
     
   }

@@ -1,11 +1,10 @@
 import React, { useEffect } from 'react'
 import { useParams } from 'react-router-dom'
-import { staticArticles } from '../staticArticles'
 
 import { ArticleItem } from '../components/ArticlesCardList/ArticleItem'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchArticle } from '../store/actions/ArticleActions'
-import { RootState } from '../store/reducers/rootReducer'
+import { RootState } from '../store/rootReducer'
 
 export const ArticlePage: React.FC = () => {
   const dispatch = useDispatch()

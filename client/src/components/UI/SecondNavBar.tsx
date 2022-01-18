@@ -2,7 +2,7 @@ import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { NavLink } from 'react-router-dom'
 import { setCurrentCategory } from '../../store/actions/ArticleActions'
-import { RootState } from '../../store/reducers/rootReducer'
+import { RootState } from '../../store/rootReducer'
 
 export const SecondNavBar: React.FC = () => {
   const dispatch = useDispatch()

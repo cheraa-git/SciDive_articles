@@ -1,7 +1,7 @@
 import { staticArticles } from '../../staticArticles'
-import { articleActions } from '../../types/ArticleAcrionTypes'
+import { articleActions } from '../../types/ArticleTypes'
 import { Article } from '../../types/interfaces'
-import { CLEAR_ARTICLES, SET_CURRENT_CATEGORY, SET_MY_ARTICLES } from '../actions/actionTypes'
+import { CLEAR_ARTICLES, SET_CURRENT_CATEGORY, SET_MY_ARTICLES } from '../actionTypes'
 
 interface IArticleInitialState {
   articles: Article[]

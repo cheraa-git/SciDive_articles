@@ -1,4 +1,4 @@
-import { TEST } from "../store/actions/actionTypes";
+import { TEST } from "../store/actionTypes";
 
 export interface Itest {
   type: typeof TEST

@@ -1,5 +1,5 @@
-import { userActions } from '../../types/UserActionTypes'
-import { TEST } from '../actions/actionTypes'
+import { userActions } from '../../types/UserTypes'
+import { TEST } from '../actionTypes'
 
 interface IUserInitialState {
   login: string

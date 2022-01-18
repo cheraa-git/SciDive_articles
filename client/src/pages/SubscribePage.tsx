@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { ArticlesCardList } from '../components/ArticlesCardList/ArticlesCardList'
 import { SecondNavBar } from '../components/UI/SecondNavBar'
 import { fetchSubscribe } from '../store/actions/ArticleActions'
-import { RootState } from '../store/reducers/rootReducer'
+import { RootState } from '../store/rootReducer'
 
 export const SubscribePage: React.FC = () => {
   const dispatch = useDispatch()
