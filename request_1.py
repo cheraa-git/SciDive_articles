@@ -77,8 +77,8 @@ def show_main_page():
 
 @app.route("/article/<int:article_id>", methods=["GET"])
 def show_article(article_id):
-    token = jwt.decode(bytes(request.args.get("token", 1), encoding='utf-8'), app.secret_key, algorithms=['HS256'])
-    print(token)
+    # token = jwt.decode(bytes(request.args.get("token", 1), encoding='utf-8'), app.secret_key, algorithms=['HS256'])
+    # print(token)
     article, author = get_article(article_id)
     result = article_m.dump(article)
     result["author"] = login_u.dump(author)
@@ -221,41 +221,45 @@ def del_subscription_(blog_id):
     else:
         return jsonify({"error": True})
 
-@app.route('/edit/article', methods=["PUT"])
-def update_article_():
-    data = dict(request.form)
+@app.route('/edit/article/<int:article_id>', methods=["PUT"])
+def update_article_(article_id):
+    data = dict(request.json)
     token = data["token"]
     token = jwt.decode(bytes(token, encoding='utf-8'), app.secret_key, algorithms=['HS256'])
     user_id = token["login"]
     print(token)
-    article_id = data["article_id"]
-    tags = data["tags"]
-    info = []
-    info_dict = {}
-    for component in range(int(sorted(data)[-1][-1]) + 1):
-        print(component)
-        info_dict["id"] = data[f"id_{component}"]
-        info_dict["type"] = data[f"type_{component}"]
-        if info_dict["type"] !="text" and info_dict["type"] !="code":
-            info_component = request.files[f"info_{component}"]
-            extens = info_component.filename.split(".")[-1].replace("\"", "")
-            filename = str(time.time()) + '.' + extens
-            path = app.config["UPLOAD_FOLDER"]
-            try:
-                full_path = path + filename
-                info_component.save(full_path)
-                info_dict["info"] = f'http://127.0.0.1:5000/static/{full_path}'
-            except TypeError:
-                pass
-        else:
-            info_dict["info"] = data[f"info_{component}"]
-            if info_dict["type"] == "code":
-                info_dict["pr_ln"] = data[f"pr_ln_{component}"]
-        info.append(info_dict)
-        info_dict = {}
-    info = json.dumps(info)
+    title = data['title']
+    image = data['image']
+    prev_content = data['prev_content']
+    content = data['content']
+    category = data['category']
+    tags = data['tags']
+    # info = []
+    # info_dict = {}
+    # for component in range(int(sorted(data)[-1][-1]) + 1):
+    #     print(component)
+    #     info_dict["id"] = data[f"id_{component}"]
+    #     info_dict["type"] = data[f"type_{component}"]
+    #     if info_dict["type"] !="text" and info_dict["type"] !="code":
+    #         info_component = request.files[f"info_{component}"]
+    #         extens = info_component.filename.split(".")[-1].replace("\"", "")
+    #         filename = str(time.time()) + '.' + extens
+    #         path = app.config["UPLOAD_FOLDER"]
+    #         try:
+    #             full_path = path + filename
+    #             info_component.save(full_path)
+    #             info_dict["info"] = f'http://127.0.0.1:5000/static/{full_path}'
+    #         except TypeError:
+    #             pass
+    #     else:
+    #         info_dict["info"] = data[f"info_{component}"]
+    #         if info_dict["type"] == "code":
+    #             info_dict["pr_ln"] = data[f"pr_ln_{component}"]
+    #     info.append(info_dict)
+    #     info_dict = {}
+    # info = json.dumps(info)
     try:
-        update_article(article_id, info, tags)
+        update_article(article_id, user_id, title, image, prev_content, content, category, tags)
         return jsonify({"error": False})
     except:
         return jsonify({"error": True})
