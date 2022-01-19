@@ -1,12 +1,18 @@
-import { LOGIN_USER, TEST } from "../store/actionTypes";
-
-interface Itest {
-  type: typeof TEST
-}
+import { AUTO_AUTH_SUCCESS, LOGIN_USER, LOGOUT_USER, TEST } from '../store/actionTypes'
 
 interface IloginUser {
   type: typeof LOGIN_USER
   userAvatar: string
+  token: string
 }
 
-export type authAtcions = Itest | IloginUser
+interface IlogoutUser {
+  type: typeof LOGOUT_USER
+}
+
+interface IautoAuthSuccess {
+  type: typeof AUTO_AUTH_SUCCESS
+  token: string
+}
+
+export type authAtcions = IloginUser | IlogoutUser | IautoAuthSuccess

@@ -1,5 +1,5 @@
 import { authAtcions } from '../../types/AuthTypes'
-import { LOGIN_USER } from '../actionTypes'
+import { AUTO_AUTH_SUCCESS, LOGIN_USER, LOGOUT_USER } from '../actionTypes'
 
 interface AuthInitialState {
   isAuth: boolean
@@ -20,7 +20,12 @@ export function authReducer(state = initialState, action: authAtcions) {
         ...state,
         isAuth: true,
         userAvatar: action.userAvatar,
+        token: action.token,
       }
+    case LOGOUT_USER:
+      return { ...state, isAuth: false, token: null }
+    case AUTO_AUTH_SUCCESS:
+      return { ...state, isAuth: true, token: action.token }
     default:
       return state
   }

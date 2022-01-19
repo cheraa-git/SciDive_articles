@@ -1,39 +1,41 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { postRegisterData } from '../store/actions/AuthActions'
+import { useNavigate } from 'react-router-dom'
+import { authDataPost, postRegisterData } from '../store/actions/AuthActions'
 
 export const AuthPage: React.FC = () => {
   const dispatch = useDispatch()
-  const [password, setPassword] = useState<null | HTMLElement>()
+  const navigate = useNavigate()
+  const [password, setPassword] = useState('')
   const [login, setLogin] = useState('')
 
-  useEffect(() => {
-    // dispatch(authDataPost({login: 'Alex', password: '111111'}))
-    // dispatch(postRegisterData({login: 'User1', password: '111111', email: 'User1@mail.ru'}))
-  }, [dispatch])
+  // useEffect(() => {
+  //   // dispatch(authDataPost({login: 'Alex', password: '111111'}))
+  //   // dispatch(postRegisterData({login: 'User1', password: '111111', email: 'User1@mail.ru'}))
+  // }, [dispatch])
 
-  const loginHandler = () => {
-
+  const loginHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setLogin(event.target.value)
+  }
+  const passwordHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setPassword(event.target.value)
   }
 
   const submitHandler = () => {
-    console.log('submit')
+    dispatch(authDataPost({ login, password }, navigate))
+    // dispatch(authDataPost({ login: 'Alex', password: '111111' }))
   }
 
   return (
     <div className="container">
       <div className="bg-opacity-10 mx-auto border p-4" style={{ width: '60%', minWidth: '21rem' }}>
         <div className="mb-3">
-          <label htmlFor="exampleInputEmail1" className="form-label">
-            Логин
-          </label>
+          <label className="form-label">Логин</label>
           <input className="form-control" value={login} onChange={loginHandler} />
         </div>
         <div className="mb-3">
-          <label htmlFor="exampleInputPassword1" className="form-label">
-            Пароль
-          </label>
-          <input type="password" className="form-control" id="exampleInputPassword1" />
+          <label className="form-label">Пароль</label>
+          <input type="password" className="form-control" value={password} onChange={passwordHandler} />
         </div>
         <button className="btn btn-primary" onClick={submitHandler}>
           Войти
