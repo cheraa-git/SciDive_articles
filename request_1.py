@@ -269,16 +269,16 @@ def update_article_(article_id):
 @app.route('/authorization/<form>', methods=['POST'])
 def post(form):
     if form == "log_in":
-        login = request.json['login']
+        email = request.json['email']
         password = request.json['password']
-        avatar = request_user_avatar(login)
+        avatar = request_user_avatar(email)
         try:
-            login, password_hash_valid = request_user(login)
+            email, password_hash_valid = request_user(email)
             bool_hash = check_password_hash(password_hash_valid, password)
         except AccountNotFound:
             return jsonify({"error": True})
         if bool_hash:
-            user_id = get_user_id(login)
+            user_id = get_user_id(email)
             admin = check_admin(user_id)
             token = jwt.encode(
                 {'login': user_id}, key=app.secret_key, algorithm='HS256').decode('utf-8')
