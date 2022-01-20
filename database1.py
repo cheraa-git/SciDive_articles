@@ -246,32 +246,32 @@ def add_user(login, email, password):
     session.commit()
     session.close()
 
-def get_user_id(login):
+def get_user_id(email):
     engine = create_engine('sqlite:///info_data_base.db', echo=True)
     session = Session(bind=engine)
     try:
-        user_id = session.query(User.id).filter_by(login=login).first()[0]
+        user_id = session.query(User.id).filter_by(email=email).first()[0]
     except TypeError:
         raise AccountNotFound
     finally:
         session.close()
     return user_id
 
-def request_user_avatar(login):
+def request_user_avatar(email):
     engine = create_engine('sqlite:///info_data_base.db', echo=True)
     session = Session(bind=engine)
-    avatar = session.query(User.avatar).filter_by(login=login).first()[0]
+    avatar = session.query(User.avatar).filter_by(email=email).first()[0]
     session.close()
     return avatar
 
-def request_user(login):
+def request_user(email):
     engine = create_engine('sqlite:///info_data_base.db', echo=True)
     session = Session(bind=engine)
-    user = session.query(User).filter_by(login=login).first()
+    user = session.query(User).filter_by(email=email).first()
     session.close()
     if not user:
         raise AccountNotFound
-    return user.login, user.password
+    return user.email, user.password
 
 def check_admin(login_id):
     engine = create_engine('sqlite:///info_data_base.db', echo=True)
