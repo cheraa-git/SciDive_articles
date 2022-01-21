@@ -1,8 +1,8 @@
 from flask import Flask, request, session, jsonify, render_template, url_for
 from flask_caching import Cache
 from flask_sockets import Sockets
-from database1 import get_subscriptions, get_article, get_articles_subscriptions, get_articles_blog, set_article, \
-    set_subscription, del_article, del_subscription, update_article, get_most_recent_articles, get_user_id, request_user_avatar, request_user, check_admin, add_user, check_user_by_email, add_check_password, get_check_password, request_user_login, change_user_password, remove_check_password
+from database1 import SignupEmailError, SignupLoginError, get_subscriptions, get_article, get_articles_subscriptions, get_articles_blog, set_article, \
+    set_subscription, del_article, del_subscription, update_article, get_most_recent_articles, get_user_id, request_user_avatar, request_user, check_admin, add_user, check_user_by_email, add_check_password, get_check_password, request_user_login, change_user_password, remove_check_password, get_user_login
 from database1 import AccountNotFound, AccountExists
 from flask_mail import Mail, Message
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -280,10 +280,11 @@ def post(form):
         if bool_hash:
             user_id = get_user_id(email)
             admin = check_admin(user_id)
+            login = get_user_login(email)
             token = jwt.encode(
                 {'login': user_id}, key=app.secret_key, algorithm='HS256').decode('utf-8')
             print(token)
-            return jsonify({'token': token, 'avatar': f"http://127.0.0.1:5000/static/{avatar}", "admin": admin})
+            return jsonify({'token': token, 'avatar': f"http://127.0.0.1:5000/static/{avatar}", "admin": admin, "login": login})
         else:
             return jsonify({"error": True})
 
@@ -296,6 +297,10 @@ def post(form):
             add_user(login=login, email=email, password=password)
         except AccountExists:
             return jsonify({"error": True})
+        except SignupEmailError:
+            return jsonify({"error": 'SignupEmailError'})
+        except SignupLoginError:
+            return jsonify({"error": 'SignupLoginError'})
         return jsonify({"error": False})
 
     elif form == "forgot":
