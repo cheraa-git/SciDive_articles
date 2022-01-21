@@ -47,7 +47,6 @@ export function fetchHome() {
     const token = localStorage.getItem('token')
     const response = await axiosApp.get(`/main_page?token=${token}`)
     const data = response.data
-    console.log(data)
     dispatch(setMyArticles(data))
   }
 }

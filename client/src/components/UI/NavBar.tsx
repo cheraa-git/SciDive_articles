@@ -16,13 +16,13 @@ export const NavBar: React.FC = () => {
   ) : (
     <>
       <li className="nav-item">
-        <NavLink className="nav-link" to="/auth">
+        <NavLink className="nav-link" to="/auth/login">
           Вход
         </NavLink>
       </li>
       <div className="vr opacity-75 my-2" style={{ color: 'white' }}></div>
       <li>
-        <NavLink className="nav-link" to="/auth">
+        <NavLink className="nav-link" to="/auth/singup">
           Регистрация
         </NavLink>
       </li>

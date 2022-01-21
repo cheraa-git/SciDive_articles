@@ -54,14 +54,12 @@ export function autoLogin(navigate: any) {
     const token = localStorage.getItem('token')
     if (!token) {
       dispatch(logoutUser())
-      // document.location.pathname = '/'
-      navigate('/')
+      // navigate('/')
     } else {
       const expirationDate = new Date(JSON.stringify(localStorage.getItem('expirationDate')))
       if (expirationDate <= new Date()) {
         dispatch(logoutUser())
-        // document.location.pathname = '/'
-        navigate('/')
+        // navigate('/')
       } else {
         dispatch(autoAuthSuccess(token))
       }

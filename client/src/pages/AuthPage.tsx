@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { authDataPost, postRegisterData } from '../store/actions/AuthActions'
 
 export const AuthPage: React.FC = () => {
@@ -8,6 +8,7 @@ export const AuthPage: React.FC = () => {
   const navigate = useNavigate()
   const [password, setPassword] = useState('')
   const [login, setLogin] = useState('')
+  const { mode } = useParams()
 
   // useEffect(() => {
   //   // dispatch(authDataPost({login: 'Alex', password: '111111'}))
@@ -23,23 +24,61 @@ export const AuthPage: React.FC = () => {
 
   const submitHandler = () => {
     dispatch(authDataPost({ login, password }, navigate))
-    // dispatch(authDataPost({ login: 'Alex', password: '111111' }))
+  }
+
+  let content = null
+  if (mode === 'login') {
+    content = (
+      <>
+        <h2>Вход</h2>
+        <div className="mb-3">
+          <label className="form-label">Логин</label>
+          <input className="form-control" value={login} onChange={loginHandler} />
+        </div>
+
+        <div className="mb-3">
+          <label className="form-label">Пароль</label>
+          <input type="password" className="form-control" value={password} onChange={passwordHandler} />
+        </div>
+
+        <button className="btn btn-primary" onClick={submitHandler}>
+          Войти
+        </button>
+      </>
+    )
+  } else if (mode === 'singup') {
+    content = (
+      <form>
+        <h2>Регистрация</h2>
+
+        <div className="mb-3">
+          <label className="form-label">E-mail</label>
+          <input type="email" className="form-control" required />
+        </div>
+
+        <div className="mb-3">
+          <label className="form-label">Никнейм</label>
+          <input className="form-control" value={login} onChange={loginHandler} required />
+        </div>
+        <div className="mb-3">
+          <label className="form-label">Пароль</label>
+          <input type="password" className="form-control" value={password} onChange={passwordHandler} required />
+        </div>
+
+        <div className="mb-3">
+          <label className="form-label">Пароль еще раз</label>
+          <input type="password" className="form-control" value={password} onChange={passwordHandler} required />
+        </div>
+
+        <button className="btn btn-primary">Войти</button>
+      </form>
+    )
   }
 
   return (
     <div className="container">
       <div className="bg-opacity-10 mx-auto border p-4" style={{ width: '60%', minWidth: '21rem' }}>
-        <div className="mb-3">
-          <label className="form-label">Логин</label>
-          <input className="form-control" value={login} onChange={loginHandler} />
-        </div>
-        <div className="mb-3">
-          <label className="form-label">Пароль</label>
-          <input type="password" className="form-control" value={password} onChange={passwordHandler} />
-        </div>
-        <button className="btn btn-primary" onClick={submitHandler}>
-          Войти
-        </button>
+        {content}
       </div>
     </div>
   )

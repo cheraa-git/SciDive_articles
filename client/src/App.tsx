@@ -43,7 +43,7 @@ function App() {
           <NavBar />
           <div className="container">
             <Routes>
-              <Route element={<AuthPage />} path="/auth" />
+              <Route element={<AuthPage />} path="/auth/:mode" />
               <Route element={<HomePage />} path="/" />
               <Route element={<ArticlePage />} path="/article/:id" />
 
