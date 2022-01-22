@@ -15,7 +15,7 @@ import { autoLogin } from './store/actions/AuthActions'
 function App() {
   const dispatch = useDispatch()
   const navigate = useNavigate()
-  const {isAuth} = useSelector((state: RootState) => state.auth)
+  const { isAuth } = useSelector((state: RootState) => state.auth)
 
   useEffect(() => {
     dispatch(autoLogin(navigate))
@@ -47,7 +47,10 @@ function App() {
               <Route element={<HomePage />} path="/" />
               <Route element={<ArticlePage />} path="/article/:id" />
 
-
+              <Route element={<AuthPage />} path="/create_article" />
+              <Route element={<AuthPage />} path="/my_articles" />
+              <Route element={<AuthPage />} path="/profile" />
+              <Route element={<AuthPage />} path="/subscribe" />
             </Routes>
           </div>
         </>

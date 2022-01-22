@@ -12,7 +12,7 @@ interface ArticleItemProps {
 export const ArticleItem: React.FC<ArticleItemProps> = ({ article, mode }) => {
   const articleImage = article.image ? article.image : noImage
   const avatarImage = article.author.avatar ? article.author.avatar : defaultAvatar
-  // console.log(article.date.slice(0, 16).replace('T', ' '))
+  
 
   let text = '...'
   let style = {}

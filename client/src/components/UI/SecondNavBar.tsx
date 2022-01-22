@@ -14,18 +14,18 @@ export const SecondNavBar: React.FC = () => {
         <div className="collapse navbar-collapse">
           <ul className="navbar-nav m-auto mb-2 mb-lg-0">
             <li className="nav-item">
-              <NavLink className="nav-link" aria-current="page" to="/">
-                Общая лента
+              <NavLink className="nav-link lead" aria-current="page" to="/">
+                 Все статьи
               </NavLink>
             </li>
             <li className="nav-item">
-              <NavLink className="nav-link" to="/subscribe">
-                Мои подписки
+              <NavLink className="nav-link lead" to="/subscribe">
+                Подписки
               </NavLink>
             </li>
             <li className="nav-item dropdown">
               <a
-                className="nav-link dropdown-toggle"
+                className="nav-link dropdown-toggle lead"
                 href="/"
                 id="navbarDropdown"
                 role="button"
@@ -37,7 +37,7 @@ export const SecondNavBar: React.FC = () => {
               <ul className="dropdown-menu" aria-labelledby="navbarDropdown">
                 {categoryList.map((el, index) => (
                   <li key={index} onClick={() => dispatch(setCurrentCategory(el))}>
-                    <p className="dropdown-item m-0">{el}</p>
+                    <p className="dropdown-item m-0 ">{el}</p>
                   </li>
                 ))}
               </ul>

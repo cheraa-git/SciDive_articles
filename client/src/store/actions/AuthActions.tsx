@@ -3,20 +3,15 @@ import { authAtcions } from '../../types/AuthTypes'
 import { userActions } from '../../types/UserTypes'
 import { AUTO_AUTH_SUCCESS, LOGIN_USER, LOGOUT_USER } from '../actionTypes'
 
-export const postRegisterData = (data: Object, props?: any) => {
+export const postRegisterData = (data: any, navigate: any) => {
   return async (dispatch: any) => {
     await axiosApp.post('authorization/sign_up', data).then((res) => {
       if (res.data.error) {
-        // dispatch( registerError(true) )
-        // dispatch( logRegisterMassage("Такой пользователь или email уже есть в системе") )
         console.log('ERROR', res.data.error)
       } else {
-        console.log(res.data)
-
-        // const authData = { login: data.login, password: data.password }
-        // dispatch( logRegisterMassage(null) )
-        // dispatch( authDataPost(authData, props) )
-        // props.history.push("/")
+        console.log('singup success',res.data)
+        const authData = { email: data.email, password: data.password }
+        dispatch( authDataPost(authData, navigate) )
       }
     })
   }
@@ -35,10 +30,9 @@ export const authDataPost = (userData: any, navigate: any) => {
           dispatch(loginUser(res.data.avatar, res.data.token))
 
           const expirationDate = new Date(new Date().getTime() + 3600000)
-
+          
           localStorage.setItem('token', res.data.token)
           localStorage.setItem('expirationDate', JSON.stringify(expirationDate))
-          localStorage.setItem('userName', userData.login)
           localStorage.setItem('userAvatar', res.data.avatar)
           navigate('/')
         }

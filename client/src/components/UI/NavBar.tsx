@@ -4,34 +4,55 @@ import { NavLink } from 'react-router-dom'
 import logo from '../../asserts/logotip.png'
 import { logoutUser } from '../../store/actions/AuthActions'
 import { RootState } from '../../store/rootReducer'
+import defaultAvatar from '../../asserts/default_avatar.png'
 
 export const NavBar: React.FC = () => {
   const dispatch = useDispatch()
   const { isAuth } = useSelector((state: RootState) => state.auth)
   const personIconHref = isAuth ? '/profile' : '/auth'
-  const authButton = isAuth ? (
-    <li className="nav-item">
-      <button className='btn btn-link nav-link' onClick={() => dispatch(logoutUser())}>Выход</button>
-    </li>
+  const avatar = localStorage.getItem('userAvatar') || defaultAvatar
+
+  const dropdownLinks = isAuth ? (
+    <>
+      <li>
+        <NavLink className="dropdown-item" to="/profile">
+          Профиль
+        </NavLink>
+      </li>
+      
+      <li>
+        <NavLink className="dropdown-item" to="/my_articles">
+          Мои статьи
+        </NavLink>
+      </li>
+
+      <hr className="dropdown-divider" />
+
+      <li>
+        <button className=" dropdown-item" onClick={() => dispatch(logoutUser())}>
+          Выход
+        </button>
+      </li>
+    </>
   ) : (
     <>
-      <li className="nav-item">
-        <NavLink className="nav-link" to="/auth/login">
+      <li>
+        <NavLink className="dropdown-item" to="/auth/login">
           Вход
         </NavLink>
       </li>
-      <div className="vr opacity-75 my-2" style={{ color: 'white' }}></div>
+      <hr className="dropdown-divider" />
       <li>
-        <NavLink className="nav-link" to="/auth/singup">
+        <NavLink className="dropdown-item" to="/auth/singup">
           Регистрация
         </NavLink>
       </li>
     </>
   )
   return (
-    <nav className="navbar navbar-expand-lg navbar-dark bg-dark p-0">
+    <nav className="navbar navbar-expand-sm navbar-dark bg-dark p-0">
       <div className="container-fluid">
-        <a className="navbar-brand " href="/">
+        <a className="navbar-brand lead" href="/">
           <img src={logo} alt="Логотип" width="30" height="24" className="d-inline-block align-text-top" /> Статьи
         </a>
         <button
@@ -59,21 +80,22 @@ export const NavBar: React.FC = () => {
                 Создать статью
               </NavLink>
             </li>
-            <li className="nav-item">
-              <NavLink
-                className={`nav-link ${document.location.pathname === '/my_articles' && 'active'}`}
-                to="/my_articles"
-              >
-                Мои статьи
-              </NavLink>
-            </li>
-            <li className="nav-item">
-              <NavLink className={`nav-link `} to="/profile">
-                Профиль
-              </NavLink>
-            </li>
           </ul>
-          <ul className="navbar-nav ms-auto">{authButton}</ul>
+          <ul className="navbar-nav ms-auto">
+            <>
+              <div className="btn-group me-2 d-block" style={{ width: '3rem'}}>
+                <button
+                  // type="button"
+                  className="btn btn-dark dropdown-toggle"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                >
+                  <img src={avatar} className="img-fluid rounded "/>
+                </button>
+                <ul className="dropdown-menu dropdown-menu-dark dropdown-menu-end">{dropdownLinks}</ul>
+              </div>
+            </>
+          </ul>
         </div>
       </div>
     </nav>

@@ -9,7 +9,7 @@ interface IArticleInitialState {
   categoryList: string[]
 }
 const initialState: IArticleInitialState = {
-  articles: staticArticles,
+  articles: [],
   currentCategory: 'Все категории',
   categoryList: ['Все категории', 'Разработка', 'Администрирование', 'Менеджмент', 'Финансы'],
 }
