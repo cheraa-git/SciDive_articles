@@ -8,17 +8,21 @@ interface ArticlesCardListProps {
 }
 
 export const ArticlesCardList: React.FC<ArticlesCardListProps> = (props) => {
+  let filterArticles = props.articles
+  if (props.currentCategory !== 'Все категории') {
+    filterArticles = filterArticles.filter((art) => art.category === props.currentCategory)
+  }
 
-  const filterArticles = props.articles.filter((art) => {
-    if (props.currentCategory === 'Все категории') return art
-    else if (art.category === props.currentCategory) return art
-    return art
-  })
-  const content = filterArticles.map((art, index) => {
-    return (
-      <ArticleItem article={art} mode='preview' key={index}/>
+  const content =
+    props.articles.length > 0 ? (
+      filterArticles.map((art, index) => {
+        return <ArticleItem article={art} mode="preview" key={index} />
+      })
+    ) : (
+      <>
+        <h1 className="display-6 text-center">Статей пока нет...</h1>
+      </>
     )
-  })
 
   return <div className="row justify-content-center">{content}</div>
 }
