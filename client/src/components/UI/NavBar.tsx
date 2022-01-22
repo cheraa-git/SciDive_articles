@@ -9,27 +9,29 @@ import defaultAvatar from '../../asserts/default_avatar.png'
 export const NavBar: React.FC = () => {
   const dispatch = useDispatch()
   const { isAuth } = useSelector((state: RootState) => state.auth)
-  const personIconHref = isAuth ? '/profile' : '/auth'
+  // const personIconHref = isAuth ? '/profile' : '/auth'
   const avatar = localStorage.getItem('userAvatar') || defaultAvatar
 
   const dropdownLinks = isAuth ? (
     <>
-      <li>
-        <NavLink className="dropdown-item" to="/profile">
-          Профиль
+      <div className="d-flex dropdown-item">
+        <NavLink to="/profile" className="lead mb-0 text-decoration-none ">
+          @{localStorage.getItem('userName')}
         </NavLink>
-      </li>
-      
+        <img src={avatar} className="rounded ms-2" height={30} alt=''/>
+      </div>
+      <hr className="dropdown-divider" />
       <li>
-        <NavLink className="dropdown-item" to="/my_articles">
-          Мои статьи
+        <NavLink className="dropdown-item" to="/profile/edit">
+          <i className="bi bi-gear-fill me-2" />
+          Настройка профиля
         </NavLink>
       </li>
 
       <hr className="dropdown-divider" />
 
       <li>
-        <button className=" dropdown-item" onClick={() => dispatch(logoutUser())}>
+        <button className="dropdown-item" onClick={() => dispatch(logoutUser())}>
           Выход
         </button>
       </li>
@@ -83,16 +85,11 @@ export const NavBar: React.FC = () => {
           </ul>
           <ul className="navbar-nav ms-auto">
             <>
-              <div className="btn-group me-2 d-block" style={{ width: '3rem'}}>
-                <button
-                  // type="button"
-                  className="btn btn-dark dropdown-toggle"
-                  data-bs-toggle="dropdown"
-                  aria-expanded="false"
-                >
-                  <img src={avatar} className="img-fluid rounded "/>
+              <div className="btn-group me-2 d-block" style={{ width: '3rem' }}>
+                <button className="btn btn-dark dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                  <img src={avatar} className="img-fluid rounded" alt='' />
                 </button>
-                <ul className="dropdown-menu dropdown-menu-dark dropdown-menu-end">{dropdownLinks}</ul>
+                <ul className="dropdown-menu dropdown-menu-end p-2">{dropdownLinks}</ul>
               </div>
             </>
           </ul>

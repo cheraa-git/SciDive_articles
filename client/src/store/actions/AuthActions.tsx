@@ -1,17 +1,23 @@
 import axiosApp from '../../axios/axiosApp'
 import { authAtcions } from '../../types/AuthTypes'
-import { userActions } from '../../types/UserTypes'
 import { AUTO_AUTH_SUCCESS, LOGIN_USER, LOGOUT_USER } from '../actionTypes'
 
 export const postRegisterData = (data: any, navigate: any) => {
   return async (dispatch: any) => {
     await axiosApp.post('authorization/sign_up', data).then((res) => {
       if (res.data.error) {
-        console.log('ERROR', res.data.error)
-      } else {
-        console.log('singup success',res.data)
+        switch (res.data.error) {
+          case 'SignupEmailError':
+            return alert('Аккаунт с таким E-mail уже зарегестрирован')
+          case 'SignupLoginError':
+            return alert('Данный никнейм занят')
+          default:
+            console.log('ERROR', res.data.error)
+        }
+      } else if (!res.data.error) {
+        console.log('singup success', res.data)
         const authData = { email: data.email, password: data.password }
-        dispatch( authDataPost(authData, navigate) )
+        dispatch(authDataPost(authData, navigate))
       }
     })
   }
@@ -30,10 +36,11 @@ export const authDataPost = (userData: any, navigate: any) => {
           dispatch(loginUser(res.data.avatar, res.data.token))
 
           const expirationDate = new Date(new Date().getTime() + 3600000)
-          
+
           localStorage.setItem('token', res.data.token)
           localStorage.setItem('expirationDate', JSON.stringify(expirationDate))
           localStorage.setItem('userAvatar', res.data.avatar)
+          localStorage.setItem('userName', res.data.login)
           navigate('/')
         }
       })
@@ -82,6 +89,6 @@ export function loginUser(userAvatar: string, token: string): authAtcions {
   return {
     type: LOGIN_USER,
     userAvatar,
-    token
+    token,
   }
 }

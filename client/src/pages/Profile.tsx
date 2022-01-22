@@ -1,14 +1,14 @@
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { NavLink } from 'react-router-dom'
-import image from '../asserts/logotip.png'
+import defaultAvatar from '../asserts/default_avatar.png'
 import { ArticlesCardList } from '../components/ArticlesCardList/ArticlesCardList'
 import { SecondNavBar } from '../components/UI/SecondNavBar'
 import { fetchMyArticles } from '../store/actions/ArticleActions'
 import { RootState } from '../store/rootReducer'
 
 export const Profile: React.FC = () => {
-  const userName = 'AlexanderChernetsov'
+  const avatar = localStorage.getItem('userAvatar') || defaultAvatar
   const dispatch = useDispatch()
   useEffect(() => {
     dispatch(fetchMyArticles())
@@ -17,26 +17,40 @@ export const Profile: React.FC = () => {
 
   return (
     <div className="card m-2 p-0">
-      <div className="card-header">
-        <img className="rounded-circle mb-3" src={image} alt="Аватар"></img>
-        <h1 className="fs-6">{userName}</h1>
+      <div className="card-header d-flex">
 
+        <div>
+          <img className="rounded  me-3" src={avatar} alt="Аватар" height={150}></img>
+          <div>
+            <NavLink to="/profile" className="display-6 mb-0 text-decoration-none ">
+              @{localStorage.getItem('userName')}
+            </NavLink>
+          </div>
+        </div>
+
+        <a href="/" className="btn btn-light">
+          Редактировать
+        </a>
       </div>
-      <div className="card-body">
-        <a href="#" className="btn btn-primary">Редактировать</a>
-      </div>
+      <div className="card-body"></div>
 
       <div>
-      <SecondNavBar />
-      {articles.length > 0 ? (
-        <ArticlesCardList articles={articles} currentCategory={currentCategory} />
-      ) : (
-        <>
-          <h1 className="display-6 text-center">Статей пока нет...</h1>
-          <p className="lead text-center">Хотите <NavLink className="link" to='/create_article'>создать</NavLink>?</p>
-        </>
-      )}
-    </div>
+        <SecondNavBar />
+        {articles.length > 0 ? (
+          <ArticlesCardList articles={articles} currentCategory={currentCategory} />
+        ) : (
+          <>
+            <h1 className="display-6 text-center">Статей пока нет...</h1>
+            <p className="lead text-center">
+              Хотите{' '}
+              <NavLink className="link" to="/create_article">
+                создать
+              </NavLink>
+              ?
+            </p>
+          </>
+        )}
+      </div>
     </div>
   )
 }
