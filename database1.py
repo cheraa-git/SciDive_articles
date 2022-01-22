@@ -1,3 +1,4 @@
+import sys
 import datetime
 # from nis import cat
 from sqlalchemy import Column, Integer, String, Text, ForeignKey, Boolean, create_engine, DateTime, desc
@@ -20,6 +21,16 @@ class AccountNotFound(Exception):
 class AccountExists(Exception):
     '''
     Authentification pair already in db
+    '''
+
+class SignupLoginError(Exception):
+    '''
+    Authentification login already in db
+    '''
+
+class SignupEmailError(Exception):
+    '''
+    Authentification email already in db
     '''
 
 class User(Base):
@@ -151,28 +162,29 @@ def get_articles_blog(user_id):
     engine = create_engine('sqlite:///info_data_base.db', echo=True)
     session = Session(bind=engine)
     user = session.query(User).get(user_id)
-    blog_articles = session.query(Blog).filter_by(user_id=user_id).all()
-    articles = []
+    blog = session.query(Blog).get(user_id)
+    articles = session.query(Articles).filter_by(blog_id=blog.id).all()
+    rez = []
     # for i in blog_articles:
         # articles.append(session.query(Articles).get(i.id))
-    for i in blog_articles:
+    for i in articles:
         a = {}
         article = session.query(Articles).get(i.id)
-        a["id"] = article.id
-        a["blog_id"] = article.blog_id
-        a["title"] = article.title
-        a["image"] = article.image
-        a["prev_content"] = article.prev_content
-        # a["content"] = article.content
-        a["category"] = article.category
-        a["tags"] = article.tags
-        a["date"] = article.date
-        a["views"] = article.views
+        a["id"] = i.id
+        a["blog_id"] = i.blog_id
+        a["title"] = i.title
+        a["image"] = i.image
+        a["prev_content"] = i.prev_content
+        # a["content"] = i.content
+        a["category"] = i.category
+        a["tags"] = i.tags
+        a["date"] = i.date
+        a["views"] = i.views
         a["author"] = {'login': user.login, "avatar": user.avatar}
-        articles.append(a)
+        rez.append(a)
 
     session.close()
-    return articles
+    return rez
 
 def set_article(user_id, title, image, prev_content, content, category, tags):
     engine = create_engine('sqlite:///info_data_base.db', echo=True)
@@ -237,19 +249,28 @@ def update_article(article_id, user_id, title, image, prev_content, content, cat
 def add_user(login, email, password):
     engine = create_engine('sqlite:///info_data_base.db', echo=True)
     session = Session(bind=engine)
-    user = User(login=login, email=email, password=generate_password_hash(password))
-    session.add(user)
-    session.commit()
-    user_id = user.id
-    blog = Blog(user_id=user_id)
-    session.add(blog)
-    session.commit()
+    user_login = session.query(User.id).filter_by(login=login).first()
+    user_email = session.query(User.id).filter_by(email=email).first()
+    if user_login == None and user_email == None:
+        email = email.lower()
+        user = User(login=login, email=email, password=generate_password_hash(password))
+        session.add(user)
+        session.commit()
+        user_id = user.id
+        blog = Blog(user_id=user_id)
+        session.add(blog)
+        session.commit()
+    elif user_email:
+        raise SignupEmailError
+    elif user_login:
+        raise SignupLoginError
     session.close()
 
 def get_user_id(email):
     engine = create_engine('sqlite:///info_data_base.db', echo=True)
     session = Session(bind=engine)
     try:
+        email = email.lower()
         user_id = session.query(User.id).filter_by(email=email).first()[0]
     except TypeError:
         raise AccountNotFound
@@ -257,9 +278,22 @@ def get_user_id(email):
         session.close()
     return user_id
 
+def get_user_login(email):
+    engine = create_engine('sqlite:///info_data_base.db', echo=True)
+    session = Session(bind=engine)
+    try:
+        email = email.lower()
+        login = session.query(User.login).filter_by(email=email).first()[0]
+    except TypeError:
+        raise AccountNotFound
+    finally:
+        session.close()
+    return login
+
 def request_user_avatar(email):
     engine = create_engine('sqlite:///info_data_base.db', echo=True)
     session = Session(bind=engine)
+    email = email.lower()
     avatar = session.query(User.avatar).filter_by(email=email).first()[0]
     session.close()
     return avatar
@@ -267,6 +301,7 @@ def request_user_avatar(email):
 def request_user(email):
     engine = create_engine('sqlite:///info_data_base.db', echo=True)
     session = Session(bind=engine)
+    email = email.lower()
     user = session.query(User).filter_by(email=email).first()
     session.close()
     if not user:
@@ -284,6 +319,7 @@ def check_admin(login_id):
 def check_user_by_email(email):
     engine = create_engine('sqlite:///info_data_base.db', echo=True)
     session = Session(bind=engine)
+    email = email.lower()
     user = session.query(User).filter_by(email=email).first()
     session.close()
     if not user:
@@ -294,6 +330,7 @@ def check_user_by_email(email):
 def add_check_password(email):
     engine = create_engine('sqlite:///info_data_base.db', echo=True)
     session = Session(bind=engine)
+    email = email.lower()
     user = session.query(User).filter_by(email=email).first()
     list_code = np.random.choice(a, 10).tolist()
     user.forgot_code = ''.join(list_code)
@@ -306,6 +343,7 @@ def add_check_password(email):
 def get_check_password(email):
     engine = create_engine('sqlite:///info_data_base.db', echo=True)
     session = Session(bind=engine)
+    email = email.lower()
     code = session.query(User.forgot_code).filter_by(email=email).first()[0]
     session.close()
     return code
@@ -313,6 +351,7 @@ def get_check_password(email):
 def request_user_login(email):
     engine = create_engine('sqlite:///info_data_base.db', echo=True)
     session = Session(bind=engine)
+    email = email.lower()
     user = session.query(User).filter_by(email=email).first()
     session.close()
     if not user:
@@ -322,6 +361,7 @@ def request_user_login(email):
 def change_user_password(email, password_new):
     engine = create_engine('sqlite:///info_data_base.db', echo=True)
     session = Session(bind=engine)
+    email = email.lower()
     user = session.query(User).filter_by(email=email).first()
     user.password = generate_password_hash(password_new)
     session.commit()
@@ -330,6 +370,7 @@ def change_user_password(email, password_new):
 def remove_check_password(email):
     engine = create_engine('sqlite:///info_data_base.db', echo=True)
     session = Session(bind=engine)
+    email = email.lower()
     user = session.query(User).filter_by(email=email).first()
     code = user.forgot_code
     code = 0
