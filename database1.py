@@ -249,10 +249,11 @@ def update_article(article_id, user_id, title, image, prev_content, content, cat
 def add_user(login, email, password):
     engine = create_engine('sqlite:///info_data_base.db', echo=True)
     session = Session(bind=engine)
+    login = login.lower()
+    email = email.lower()
     user_login = session.query(User.id).filter_by(login=login).first()
     user_email = session.query(User.id).filter_by(email=email).first()
     if user_login == None and user_email == None:
-        email = email.lower()
         user = User(login=login, email=email, password=generate_password_hash(password))
         session.add(user)
         session.commit()
