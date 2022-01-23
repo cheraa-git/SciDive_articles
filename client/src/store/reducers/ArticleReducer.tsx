@@ -1,4 +1,3 @@
-import { staticArticles } from '../../staticArticles'
 import { articleActions } from '../../types/ArticleTypes'
 import { Article } from '../../types/interfaces'
 import { CLEAR_ARTICLES, SET_CURRENT_CATEGORY, SET_MY_ARTICLES } from '../actionTypes'

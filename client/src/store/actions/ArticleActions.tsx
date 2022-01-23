@@ -1,6 +1,7 @@
+import { NavigateFunction } from 'react-router-dom'
 import axiosApp from '../../axios/axiosApp'
 import { articleActions } from '../../types/ArticleTypes'
-import { Article } from '../../types/interfaces'
+import { Article, CreateArticleData } from '../../types/interfaces'
 import { CLEAR_ARTICLES, SET_CURRENT_CATEGORY, SET_MY_ARTICLES } from '../actionTypes'
 
 export function fetchMyArticles() {
@@ -51,6 +52,29 @@ export function fetchHome() {
   }
 }
 
+export function createArticle(postData: CreateArticleData, navigate: NavigateFunction) {
+  return async (dispatch: any) => {
+    const sendFormData = new FormData()
+    if (postData.sendAvatar) {
+      sendFormData.append('image', postData.sendAvatar)
+    }
+    sendFormData.append('token', postData.token!)
+    sendFormData.append('title', postData.title)
+    sendFormData.append('prev_content', postData.prevContent)
+    sendFormData.append('content', postData.content)
+    sendFormData.append('category', postData.category)
+    sendFormData.append('tags', postData.tags)
+    console.log("createArticle", sendFormData)
+    try {
+      const response = await axiosApp.post('/edit/article', sendFormData)
+      const data = response.data
+      console.log(data)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+}
+//////////////////////////////////////////////////////////////////////////////////////
 export function setMyArticles(articles: Article[]): articleActions {
   return {
     type: SET_MY_ARTICLES,

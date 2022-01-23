@@ -1,4 +1,4 @@
-import React, { MouseEvent, useEffect, useState } from 'react'
+import React, { MouseEvent, useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { NavLink, useNavigate, useParams } from 'react-router-dom'
 import { authDataPost, postRegisterData } from '../store/actions/AuthActions'
@@ -78,7 +78,7 @@ export const AuthPage: React.FC = () => {
   } else if (mode === 'singup') {
     content = (
       <>
-        <h2 className='display-6'>Регистрация</h2>
+        <h2 className="display-6">Регистрация</h2>
 
         <div className="mb-3">
           <label className="form-label lead">E-mail</label>
@@ -123,7 +123,10 @@ export const AuthPage: React.FC = () => {
           Зарегестрироваться
         </button>
         <p className="lead mb-0">
-          Уже есть аккаунт? <NavLink className="text-decoration-none" to="/auth/login">Войдите</NavLink>{' '}
+          Уже есть аккаунт?{' '}
+          <NavLink className="text-decoration-none" to="/auth/login">
+            Войдите
+          </NavLink>{' '}
         </p>
       </>
     )

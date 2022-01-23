@@ -3,10 +3,9 @@ import { useDispatch, useSelector } from 'react-redux'
 import { NavLink } from 'react-router-dom'
 import { setCurrentCategory } from '../../store/actions/ArticleActions'
 import { RootState } from '../../store/rootReducer'
+import { CategoryDropdown } from '../CategoryDropdown'
 
 export const SecondNavBar: React.FC = () => {
-  const dispatch = useDispatch()
-  const { categoryList, currentCategory } = useSelector((state: RootState) => state.article)
 
   return (
     <nav className="navbar navbar-expand navbar-light bg-light ">
@@ -23,25 +22,7 @@ export const SecondNavBar: React.FC = () => {
                 Подписки
               </NavLink>
             </li>
-            <li className="nav-item dropdown">
-              <a
-                className="nav-link dropdown-toggle lead"
-                href="/"
-                id="navbarDropdown"
-                role="button"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-              >
-                {currentCategory}
-              </a>
-              <ul className="dropdown-menu" aria-labelledby="navbarDropdown">
-                {categoryList.map((el, index) => (
-                  <li key={index} onClick={() => dispatch(setCurrentCategory(el))}>
-                    <p className="dropdown-item m-0 ">{el}</p>
-                  </li>
-                ))}
-              </ul>
-            </li>
+            <CategoryDropdown />
           </ul>
         </div>
       </div>

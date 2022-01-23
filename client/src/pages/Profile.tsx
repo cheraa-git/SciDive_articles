@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { NavLink } from 'react-router-dom'
 import defaultAvatar from '../asserts/default_avatar.png'
 import { ArticlesCardList } from '../components/ArticlesCardList/ArticlesCardList'
-import { SecondNavBar } from '../components/UI/SecondNavBar'
+import { CategoryDropdown } from '../components/CategoryDropdown'
 import { fetchMyArticles } from '../store/actions/ArticleActions'
 import { RootState } from '../store/rootReducer'
 
@@ -18,7 +18,6 @@ export const Profile: React.FC = () => {
   return (
     <div className="card m-2 p-0">
       <div className="card-header d-flex">
-
         <div>
           <img className="rounded  me-3" src={avatar} alt="Аватар" height={150}></img>
           <div>
@@ -35,7 +34,10 @@ export const Profile: React.FC = () => {
       <div className="card-body"></div>
 
       <div>
-        <SecondNavBar />
+        <div className="container">
+          <h1 className="display-6 mb-0">Мои статьи</h1>
+          <CategoryDropdown />
+        </div>
         {articles.length > 0 ? (
           <ArticlesCardList articles={articles} currentCategory={currentCategory} />
         ) : (

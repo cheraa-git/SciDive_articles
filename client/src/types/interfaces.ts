@@ -15,4 +15,14 @@ export interface Article {
   }
 }
 
+export interface CreateArticleData {
+  token: string | null
+  title: string
+  sendAvatar: File | undefined
+  prevContent: string
+  content: string
+  category: string
+  tags: string
+}
+
 ////////////////////////////////////////////////////

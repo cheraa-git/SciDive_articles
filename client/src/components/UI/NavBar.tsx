@@ -14,11 +14,11 @@ export const NavBar: React.FC = () => {
 
   const dropdownLinks = isAuth ? (
     <>
-      <div className="d-flex dropdown-item">
-        <NavLink to="/profile" className="lead mb-0 text-decoration-none ">
+      <div className="d-flex ">
+        <NavLink to="/profile" className="lead mb-0 text-decoration-none">
           @{localStorage.getItem('userName')}
+          <img src={avatar} className="rounded ms-2" height={30} alt="" />
         </NavLink>
-        <img src={avatar} className="rounded ms-2" height={30} alt=''/>
       </div>
       <hr className="dropdown-divider" />
       <li>
@@ -87,7 +87,7 @@ export const NavBar: React.FC = () => {
             <>
               <div className="btn-group me-2 d-block" style={{ width: '3rem' }}>
                 <button className="btn btn-dark dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                  <img src={avatar} className="img-fluid rounded" alt='' />
+                  <img src={avatar} className="img-fluid rounded" alt="" />
                 </button>
                 <ul className="dropdown-menu dropdown-menu-end p-2">{dropdownLinks}</ul>
               </div>
