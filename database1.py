@@ -158,11 +158,11 @@ def get_articles_subscriptions(user_id):
     session.close()
     return sub_s
 
-def get_articles_blog(user_id):
+def get_articles_blog(login):
     engine = create_engine('sqlite:///info_data_base.db', echo=True)
     session = Session(bind=engine)
-    user = session.query(User).get(user_id)
-    blog = session.query(Blog).get(user_id)
+    user = session.query(User).filter_by(login=login).first()
+    blog = session.query(Blog).filter_by(user_id=user.id).first()
     articles = session.query(Articles).filter_by(blog_id=blog.id).all()
     rez = []
     # for i in blog_articles:
