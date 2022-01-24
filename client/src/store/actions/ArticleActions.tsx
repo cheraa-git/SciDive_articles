@@ -4,7 +4,7 @@ import { articleActions } from '../../types/ArticleTypes'
 import { Article, CreateArticleData } from '../../types/interfaces'
 import { CLEAR_ARTICLES, SET_CURRENT_CATEGORY, SET_MY_ARTICLES } from '../actionTypes'
 
-export function fetchMyArticles() {
+export function fetchMyArticles(userName: string) {
   return async (dispatch: any) => {
     dispatch(clearArticles())
     const token = localStorage.getItem('token')
