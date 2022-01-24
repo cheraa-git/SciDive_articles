@@ -2,7 +2,7 @@ from flask import Flask, request, session, jsonify, render_template, url_for
 from flask_caching import Cache
 from flask_sockets import Sockets
 from database1 import SignupEmailError, SignupLoginError, get_subscriptions, get_article, get_articles_subscriptions, get_articles_blog, set_article, \
-    set_subscription, del_article, del_subscription, update_article, get_most_recent_articles, get_user_id, request_user_avatar, request_user, check_admin, add_user, check_user_by_email, add_check_password, get_check_password, request_user_login, change_user_password, remove_check_password, get_user_login
+    set_subscription, del_article, del_subscription, update_article, get_most_recent_articles, get_user_id, request_user_avatar, request_user, check_admin, add_user, check_user_by_email, add_check_password, get_check_password, request_user_login, change_user_password, remove_check_password, get_user_login, plus_view_on_article
 from database1 import AccountNotFound, AccountExists
 from flask_mail import Mail, Message
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -390,5 +390,16 @@ def post(form):
         else:
             return jsonify({'error': "Код подтверждения неверный"})
 
+@app.route('/plus/view/<int:article_id>', methods=["GET"])
+def plus_view(article_id):
+    token = jwt.decode(bytes(request.args.get("token", 1),
+                             encoding='utf-8'), app.secret_key, algorithms=['HS256'])
+    print(token)
+    login = token["login"]
+    try:
+        rez = plus_view_on_article(login, article_id)
+        return jsonify({"error": False, "plus": rez})
+    except:
+        return jsonify({"error": True})
 
 app.run()

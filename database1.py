@@ -378,7 +378,19 @@ def remove_check_password(email):
     session.commit()
     session.close()
 
-
+def plus_view_on_article(login, article_id):
+    engine = create_engine('sqlite:///info_data_base.db', echo=True)
+    session = Session(bind=engine)
+    try:
+        user = session.query(User).filter_by(login=login).first()
+        article = session.query(Articles).get(article_id)
+        article.views += 1
+        session.commit()
+        session.close()
+        return 1
+    except:
+        return 0
+    
 
 
 
