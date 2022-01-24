@@ -36,7 +36,7 @@ sockets = Sockets(app)
 secret_key_for_images = "FHIRLUGIGYRERLVBUV132BJHVLYRFEHRCEBVKRRVJHBVB34"
 #Secret_key из переменной окружения моего ноутбука.
 # app.secret_key = str(subprocess.check_output(['launchctl', 'getenv', 'SECRET_KEY']))[2:-3]
-
+url = "http://127.0.0.1:5000"
 
 mail = Mail(app)
 ma = Marshmallow(app)
@@ -167,7 +167,7 @@ def add_article():
     #         try:
     #             full_path = path + filename
     #             info_component.save(full_path)
-    #             info_dict["info"] = f'http://127.0.0.1:5000/static/{full_path}'
+    #             info_dict["info"] = f'http://127.0.0.1:5000{url}/static/{full_path}'
     #         except TypeError:
     #             pass
     #     else:
@@ -257,7 +257,7 @@ def update_article_(article_id):
     #         try:
     #             full_path = path + filename
     #             info_component.save(full_path)
-    #             info_dict["info"] = f'http://127.0.0.1:5000/static/{full_path}'
+    #             info_dict["info"] = f'http://127.0.0.1:5000{url}/static/{full_path}'
     #         except TypeError:
     #             pass
     #     else:
@@ -293,7 +293,7 @@ def post(form):
             token = jwt.encode(
                 {'login': user_id}, key=app.secret_key, algorithm='HS256').decode('utf-8')
             print(token)
-            return jsonify({'token': token, 'avatar': f"http://127.0.0.1:5000/static/{avatar}", "admin": admin, "login": login})
+            return jsonify({'token': token, 'avatar': f"{url}/static/{avatar}", "admin": admin, "login": login})
         else:
             return jsonify({"error": True})
 
