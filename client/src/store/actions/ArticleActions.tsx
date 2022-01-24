@@ -10,7 +10,7 @@ export function fetchUserArticles(userName?: string) {
     const token = localStorage.getItem('token')
 
     await axiosApp
-      .get(`/my_articles?token=${token}`)
+      .get(`/user_articles/${userName}`)
       .then((res) => {
         if (res.data.error) console.log(res.data.error)
         else if (!res.data.error) {
@@ -28,6 +28,8 @@ export function fetchArticle(id: number) {
     const token = localStorage.getItem('token')
     const response = await axiosApp.get(`/article/${id}?token=${token}`)
     const data = response.data
+    console.log(data);
+    
     dispatch(setMyArticles([data]))
   }
 }

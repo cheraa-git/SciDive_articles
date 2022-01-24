@@ -3,6 +3,7 @@ import { NavLink } from 'react-router-dom'
 import { Article } from '../../types/interfaces'
 import noImage from '../../asserts/no_image.png'
 import defaultAvatar from '../../asserts/default_avatar.png'
+import { STATIC } from '../../config'
 
 interface ArticleItemProps {
   article: Article
@@ -10,8 +11,10 @@ interface ArticleItemProps {
 }
 
 export const ArticleItem: React.FC<ArticleItemProps> = ({ article, mode }) => {
-  const articleImage = article.image ? article.image : noImage
-  const avatarImage = article.author.avatar ? article.author.avatar : defaultAvatar
+  console.log(article);
+  
+  const articleImage = article.image ? STATIC + article.image : noImage
+  const avatarImage = article.author.avatar ? STATIC + article.author.avatar : defaultAvatar
   
 
   let text = '...'
@@ -32,7 +35,7 @@ export const ArticleItem: React.FC<ArticleItemProps> = ({ article, mode }) => {
         <NavLink to={`/profile/${article.author.login}`} className="float-start ms-2 link">{article.author.login}</NavLink>
 
         <p className="float-start mb-0 ms-2 fw-light">{article.date}</p>
-        
+
         <p className="float-end mb-0 fst-italic">{article.category}</p>
       </div>
 
