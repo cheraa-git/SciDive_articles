@@ -201,12 +201,7 @@ def add_article():
     #     info_dict = {}
     # info = json.dumps(info)
     try:
-<<<<<<< HEAD
         article_id = set_article(user_id, title, file_name, prev_content, content, category, tags)
-=======
-        article_id = set_article(
-            user_id, title, full_path, prev_content, content, category, tags)
->>>>>>> d7c2cfd74de3599b9bcb9bf243fe072e489adc5c
         print(article_id)
         file.save(os.path.join(path, file_name))
         return jsonify({"error": False, 'id': article_id})
@@ -276,11 +271,19 @@ def update_article_(article_id):
     user_id = token["login"]
     print(token)
     title = data['title']
-    image = data['image']
     prev_content = data['prev_content']
     content = data['content']
     category = data['category']
     tags = data['tags']
+    file = request.files["image"]
+    extens = file.filename.split(".")[-1].replace("\"", "")
+    # Создаём имя файла, хэшируя его
+    file_name = generate_password_hash(title + secret_key_for_images)
+    # Убираем из названия все : и тп
+    file_name = file_name.replace(":", "") + '.' + extens
+    path = app.config["UPLOAD_FOLDER"]
+    full_path = path + file_name
+    print("Это full path: " + full_path)
     # info = []
     # info_dict = {}
     # for component in range(int(sorted(data)[-1][-1]) + 1):
@@ -306,8 +309,9 @@ def update_article_(article_id):
     #     info_dict = {}
     # info = json.dumps(info)
     try:
-        update_article(article_id, user_id, title, image,
+        update_article(article_id, user_id, title, file_name,
                        prev_content, content, category, tags)
+        file.save(os.path.join(path, file_name))
         return jsonify({"error": False})
     except:
         return jsonify({"error": True})
