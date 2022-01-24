@@ -4,7 +4,7 @@ import { articleActions } from '../../types/ArticleTypes'
 import { Article, CreateArticleData } from '../../types/interfaces'
 import { CLEAR_ARTICLES, SET_CURRENT_CATEGORY, SET_MY_ARTICLES } from '../actionTypes'
 
-export function fetchMyArticles(userName: string) {
+export function fetchUserArticles(userName?: string) {
   return async (dispatch: any) => {
     dispatch(clearArticles())
     const token = localStorage.getItem('token')
@@ -28,8 +28,8 @@ export function fetchArticle(id: number) {
     const token = localStorage.getItem('token')
     const response = await axiosApp.get(`/article/${id}?token=${token}`)
     const data = response.data
-    console.log(data);
-    
+    console.log(data)
+
     dispatch(setMyArticles([data]))
   }
 }
@@ -69,7 +69,7 @@ export function createArticle(postData: CreateArticleData, navigate: NavigateFun
     if (postData.sendAvatar) {
       // sendFormData.append('image', '/image')
       sendFormData.append('image', postData.sendAvatar)
-    } 
+    }
     // sendFormData.append('image', postData.sendAvatar)
     sendFormData.append('token', postData.token!)
     sendFormData.append('title', postData.title)
