@@ -17,51 +17,63 @@ from copy import deepcopy
 
 
 app = Flask(__name__, template_folder="templates")
-#Отмена кэширования статических файлов
+# Отмена кэширования статических файлов
 app.config["CACHE_TYPE"] = "null"
-#Инициализация кэша приложения
+# Инициализация кэша приложения
 cache = Cache(app)
 cache.init_app(app)
 app.config['MAIL_SERVER'] = 'smtp.googlemail.com'
 app.config['MAIL_PORT'] = 587
 app.config['MAIL_USE_TLS'] = True
-app.config['MAIL_USERNAME'] = 'scidivecommunity@gmail.com'  # введите свой адрес электронной почты здесь
+# введите свой адрес электронной почты здесь
+app.config['MAIL_USERNAME'] = 'scidivecommunity@gmail.com'
 app.config['MAIL_DEFAULT_SENDER'] = 'scidivecommunity@gmail.com'  # и здесь
-app.config['MAIL_PASSWORD'] = 'S17050405S1705040SolomonHardKey'  # введите пароль
+# введите пароль
+app.config['MAIL_PASSWORD'] = 'S17050405S1705040SolomonHardKey'
 app.config['UPLOAD_FOLDER'] = "static/"
 CORS(app)
 
 app.secret_key = "FIYGRFERBKCYBKEUYVCYECERUYBCRU"
 sockets = Sockets(app)
 secret_key_for_images = "FHIRLUGIGYRERLVBUV132BJHVLYRFEHRCEBVKRRVJHBVB34"
-#Secret_key из переменной окружения моего ноутбука.
+# Secret_key из переменной окружения моего ноутбука.
 # app.secret_key = str(subprocess.check_output(['launchctl', 'getenv', 'SECRET_KEY']))[2:-3]
 url = "http://127.0.0.1:5000"
 
 mail = Mail(app)
 ma = Marshmallow(app)
 
+
 class Article_m(ma.Schema):
     class Meta:
-        fields = ['id', 'blog_id', 'title', 'image', 'prev_content', 'content', 'category', 'tags', 'date', 'views']
+        fields = ['id', 'blog_id', 'title', 'image', 'prev_content',
+                  'content', 'category', 'tags', 'date', 'views']
+
 
 article_m = Article_m(many=False)
 
+
 class Articles_m(ma.Schema):
     class Meta:
-        fields = ['id', 'blog_id', 'title', 'image', 'prev_content', 'category', 'tags', 'date', 'views']
+        fields = ['id', 'blog_id', 'title', 'image',
+                  'prev_content', 'category', 'tags', 'date', 'views']
+
 
 articles_m = Articles_m(many=True)
+
 
 class Subscriptions_m(ma.Schema):
     class Meta:
         fields = ['blog_id']
 
+
 subscriptions_m = Subscriptions_m(many=True)
+
 
 class Author_m(ma.Schema):
     class Meta:
         fields = ['login', 'avatar']
+
 
 login_u = Author_m(many=False)
 
@@ -75,6 +87,7 @@ def show_main_page():
     result = articles
     return jsonify(result)
 
+
 @app.route("/article/<int:article_id>", methods=["GET"])
 def show_article(article_id):
     # token = jwt.decode(bytes(request.args.get("token", 1), encoding='utf-8'), app.secret_key, algorithms=['HS256'])
@@ -85,19 +98,23 @@ def show_article(article_id):
     # result["content"] = json.loads(result["content"])
     return jsonify(result)
 
+
 @app.route('/my_subscriptions', methods=["GET"])
 def show_subscriptions():
-    token = jwt.decode(bytes(request.args.get("token", 1), encoding='utf-8'), app.secret_key, algorithms=['HS256'])
+    token = jwt.decode(bytes(request.args.get("token", 1),
+                             encoding='utf-8'), app.secret_key, algorithms=['HS256'])
     print(token)
     user_id = token["login"]
     print(f'Это user_id{user_id}')
     subscriptions = get_subscriptions(user_id)
     result = subscriptions_m.dumps(subscriptions)
-    return jsonify(result)  
+    return jsonify(result)
+
 
 @app.route('/tape', methods=["GET"])
 def show_articles_by_subscriptions():
-    token = jwt.decode(bytes(request.args.get("token", 1), encoding='utf-8'), app.secret_key, algorithms=['HS256'])
+    token = jwt.decode(bytes(request.args.get("token", 1),
+                             encoding='utf-8'), app.secret_key, algorithms=['HS256'])
     print(token)
     user_id = token["login"]
     articles = get_articles_subscriptions(user_id)
@@ -121,9 +138,11 @@ def show_user_blog(login):
     except:
         return jsonify({'error': True})
 
+
 @app.route('/my_articles', methods=["GET"])
 def show_my_articles():
-    token = jwt.decode(bytes(request.args.get("token", 1), encoding='utf-8'), app.secret_key, algorithms=['HS256'])
+    token = jwt.decode(bytes(request.args.get("token", 1),
+                             encoding='utf-8'), app.secret_key, algorithms=['HS256'])
     print(token)
     user_id = token["login"]
     articles = get_articles_blog(user_id)
@@ -139,7 +158,8 @@ def show_my_articles():
 def add_article():
     data = dict(request.form)
     token = data["token"]
-    token = jwt.decode(bytes(token, encoding='utf-8'), app.secret_key, algorithms=['HS256'])
+    token = jwt.decode(bytes(token, encoding='utf-8'),
+                       app.secret_key, algorithms=['HS256'])
     user_id = token["login"]
     print(token)
     title = data['title']
@@ -181,16 +201,23 @@ def add_article():
     #     info_dict = {}
     # info = json.dumps(info)
     try:
+<<<<<<< HEAD
         article_id = set_article(user_id, title, file_name, prev_content, content, category, tags)
+=======
+        article_id = set_article(
+            user_id, title, full_path, prev_content, content, category, tags)
+>>>>>>> d7c2cfd74de3599b9bcb9bf243fe072e489adc5c
         print(article_id)
         file.save(os.path.join(path, file_name))
         return jsonify({"error": False, 'id': article_id})
     except:
         return jsonify({"error": True})
 
+
 @app.route('/subscription/<int:blog_id>', methods=["POST"])
 def add_subscription(blog_id):
-    token = jwt.decode(bytes(request.args.get("token", 1), encoding='utf-8'), app.secret_key, algorithms=['HS256'])
+    token = jwt.decode(bytes(request.args.get("token", 1),
+                             encoding='utf-8'), app.secret_key, algorithms=['HS256'])
     print(token)
     user_id = token["login"]
     subscriptions = get_subscriptions(user_id)
@@ -204,13 +231,16 @@ def add_subscription(blog_id):
         return jsonify({"error": True})
     return 0
 
+
 @app.route('/article/<int:article_id>', methods=["DELETE"])
 def del_article_(article_id):
-    token = jwt.decode(bytes(request.args.get("token", 1), encoding='utf-8'), app.secret_key, algorithms=['HS256'])
+    token = jwt.decode(bytes(request.args.get("token", 1),
+                             encoding='utf-8'), app.secret_key, algorithms=['HS256'])
     user_id = token["login"]
     print(user_id)
     created_articles = get_articles_blog(user_id)
-    articles = [i["id"] for i in json.loads(articles_m.dumps(created_articles))]
+    articles = [i["id"]
+                for i in json.loads(articles_m.dumps(created_articles))]
     admin = check_admin(user_id)
     print(created_articles)
     if article_id in articles or admin:
@@ -219,13 +249,16 @@ def del_article_(article_id):
     else:
         return jsonify({"error": True})
 
+
 @app.route('/subscription/<int:blog_id>', methods=["DELETE"])
 def del_subscription_(blog_id):
-    token = jwt.decode(bytes(request.args.get("token", 1), encoding='utf-8'), app.secret_key, algorithms=['HS256'])
+    token = jwt.decode(bytes(request.args.get("token", 1),
+                             encoding='utf-8'), app.secret_key, algorithms=['HS256'])
     user_id = token["login"]
     print(user_id)
     subscriptions = get_subscriptions(user_id)
-    subscriptions_ = [i["blog_id"] for i in json.loads(subscriptions_m.dumps(subscriptions))]
+    subscriptions_ = [i["blog_id"]
+                      for i in json.loads(subscriptions_m.dumps(subscriptions))]
     admin = check_admin(user_id)
     if blog_id in subscriptions_ or admin:
         del_subscription(user_id, blog_id)
@@ -233,11 +266,13 @@ def del_subscription_(blog_id):
     else:
         return jsonify({"error": True})
 
+
 @app.route('/edit/article/<int:article_id>', methods=["PUT"])
 def update_article_(article_id):
     data = dict(request.json)
     token = data["token"]
-    token = jwt.decode(bytes(token, encoding='utf-8'), app.secret_key, algorithms=['HS256'])
+    token = jwt.decode(bytes(token, encoding='utf-8'),
+                       app.secret_key, algorithms=['HS256'])
     user_id = token["login"]
     print(token)
     title = data['title']
@@ -271,7 +306,8 @@ def update_article_(article_id):
     #     info_dict = {}
     # info = json.dumps(info)
     try:
-        update_article(article_id, user_id, title, image, prev_content, content, category, tags)
+        update_article(article_id, user_id, title, image,
+                       prev_content, content, category, tags)
         return jsonify({"error": False})
     except:
         return jsonify({"error": True})
@@ -349,5 +385,6 @@ def post(form):
                 return jsonify({'error': False})
         else:
             return jsonify({'error': "Код подтверждения неверный"})
+
 
 app.run()
