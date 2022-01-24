@@ -28,8 +28,8 @@ function App() {
           <div className="container">
             <Routes>
               <Route element={<HomePage />} path="/" />
-              <Route element={<CreateArticle />} path="/create_article" />
-              <Route element={<Profile />} path="/profile" />
+              <Route element={<CreateArticle />} path="/create_article"/>
+              <Route element={<Profile />} path="/profile/:userName" />
               <Route element={<ArticlePage />} path="/article/:id" />
               <Route element={<SubscribePage />} path="/subscribe" />
             </Routes>
@@ -45,7 +45,6 @@ function App() {
               <Route element={<AuthPage />} path="/auth/:mode" />
               <Route element={<HomePage />} path="/" />
               <Route element={<ArticlePage />} path="/article/:id" />
-
               <Route element={<AuthPage />} path="/create_article" />
               <Route element={<AuthPage />} path="/my_articles" />
               <Route element={<AuthPage />} path="/profile" />

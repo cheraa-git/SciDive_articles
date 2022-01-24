@@ -25,26 +25,33 @@ export const ArticleItem: React.FC<ArticleItemProps> = ({ article, mode }) => {
   }
   return (
     <div className="card m-2 p-0" style={style}>
+
       <div className="card-header">
         <img className="float-start rounded-circle" src={avatarImage} width={30} height={30} alt="" />
-        <strong className="float-start ms-2">{article.author.login}</strong>
+
+        <NavLink to={`/profile/${article.author.login}`} className="float-start ms-2 link">{article.author.login}</NavLink>
+
         <p className="float-start mb-0 ms-2 fw-light">{article.date}</p>
+        
         <p className="float-end mb-0 fst-italic">{article.category}</p>
       </div>
+
       <div className="card-body">
         <h2 className="card-title">{article.title}</h2>
         <img src={articleImage} className="card-img-top" alt="" />
         <p className="card-text">{text}</p>
         {mode === 'preview' && (
-          <NavLink to={`/article/${article.id}`} className="btn btn-primary">
+          <NavLink to={`/article/${article.id}`} className="btn btn-primar">
             Читать далее
           </NavLink>
         )}
       </div>
+
       <div className="card-footer text-muted text-end">
         <i className="bi bi-eye"></i>
         {article.views}
       </div>
+
     </div>
   )
 }
