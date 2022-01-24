@@ -6,12 +6,14 @@ interface IUserInitialState {
   blog_id: number
   subscribes: number[]
   avatar?: string
+  isProfileEdit: boolean
 }
 const initialState: IUserInitialState = {
   login: 'Alex',
   blog_id: 2,
   subscribes: [1, 2, 4, 6, 7],
   avatar: '',
+  isProfileEdit: false
 }
 
 export function userReducer(state = initialState, action: userActions) {
