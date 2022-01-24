@@ -140,11 +140,19 @@ def add_article():
     user_id = token["login"]
     print(token)
     title = data['title']
-    image = data['image']
     prev_content = data['prev_content']
     content = data['content']
     category = data['category']
     tags = data['tags']
+    file = request.files["image"]
+    extens = file.filename.split(".")[-1].replace("\"", "")
+    # Создаём имя файла, хэшируя его
+    file_name = generate_password_hash(title + secret_key_for_images)
+    # Убираем из названия все : и тп
+    file_name = file_name.replace(":", "") + '.' + extens
+    path = app.config["UPLOAD_FOLDER"]
+    full_path = path + file_name
+    print("Это full path: " + full_path)
     # info = []
     # info_dict = {}
     # for component in range(int(sorted(data)[-1][-1]) + 1):
@@ -169,12 +177,13 @@ def add_article():
     #     info.append(info_dict)
     #     info_dict = {}
     # info = json.dumps(info)
-    # try:
-    article_id = set_article(user_id, title, image, prev_content, content, category, tags)
-    print(article_id)
-    return jsonify({"error": False, 'id': article_id})
-    # except:
-        # return jsonify({"error": True})
+    try:
+        article_id = set_article(user_id, title, full_path, prev_content, content, category, tags)
+        print(article_id)
+        file.save(os.path.join(path, file_name))
+        return jsonify({"error": False, 'id': article_id})
+    except:
+        return jsonify({"error": True})
 
 @app.route('/subscription/<int:blog_id>', methods=["POST"])
 def add_subscription(blog_id):
