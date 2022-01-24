@@ -134,7 +134,7 @@ def show_my_articles():
 
 @app.route('/edit/article', methods=["POST"])
 def add_article():
-    data = dict(request.json)
+    data = dict(request.form)
     token = data["token"]
     token = jwt.decode(bytes(token, encoding='utf-8'), app.secret_key, algorithms=['HS256'])
     user_id = token["login"]

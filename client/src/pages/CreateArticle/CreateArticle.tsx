@@ -27,7 +27,7 @@ export const CreateArticle: React.FC = () => {
   }
 
   const submitHandler = () => {
-    if (localStorage.getItem('token') && title  && content && category) {
+    if (localStorage.getItem('token') && title  && content && category && sendAvatar) {
       const payload: CreateArticleData = {
         token: localStorage.getItem('token'),
         title,

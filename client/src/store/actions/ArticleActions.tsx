@@ -54,17 +54,35 @@ export function fetchHome() {
 
 export function createArticle(postData: CreateArticleData, navigate: NavigateFunction) {
   return async (dispatch: any) => {
+    const testData = {
+      token: postData.token,
+      title: postData.title,
+      image: postData.sendAvatar,
+      prev_content: '',
+      content: postData.content,
+      category: postData.category,
+      tags: postData.tags,
+    }
     const sendFormData = new FormData()
     if (postData.sendAvatar) {
+      // sendFormData.append('image', '/image')
       sendFormData.append('image', postData.sendAvatar)
-    }
+    } 
+    // sendFormData.append('image', postData.sendAvatar)
     sendFormData.append('token', postData.token!)
     sendFormData.append('title', postData.title)
     sendFormData.append('prev_content', postData.prevContent)
     sendFormData.append('content', postData.content)
     sendFormData.append('category', postData.category)
     sendFormData.append('tags', postData.tags)
-    console.log("createArticle", sendFormData)
+
+    console.log('token: ', sendFormData.get('token'))
+    console.log('title: ', sendFormData.get('title'))
+    console.log('prev_content: ', sendFormData.get('prev_content'))
+    console.log('content: ', sendFormData.get('content'))
+    console.log('category: ', sendFormData.get('category'))
+    console.log('tags: ', sendFormData.get('tags'))
+    console.log('image: ', sendFormData.get('image'))
     try {
       const response = await axiosApp.post('/edit/article', sendFormData)
       const data = response.data
