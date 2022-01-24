@@ -122,18 +122,21 @@ def show_articles_by_subscriptions():
     return jsonify(result)
 
 
-@app.route('/blog/<int:blog_id>', methods=["GET"])
-def show_user_blog(blog_id):
+@app.route('/user_articles/<login>', methods=["GET"])
+def show_user_blog(login):
     # token = jwt.decode(bytes(request.args.get("token", 1), encoding='utf-8'), app.secret_key, algorithms=['HS256'])
     # print(token)
     # user_id = token["login"]
-    articles = get_articles_blog(blog_id)
-    print(articles)
-    result = articles
-    # result["articles"] = json.loads(articles_m.dumps(articles))
-    # print(result)
-    # result["author"] = login_u.dump(author)
-    return jsonify(result)
+    try: 
+        articles = get_articles_blog(login)
+        print(articles)
+        result = articles
+        # result["articles"] = json.loads(articles_m.dumps(articles))
+        # print(result)
+        # result["author"] = login_u.dump(author)
+        return jsonify(result)
+    except:
+        return jsonify({'error': True})
 
 
 @app.route('/my_articles', methods=["GET"])
@@ -187,7 +190,7 @@ def add_article():
     #         try:
     #             full_path = path + filename
     #             info_component.save(full_path)
-    #             info_dict["info"] = f'http://127.0.0.1:5000{url}/static/{full_path}'
+    #             info_dict["info"] = f'http://127.0.0.1:5000{full_path}'
     #         except TypeError:
     #             pass
     #     else:
@@ -198,8 +201,7 @@ def add_article():
     #     info_dict = {}
     # info = json.dumps(info)
     try:
-        article_id = set_article(
-            user_id, title, full_path, prev_content, content, category, tags)
+        article_id = set_article(user_id, title, file_name, prev_content, content, category, tags)
         print(article_id)
         file.save(os.path.join(path, file_name))
         return jsonify({"error": False, 'id': article_id})
@@ -269,11 +271,19 @@ def update_article_(article_id):
     user_id = token["login"]
     print(token)
     title = data['title']
-    image = data['image']
     prev_content = data['prev_content']
     content = data['content']
     category = data['category']
     tags = data['tags']
+    file = request.files["image"]
+    extens = file.filename.split(".")[-1].replace("\"", "")
+    # Создаём имя файла, хэшируя его
+    file_name = generate_password_hash(title + secret_key_for_images)
+    # Убираем из названия все : и тп
+    file_name = file_name.replace(":", "") + '.' + extens
+    path = app.config["UPLOAD_FOLDER"]
+    full_path = path + file_name
+    print("Это full path: " + full_path)
     # info = []
     # info_dict = {}
     # for component in range(int(sorted(data)[-1][-1]) + 1):
@@ -288,7 +298,7 @@ def update_article_(article_id):
     #         try:
     #             full_path = path + filename
     #             info_component.save(full_path)
-    #             info_dict["info"] = f'http://127.0.0.1:5000{url}/static/{full_path}'
+    #             info_dict["info"] = f'http://127.0.0.1:5000{full_path}'
     #         except TypeError:
     #             pass
     #     else:
@@ -299,8 +309,9 @@ def update_article_(article_id):
     #     info_dict = {}
     # info = json.dumps(info)
     try:
-        update_article(article_id, user_id, title, image,
+        update_article(article_id, user_id, title, file_name,
                        prev_content, content, category, tags)
+        file.save(os.path.join(path, file_name))
         return jsonify({"error": False})
     except:
         return jsonify({"error": True})
@@ -325,7 +336,7 @@ def post(form):
             token = jwt.encode(
                 {'login': user_id}, key=app.secret_key, algorithm='HS256').decode('utf-8')
             print(token)
-            return jsonify({'token': token, 'avatar': f"{url}/static/{avatar}", "admin": admin, "login": login})
+            return jsonify({'token': token, 'avatar': f"{avatar}", "admin": admin, "login": login})
         else:
             return jsonify({"error": True})
 

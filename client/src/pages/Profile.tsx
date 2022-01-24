@@ -1,20 +1,17 @@
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { NavLink, useParams } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
 import defaultAvatar from '../asserts/default_avatar.png'
 import { ArticlesCardList } from '../components/ArticlesCardList/ArticlesCardList'
 import { CategoryDropdown } from '../components/CategoryDropdown'
-import { fetchUserArticles } from '../store/actions/ArticleActions'
+import { fetchMyArticles } from '../store/actions/ArticleActions'
 import { RootState } from '../store/rootReducer'
 
 export const Profile: React.FC = () => {
   const avatar = localStorage.getItem('userAvatar') || defaultAvatar
   const dispatch = useDispatch()
-  const { userName } = useParams()
-  
-
   useEffect(() => {
-    dispatch(fetchUserArticles())
+    dispatch(fetchMyArticles())
   }, [dispatch])
   const { articles, currentCategory } = useSelector((state: RootState) => state.article)
 

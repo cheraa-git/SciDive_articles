@@ -4,7 +4,7 @@ import { articleActions } from '../../types/ArticleTypes'
 import { Article, CreateArticleData } from '../../types/interfaces'
 import { CLEAR_ARTICLES, SET_CURRENT_CATEGORY, SET_MY_ARTICLES } from '../actionTypes'
 
-export function fetchUserArticles(userName?: string) {
+export function fetchMyArticles() {
   return async (dispatch: any) => {
     dispatch(clearArticles())
     const token = localStorage.getItem('token')
@@ -69,7 +69,7 @@ export function createArticle(postData: CreateArticleData, navigate: NavigateFun
     if (postData.sendAvatar) {
       // sendFormData.append('image', '/image')
       sendFormData.append('image', postData.sendAvatar)
-    }
+    } 
     // sendFormData.append('image', postData.sendAvatar)
     sendFormData.append('token', postData.token!)
     sendFormData.append('title', postData.title)
