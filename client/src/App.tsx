@@ -29,7 +29,7 @@ function App() {
             <Routes>
               <Route element={<HomePage />} path="/" />
               <Route element={<CreateArticle />} path="/create_article" />
-              <Route element={<Profile />} path="/profile" />
+              <Route element={<Profile />} path="/profile/:userName" />
               <Route element={<ArticlePage />} path="/article/:id" />
               <Route element={<SubscribePage />} path="/subscribe" />
             </Routes>

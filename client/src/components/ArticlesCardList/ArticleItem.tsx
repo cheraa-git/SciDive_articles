@@ -11,11 +11,10 @@ interface ArticleItemProps {
 }
 
 export const ArticleItem: React.FC<ArticleItemProps> = ({ article, mode }) => {
-  console.log(article);
-  
+  console.log(article)
+
   const articleImage = article.image ? STATIC + article.image : noImage
   const avatarImage = article.author.avatar ? STATIC + article.author.avatar : defaultAvatar
-  
 
   let text = '...'
   let style = {}
@@ -30,7 +29,9 @@ export const ArticleItem: React.FC<ArticleItemProps> = ({ article, mode }) => {
     <div className="card m-2 p-0" style={style}>
       <div className="card-header">
         <img className="float-start rounded-circle" src={avatarImage} width={30} height={30} alt="" />
-        <strong className="float-start ms-2">{article.author.login}</strong>
+        <NavLink to={`/profile/${article.author.login}`} className="float-start ms-2 link">
+          {article.author.login}
+        </NavLink>{' '}
         <p className="float-start mb-0 ms-2 fw-light">{article.date}</p>
         <p className="float-end mb-0 fst-italic">{article.category}</p>
       </div>
