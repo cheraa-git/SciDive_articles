@@ -69,13 +69,13 @@ export const AuthPage: React.FC = () => {
         </button>
         <p className="lead mb-0">
           Еще нет аккаунта?{' '}
-          <NavLink className="text-decoration-none" to="/auth/singup">
+          <NavLink className="text-decoration-none" to="/auth/signup">
             Зарегестрируйтесь.
           </NavLink>
         </p>
       </>
     )
-  } else if (mode === 'singup') {
+  } else if (mode === 'signup') {
     content = (
       <>
         <h2 className="display-6">Регистрация</h2>

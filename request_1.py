@@ -264,7 +264,7 @@ def del_subscription_(blog_id):
 
 @app.route('/edit/article/<int:article_id>', methods=["PUT"])
 def update_article_(article_id):
-    data = dict(request.json)
+    data = dict(request.form)
     token = data["token"]
     token = jwt.decode(bytes(token, encoding='utf-8'),
                        app.secret_key, algorithms=['HS256'])

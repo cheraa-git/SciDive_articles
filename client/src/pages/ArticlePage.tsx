@@ -3,8 +3,9 @@ import { useParams } from 'react-router-dom'
 
 import { ArticleItem } from '../components/ArticlesCardList/ArticleItem'
 import { useDispatch, useSelector } from 'react-redux'
-import { fetchArticle } from '../store/actions/ArticleActions'
+import { addView, fetchArticle } from '../store/actions/ArticleActions'
 import { RootState } from '../store/rootReducer'
+import { SpinLoader } from '../components/UI/Loader/SpinLoader'
 
 export const ArticlePage: React.FC = () => {
   const dispatch = useDispatch()
@@ -14,12 +15,23 @@ export const ArticlePage: React.FC = () => {
     dispatch(fetchArticle(Number(articleId)))
   }, [dispatch, articleId])
 
-  const { articles } = useSelector((state: RootState) => state.article)
-  console.log(articles)
+  const { articles, loading } = useSelector((state: RootState) => state.article)
+
+  const Content = () => {
+    if (loading) {
+      return <SpinLoader />
+    } else {
+      if (articles.length > 0) {
+        return <ArticleItem article={articles[0]} mode="full" />
+      } else {
+        return <h1 className="display-5 text-center">Статья не найдена...</h1>
+      }
+    }
+  }
 
   return (
     <div className="row justify-content-center">
-      {articles.length > 0 ? <ArticleItem article={articles[0]} mode="full" /> : <p>asdf</p>}
+      <Content />
     </div>
   )
 }

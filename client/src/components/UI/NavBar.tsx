@@ -5,12 +5,13 @@ import logo from '../../asserts/logotip.png'
 import { logoutUser } from '../../store/actions/AuthActions'
 import { RootState } from '../../store/rootReducer'
 import defaultAvatar from '../../asserts/default_avatar.png'
+import { STATIC } from '../../config'
 
 export const NavBar: React.FC = () => {
   const dispatch = useDispatch()
   const { isAuth } = useSelector((state: RootState) => state.auth)
   // const personIconHref = isAuth ? '/profile' : '/auth'
-  const avatar = localStorage.getItem('userAvatar') || defaultAvatar
+  const avatar = localStorage.getItem('userAvatar') ? STATIC + localStorage.getItem('userAvatar') : defaultAvatar
 
   const dropdownLinks = isAuth ? (
     <>
@@ -20,13 +21,13 @@ export const NavBar: React.FC = () => {
           <img src={avatar} className="rounded ms-2" height={30} alt="" />
         </NavLink>
       </div>
-      <hr className="dropdown-divider" />
+      {/* <hr className="dropdown-divider" />
       <li>
         <NavLink className="dropdown-item" to="/profile">
           <i className="bi bi-gear-fill me-2" />
           Настройка профиля
         </NavLink>
-      </li>
+      </li> */}
 
       <hr className="dropdown-divider" />
 
@@ -45,7 +46,7 @@ export const NavBar: React.FC = () => {
       </li>
       <hr className="dropdown-divider" />
       <li>
-        <NavLink className="dropdown-item" to="/auth/singup">
+        <NavLink className="dropdown-item" to="/auth/signup">
           Регистрация
         </NavLink>
       </li>

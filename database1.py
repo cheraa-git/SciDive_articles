@@ -254,13 +254,13 @@ def add_user(login, email, password):
     user_login = session.query(User.id).filter_by(login=login).first()
     user_email = session.query(User.id).filter_by(email=email).first()
     if user_login == None and user_email == None:
-        user = User(login=login, email=email, password=generate_password_hash(password))
-        session.add(user)
-        session.commit()
-        user_id = user.id
-        blog = Blog(user_id=user_id)
-        session.add(blog)
-        session.commit()
+      user = User(login=login, email=email, password=generate_password_hash(password))
+      session.add(user)
+      session.commit()
+      user_id = user.id
+      blog = Blog(user_id=user_id)
+      session.add(blog)
+      session.commit()
     elif user_email:
         raise SignupEmailError
     elif user_login:

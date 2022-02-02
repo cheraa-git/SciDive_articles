@@ -15,7 +15,7 @@ export const postRegisterData = (data: any, navigate: any) => {
             console.log('ERROR', res.data.error)
         }
       } else if (!res.data.error) {
-        console.log('singup success', res.data)
+        console.log('signup success', res.data)
         const authData = { email: data.email, password: data.password }
         dispatch(authDataPost(authData, navigate))
       }

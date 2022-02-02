@@ -1,45 +1,54 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import './CreateArticle.sass'
 import { Tooltip, MenuItem, TextField, Button } from '@mui/material'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../../store/rootReducer'
 import { CreateArticleData } from '../../types/interfaces'
 import { useNavigate } from 'react-router-dom'
-import { createArticle } from '../../store/actions/ArticleActions'
+import { createArticle, editArticle, setSendArticle } from '../../store/actions/ArticleActions'
+import { fetchArticle } from '../../store/actions/ArticleActions'
+import { STATIC } from '../../config'
+import { SpinLoader } from '../../components/UI/Loader/SpinLoader'
 
 export const CreateArticle: React.FC = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
-  const { categoryList, currentCategory } = useSelector((state: RootState) => state.article)
 
-  const [showAvatar, setShowAvatar] = useState('')
+  const { categoryList, articles, loading, sendArticle } = useSelector((state: RootState) => state.article)
   const [sendAvatar, setSendAvatar] = useState<File>()
-  const [category, setCategory] = useState(currentCategory)
-  const [title, setTitle] = useState('')
-  const [prevContent, setPrevContent] = useState('')
-  const [content, setContent] = useState('')
 
-  const inputHandler = (
-    event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
-    func: React.Dispatch<React.SetStateAction<string>>
-  ) => {
-    func(event.target.value)
-  }
+  const urlParams: any = {}
+  decodeURI(window.location.search.substring(1))
+    .split('&')
+    .forEach((element) => {
+      urlParams[element.split('=')[0]] = element.split('=')[1]
+    })
+  const editId = Number(urlParams.editArticleId)
+
+  useEffect(() => {
+    if (editId) {
+      dispatch(fetchArticle(editId, true))
+    }
+  }, [dispatch, editId])
 
   const submitHandler = () => {
-    if (localStorage.getItem('token') && title  && content && category && sendAvatar) {
+    if (localStorage.getItem('token') && sendArticle && sendAvatar) {
       const payload: CreateArticleData = {
         token: localStorage.getItem('token'),
-        title,
+        title: sendArticle.title,
         sendAvatar,
-        prevContent,
-        content,
-        category,
+        prevContent: sendArticle.prev_content,
+        content: sendArticle.content,
+        category: sendArticle.category,
         tags: '',
       }
-      console.log("submitHandler",payload)
-      dispatch(createArticle(payload, navigate))
-
+      if (editId) {
+        payload.id = editId
+        dispatch(editArticle(payload, navigate))
+      } else {
+        dispatch(createArticle(payload, navigate))
+      }
+      console.log('submitHandler', payload)
     } else {
       alert('Заполните все обязательные поля')
     }
@@ -47,21 +56,23 @@ export const CreateArticle: React.FC = () => {
 
   const avatarHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-      setShowAvatar(URL.createObjectURL(e.target.files[0]!))
+      console.log(e.target.files[0])
+      setArticle({ image: URL.createObjectURL(e.target.files[0]!) })
       setSendAvatar(e.target.files[0])
     }
   }
-  return (
-    <div className="create-article card mx-auto" style={{ width: '65%', minWidth: '21rem' }}>
-      <div className="card-header">
-        <h1 className="display-5">Создание статьи</h1>
-      </div>
 
+  const setArticle = (params: object) => {
+    dispatch(setSendArticle({ ...sendArticle, ...params }))
+  }
+
+  const htmlContent = (
+    <>
       <div className="card-body">
         <div className="d-flex mb-3">
           <TextField
-            value={title}
-            onChange={(e) => inputHandler(e, setTitle)}
+            value={sendArticle.title}
+            onChange={(e) => setArticle({ title: e.target.value })}
             variant="filled"
             label="Название *"
             size="small"
@@ -75,8 +86,8 @@ export const CreateArticle: React.FC = () => {
 
         <div className="d-flex mb-3">
           <TextField
-            value={category}
-            onChange={(e) => inputHandler(e, setCategory)}
+            value={sendArticle.category}
+            onChange={(e) => setArticle({ category: e.target.value })}
             variant="filled"
             select
             fullWidth
@@ -95,8 +106,8 @@ export const CreateArticle: React.FC = () => {
 
         <div className="d-flex mb-3">
           <TextField
-            value={prevContent}
-            onChange={(e) => inputHandler(e, setPrevContent)}
+            value={sendArticle.prev_content}
+            onChange={(e) => setArticle({ prev_content: e.target.value })}
             variant="filled"
             label="Краткое описание"
             size="small"
@@ -118,12 +129,12 @@ export const CreateArticle: React.FC = () => {
           <TextField variant="filled" type="file" onChange={avatarHandler} />
           <i className="bi bi-info-circle opacity-25 my-auto ms-2"></i>
         </div>
-        {showAvatar && <img className="img-fluid rounded mb-3" src={showAvatar} alt="" />}
+        {sendArticle?.image && <img className="img-fluid rounded mb-3" src={sendArticle?.image} alt="" />}
 
         <div className="d-flex mb-3">
           <TextField
-            value={content}
-            onChange={(e) => inputHandler(e, setContent)}
+            value={sendArticle.content}
+            onChange={(e) => setArticle({ content: e.target.value })}
             variant="filled"
             label="Содержание *"
             size="small"
@@ -137,10 +148,18 @@ export const CreateArticle: React.FC = () => {
         </div>
         <div className="text-end">
           <Button variant="contained" onClick={submitHandler}>
-            Создать
+            {editId ? 'Сохранить изменения' : 'Создать'}
           </Button>
         </div>
       </div>
+    </>
+  )
+  return (
+    <div className="create-article card mx-auto" style={{ width: '65%', minWidth: '21rem' }}>
+      <div className="card-header">
+        <h1 className="display-5">{editId ? 'Редактирование' : 'Создание'} статьи</h1>
+      </div>
+      {loading ? <SpinLoader/> : htmlContent}
     </div>
   )
 }
