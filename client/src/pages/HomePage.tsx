@@ -4,7 +4,6 @@ import { ArticlesCardList } from '../components/ArticlesCardList/ArticlesCardLis
 import { SpinLoader } from '../components/UI/Loader/SpinLoader'
 import { SecondNavBar } from '../components/UI/SecondNavBar'
 import { fetchHome } from '../store/actions/ArticleActions'
-import { authDataPost, postRegisterData } from '../store/actions/AuthActions'
 import { RootState } from '../store/rootReducer'
 
 export const HomePage: React.FC = () => {

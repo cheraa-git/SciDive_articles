@@ -4,10 +4,10 @@ import { articleActions } from '../../types/ArticleTypes'
 import { Article, CreateArticleData } from '../../types/interfaces'
 import { CLEAR_ARTICLES, SET_CURRENT_CATEGORY, SET_SEND_ARTICLE, SET_USER_ARTICLES } from '../actionTypes'
 
+////////// FETCH DATA //////////
 export function fetchUserArticles(userName?: string) {
   return async (dispatch: any) => {
     dispatch(clearArticles())
-    const token = localStorage.getItem('token')
 
     await axiosApp
       .get(`/user_articles/${userName}`)
@@ -29,7 +29,12 @@ export function fetchArticle(id: number, edit?: boolean) {
     const data = response.data
     if (!data.error) {
       if (edit) {
-        dispatch(setSendArticle(data))
+        if (data.author.login === localStorage.getItem('userName')) {
+          dispatch(setSendArticle(data))
+        } else {
+          console.log('NOT AUTHOR')
+          document.location.href = '/create_article'
+        }
       } else {
         dispatch(setUserArticles([data]))
       }
@@ -59,6 +64,7 @@ export function fetchHome() {
   }
 }
 
+////////// ARTICLE  //////////
 export function createArticle(postData: CreateArticleData, navigate: NavigateFunction) {
   return async (dispatch: any) => {
     const sendFormData = new FormData()
@@ -104,15 +110,31 @@ export function editArticle(postData: CreateArticleData, navigate: NavigateFunct
       const data = response.data
       if (!data.error) {
         navigate(-1)
-        console.log(data)
         dispatch(clearArticles())
       }
+      console.log(data)
     } catch (error) {
       console.log(error)
     }
   }
 }
 
+export function deleteArticle(id: number, navigate: NavigateFunction, snachbar: any) {
+  return async (dispatch: any) => {
+    try {
+      const response = await axiosApp.delete(`/article/${id}?token=${localStorage.getItem('token')}`)
+      if (!response.data.error) {
+        navigate(-1)
+        snachbar('Статья удалена')
+      }
+      console.log(response.data)
+    } catch (e) {
+      console.log(e)
+    }
+  }
+}
+
+////////// OTHER //////////
 export function addView(id: number) {
   return async (dispatch: any) => {
     try {
@@ -127,7 +149,9 @@ export function addView(id: number) {
     }
   }
 }
+
 //////////////////////////////////////////////////////////////////////////////////////
+
 export function setUserArticles(articles: Article[]): articleActions {
   return {
     type: SET_USER_ARTICLES,

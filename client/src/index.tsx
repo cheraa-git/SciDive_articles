@@ -9,15 +9,20 @@ import { applyMiddleware, createStore } from 'redux'
 import { rootReducer } from './store/rootReducer'
 import thunk from 'redux-thunk'
 import { composeWithDevTools } from 'redux-devtools-extension'
+import { SnackbarProvider } from 'notistack'
 
 const store = createStore(rootReducer, composeWithDevTools(applyMiddleware(thunk)))
 
 const app = (
-  <Provider store={store}>
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
-  </Provider>
+  <React.StrictMode>
+    <Provider store={store}>
+      <BrowserRouter>
+        <SnackbarProvider autoHideDuration={3000}>
+          <App />
+        </SnackbarProvider>
+      </BrowserRouter>
+    </Provider>
+  </React.StrictMode>
 )
 
 ReactDOM.render(app, document.getElementById('root'))

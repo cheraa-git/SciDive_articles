@@ -5,17 +5,22 @@ import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../../store/rootReducer'
 import { CreateArticleData } from '../../types/interfaces'
 import { useNavigate } from 'react-router-dom'
-import { createArticle, editArticle, setSendArticle } from '../../store/actions/ArticleActions'
+import { createArticle, deleteArticle, editArticle, setSendArticle } from '../../store/actions/ArticleActions'
 import { fetchArticle } from '../../store/actions/ArticleActions'
 import { STATIC } from '../../config'
 import { SpinLoader } from '../../components/UI/Loader/SpinLoader'
+import { useSnackbar } from 'notistack'
 
 export const CreateArticle: React.FC = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
-
-  const { categoryList, articles, loading, sendArticle } = useSelector((state: RootState) => state.article)
+  const { enqueueSnackbar: snackbar } = useSnackbar()
+  const { categoryList, loading, sendArticle } = useSelector((state: RootState) => state.article)
   const [sendAvatar, setSendAvatar] = useState<File>()
+
+  if (categoryList[0] === 'Все категории') {
+    categoryList.shift()
+  }
 
   const urlParams: any = {}
   decodeURI(window.location.search.substring(1))
@@ -31,8 +36,9 @@ export const CreateArticle: React.FC = () => {
     }
   }, [dispatch, editId])
 
+
   const submitHandler = () => {
-    if (localStorage.getItem('token') && sendArticle && sendAvatar) {
+    if (localStorage.getItem('token') && sendArticle.title && sendArticle.content && sendArticle.category) {
       const payload: CreateArticleData = {
         token: localStorage.getItem('token'),
         title: sendArticle.title,
@@ -50,8 +56,13 @@ export const CreateArticle: React.FC = () => {
       }
       console.log('submitHandler', payload)
     } else {
-      alert('Заполните все обязательные поля')
+      snackbar('Заполните все обязательные поля', { variant: 'warning' })
     }
+  }
+
+  const deleteHandler = () => {
+    console.log(sendArticle.id)
+    dispatch(deleteArticle(sendArticle.id, navigate, snackbar))
   }
 
   const avatarHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -64,6 +75,16 @@ export const CreateArticle: React.FC = () => {
 
   const setArticle = (params: object) => {
     dispatch(setSendArticle({ ...sendArticle, ...params }))
+  }
+
+  const Avatar = () => {
+    let path = ''
+    if (sendArticle.image?.indexOf('http') === -1) {
+      path = STATIC + sendArticle?.image
+    } else {
+      path = sendArticle?.image + ''
+    }
+    return <img className="img-fluid rounded mb-3" src={path} alt="" />
   }
 
   const htmlContent = (
@@ -129,8 +150,8 @@ export const CreateArticle: React.FC = () => {
           <TextField variant="filled" type="file" onChange={avatarHandler} />
           <i className="bi bi-info-circle opacity-25 my-auto ms-2"></i>
         </div>
-        {sendArticle?.image && <img className="img-fluid rounded mb-3" src={sendArticle?.image} alt="" />}
-
+        {/* {sendArticle?.image && <img className="img-fluid rounded mb-3" src={STATIC + sendArticle?.image} alt="" />} */}
+        <Avatar />
         <div className="d-flex mb-3">
           <TextField
             value={sendArticle.content}
@@ -154,12 +175,20 @@ export const CreateArticle: React.FC = () => {
       </div>
     </>
   )
+
   return (
     <div className="create-article card mx-auto" style={{ width: '65%', minWidth: '21rem' }}>
       <div className="card-header">
         <h1 className="display-5">{editId ? 'Редактирование' : 'Создание'} статьи</h1>
+        {editId ? (
+          <div className="text-end">
+            <Button color="error" onClick={deleteHandler}>
+              Удалить статью
+            </Button>
+          </div>
+        ) : null}
       </div>
-      {loading ? <SpinLoader/> : htmlContent}
+      {loading ? <SpinLoader /> : htmlContent}
     </div>
   )
 }

@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom'
 
 import { ArticleItem } from '../components/ArticlesCardList/ArticleItem'
 import { useDispatch, useSelector } from 'react-redux'
-import { addView, fetchArticle } from '../store/actions/ArticleActions'
+import { fetchArticle } from '../store/actions/ArticleActions'
 import { RootState } from '../store/rootReducer'
 import { SpinLoader } from '../components/UI/Loader/SpinLoader'
 

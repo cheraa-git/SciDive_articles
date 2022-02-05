@@ -1,21 +1,19 @@
-import React, { MouseEvent, useState } from 'react'
+import React, { useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { NavLink, useNavigate, useParams } from 'react-router-dom'
 import { authDataPost, postRegisterData } from '../store/actions/AuthActions'
+import { useSnackbar } from 'notistack'
 
 export const AuthPage: React.FC = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
+  const { enqueueSnackbar: snackbar } = useSnackbar()
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [email, setEmail] = useState('')
   const [login, setLogin] = useState('')
+  const [valid, setValid] = useState({ email: '', login: '', password: '', secondPassword: '' })
   const { mode } = useParams()
-
-  // useEffect(() => {
-  //   // dispatch(authDataPost({login: 'Alex', password: '111111'}))
-  //   // dispatch(postRegisterData({login: 'User1', password: '111111', email: 'User1@mail.ru'}))
-  // }, [dispatch])
 
   const inputHandler = (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -23,23 +21,31 @@ export const AuthPage: React.FC = () => {
   ) => func(event.target.value)
 
   const loginHandler = () => {
-    dispatch(authDataPost({ email, password }, navigate))
+    dispatch(authDataPost({ email, password }, navigate, snackbar))
   }
 
-  const singupHandler = (event: MouseEvent) => {
+  const singupHandler = () => {
+    setValid({ ...valid, email: '', login: '', password: '', secondPassword: '' })
     if (
       password.length >= 6 &&
-      login.match(/^[a-zA-Z0-9_-]{3,16}$/) &&
+      login.match(/^[a-zA-Z0-9]{3,16}$/) &&
       email.match(/^[A-Z0-9._%+-]+@[A-Z0-9-]+.+.[A-Z]{2,4}$/i)
     ) {
       if (password === confirmPassword) {
-        dispatch(postRegisterData({ login, password, email }, navigate))
+        dispatch(postRegisterData({ login, password, email }, navigate, snackbar))
         console.log('success')
       } else {
-        alert('Пароли не совпадают')
+        setValid((prev) => ({ ...prev, secondPassword: 'invalid' }))
       }
-    } else {
-      alert('Данные некорректны')
+    }
+    if (password.length < 6) {
+      setValid((prev) => ({ ...prev, password: 'invalid' }))
+    }
+    if (!login.match(/^[a-zA-Z0-9]{3,16}$/)) {
+      setValid((prev) => ({ ...prev, login: 'invalid' }))
+    }
+    if (!email.match(/^[A-Z0-9._%+-]+@[A-Z0-9-]+.+.[A-Z]{2,4}$/i)) {
+      setValid((prev) => ({ ...prev, email: 'invalid' }))
     }
   }
 
@@ -84,39 +90,51 @@ export const AuthPage: React.FC = () => {
           <label className="form-label lead">E-mail</label>
           <input
             type="email"
-            className="form-control"
+            className={`form-control is-${valid.email}`}
             value={email}
             onChange={(e) => inputHandler(e, setEmail)}
             required
           />
+          <div className="invalid-feedback">Некорректный E-mail</div>
         </div>
 
         <div className="mb-3">
           <label className="form-label lead">Никнейм</label>
-          <input className="form-control" value={login} onChange={(e) => inputHandler(e, setLogin)} required />
+          <input
+            className={`form-control is-${valid.login}`}
+            value={login}
+            onChange={(e) => inputHandler(e, setLogin)}
+            required
+          />
+          <div className="invalid-feedback">
+            Только буквы (A-Z a-z) и цифры (0-9), не меньше 3 и не больше 25 символов
+          </div>
         </div>
+
         <div className="mb-3">
           <label className="form-label lead">Пароль</label>
           <input
             type="password"
-            className="form-control"
+            className={`form-control is-${valid.password}`}
             value={password}
             onChange={(e) => inputHandler(e, setPassword)}
             required
             minLength={6}
           />
+          <div className="invalid-feedback">Не менее 6 символов</div>
         </div>
 
         <div className="mb-3">
           <label className="form-label lead">Пароль еще раз</label>
           <input
             type="password"
-            className="form-control"
+            className={`form-control is-${valid.secondPassword}`}
             value={confirmPassword}
             onChange={(e) => inputHandler(e, setConfirmPassword)}
             required
             minLength={6}
           />
+          <div className="invalid-feedback">Пароли не совпадают</div>
         </div>
 
         <button className="btn btn-primary" onClick={singupHandler}>

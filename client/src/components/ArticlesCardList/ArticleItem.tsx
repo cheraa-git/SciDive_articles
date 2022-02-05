@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import { NavLink, useNavigate } from 'react-router-dom'
 import { Article } from '../../types/interfaces'
-import noImage from '../../asserts/no_image.png'
 import defaultAvatar from '../../asserts/default_avatar.png'
 import { STATIC } from '../../config'
 import { IconButton } from '@mui/material'
@@ -30,9 +29,9 @@ export const ArticleItem: React.FC<ArticleItemProps> = ({ article, mode }) => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
-  const articleImage = article.image ? STATIC + article.image : noImage
+  const articleImage = article.image ? STATIC + article.image : ''
   const avatarImage = article.author.avatar ? STATIC + article.author.avatar : defaultAvatar
-  let listItems = [{ label: 'Открыть статью', onClick: () => navigate(`/article/${article.blog_id}`) }]
+  let listItems = [{ label: 'Открыть статью', onClick: () => navigate(`/article/${article.id}`) }]
 
   if (article.author.login === localStorage.getItem('userName')) {
     listItems.push({
@@ -86,13 +85,12 @@ export const ArticleItem: React.FC<ArticleItemProps> = ({ article, mode }) => {
       <div className="card-body">
         <h2 className="card-title">{article.title}</h2>
         <img src={articleImage} className="card-img-top" alt="" />
-
-        {textList}
+        <div>{textList}</div>
         {mode === 'preview' && (
           <NavLink
             to={`/article/${article.id}`}
             onClick={() => dispatch(addView(Number(article.id)))}
-            className="btn btn-primary"
+            className="btn btn-primary mt-2"
           >
             Читать далее
           </NavLink>

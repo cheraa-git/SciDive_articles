@@ -19,7 +19,7 @@ function App() {
 
   useEffect(() => {
     dispatch(autoLogin(navigate))
-  }, [dispatch])
+  }, [dispatch, navigate])
   const AuthRouterHandler = () => {
     if (isAuth) {
       return (
@@ -48,7 +48,7 @@ function App() {
 
               <Route element={<AuthPage />} path="/create_article" />
               <Route element={<AuthPage />} path="/my_articles" />
-              <Route element={<AuthPage />} path="/profile" />
+              <Route element={<AuthPage />} path="/profile/:userName" />
               <Route element={<AuthPage />} path="/subscribe" />
             </Routes>
           </div>

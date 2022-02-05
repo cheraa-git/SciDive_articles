@@ -2,34 +2,35 @@ import axiosApp from '../../axios/axiosApp'
 import { authAtcions } from '../../types/AuthTypes'
 import { AUTO_AUTH_SUCCESS, LOGIN_USER, LOGOUT_USER } from '../actionTypes'
 
-export const postRegisterData = (data: any, navigate: any) => {
+export const postRegisterData = (data: any, navigate: any, snackbar: any) => {
   return async (dispatch: any) => {
     await axiosApp.post('authorization/sign_up', data).then((res) => {
       if (res.data.error) {
         switch (res.data.error) {
           case 'SignupEmailError':
-            return alert('Аккаунт с таким E-mail уже зарегестрирован')
+            return snackbar('Аккаунт с таким E-mail уже зарегестрирован')
           case 'SignupLoginError':
-            return alert('Данный никнейм занят')
+            return snackbar('Данный никнейм занят')
           default:
             console.log('ERROR', res.data.error)
         }
       } else if (!res.data.error) {
         console.log('signup success', res.data)
         const authData = { email: data.email, password: data.password }
-        dispatch(authDataPost(authData, navigate))
+        dispatch(authDataPost(authData, navigate, snackbar))
       }
     })
   }
 }
 
-export const authDataPost = (userData: any, navigate: any) => {
+export const authDataPost = (userData: any, navigate: any, snackbar: any) => {
   return async (dispatch: any) => {
     console.log('authDataPost')
     await axiosApp
       .post('authorization/log_in', userData)
       .then((res) => {
         if (res.data.error) {
+          snackbar('Неверный логин или пароль', { variant: 'warning' })
           console.log('Неверный логин или пароль')
         } else if (!res.data.error) {
           console.log('auth data', res.data)

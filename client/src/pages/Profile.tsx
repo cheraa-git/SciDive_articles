@@ -18,11 +18,11 @@ export const Profile: React.FC = () => {
 
   useEffect(() => {
     dispatch(fetchUserArticles(userName))
-  }, [dispatch])
+  }, [dispatch, userName])
 
   const ArticleList = () => {
     if (loading) {
-      return <SpinLoader/>
+      return <SpinLoader />
     } else {
       return articles.length > 0 ? (
         <ArticlesCardList articles={articles} currentCategory={currentCategory} />
