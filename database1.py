@@ -186,6 +186,23 @@ def get_articles_blog(login):
     session.close()
     return rez
 
+def get_articles_blog_by_user_id(user_id):
+    engine = create_engine('sqlite:///info_data_base.db', echo=True)
+    session = Session(bind=engine)
+    blog = session.query(Blog).filter_by(user_id=user_id).first()
+    articles = session.query(Articles).filter_by(blog_id=blog.id).all()
+    rez = []
+    # for i in blog_articles:
+        # articles.append(session.query(Articles).get(i.id))
+    for i in articles:
+        a = {}
+        article = session.query(Articles).get(i.id)
+        a["id"] = i.id
+        rez.append(a)
+
+    session.close()
+    return rez
+
 def set_article(user_id, title, image, prev_content, content, category, tags):
     engine = create_engine('sqlite:///info_data_base.db', echo=True)
     session = Session(bind=engine)
