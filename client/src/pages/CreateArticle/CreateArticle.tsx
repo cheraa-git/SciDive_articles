@@ -1,6 +1,16 @@
 import React, { useEffect, useState } from 'react'
 import './CreateArticle.sass'
-import { Tooltip, MenuItem, TextField, Button } from '@mui/material'
+import {
+  Tooltip,
+  MenuItem,
+  TextField,
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  DialogContentText,
+} from '@mui/material'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../../store/rootReducer'
 import { CreateArticleData } from '../../types/interfaces'
@@ -17,6 +27,7 @@ export const CreateArticle: React.FC = () => {
   const { enqueueSnackbar: snackbar } = useSnackbar()
   const { categoryList, loading, sendArticle } = useSelector((state: RootState) => state.article)
   const [sendAvatar, setSendAvatar] = useState<File>()
+  const [dialogOpen, setDialogOpen] = useState(false)
 
   if (categoryList[0] === 'Все категории') {
     categoryList.shift()
@@ -35,7 +46,6 @@ export const CreateArticle: React.FC = () => {
       dispatch(fetchArticle(editId, true))
     }
   }, [dispatch, editId])
-
 
   const submitHandler = () => {
     if (localStorage.getItem('token') && sendArticle.title && sendArticle.content && sendArticle.category) {
@@ -61,7 +71,6 @@ export const CreateArticle: React.FC = () => {
   }
 
   const deleteHandler = () => {
-    console.log(sendArticle.id)
     dispatch(deleteArticle(sendArticle.id, navigate, snackbar))
   }
 
@@ -182,9 +191,18 @@ export const CreateArticle: React.FC = () => {
         <h1 className="display-5">{editId ? 'Редактирование' : 'Создание'} статьи</h1>
         {editId ? (
           <div className="text-end">
-            <Button color="error" onClick={deleteHandler}>
+            <Button color="error" onClick={() => setDialogOpen(true)}>
               Удалить статью
             </Button>
+            <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)}>
+              <DialogTitle id="alert-dialog-title">Вы уверены, что хотите безвозвратно удалить статью?</DialogTitle>
+              <DialogActions>
+                <Button onClick={() => setDialogOpen(false)}>Отмена</Button>
+                <Button onClick={deleteHandler} color="error">
+                  Удалить
+                </Button>
+              </DialogActions>
+            </Dialog>
           </div>
         ) : null}
       </div>
