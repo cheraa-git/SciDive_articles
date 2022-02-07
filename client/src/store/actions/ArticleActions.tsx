@@ -29,6 +29,7 @@ export function fetchArticle(id: number, edit?: boolean) {
     const data = response.data
     if (!data.error) {
       if (edit) {
+        // dispatch(setSendArticle(data))
         if (data.author.login === localStorage.getItem('userName')) {
           dispatch(setSendArticle(data))
         } else {
@@ -146,6 +147,22 @@ export function addView(id: number) {
       }
     } catch (e) {
       console.log(e)
+    }
+  }
+}
+
+export function subscribe(id: number) {
+  return async (dispatch: any) => {
+    try {
+      const response = await axiosApp.post(`/subscription/${id}?token=${localStorage.getItem('token')}`)
+      if (!response.data.error) {
+        console.log('SUBSCRIBE SUCCESS')
+      } else {
+        console.log('SUBSCRIBE ERROR')
+        
+      }
+    } catch (e) {
+      console.log('Error', e)
     }
   }
 }
