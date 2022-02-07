@@ -1,13 +1,15 @@
+import { Button } from '@mui/material'
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { NavLink, useParams } from 'react-router-dom'
-import defaultAvatar from '../asserts/default_avatar.png'
-import { ArticlesCardList } from '../components/ArticlesCardList/ArticlesCardList'
-import { CategoryDropdown } from '../components/CategoryDropdown'
-import { SpinLoader } from '../components/UI/Loader/SpinLoader'
-import { STATIC } from '../config'
-import { fetchUserArticles } from '../store/actions/ArticleActions'
-import { RootState } from '../store/rootReducer'
+import defaultAvatar from '../../asserts/default_avatar.png'
+import { ArticlesCardList } from '../../components/ArticlesCardList/ArticlesCardList'
+import { CategoryDropdown } from '../../components/CategoryDropdown'
+import { SpinLoader } from '../../components/UI/Loader/SpinLoader'
+import { STATIC } from '../../config'
+import { fetchUserArticles } from '../../store/actions/ArticleActions'
+import { RootState } from '../../store/rootReducer'
+import './Profile.sass'
 
 export const Profile: React.FC = () => {
   const dispatch = useDispatch()
@@ -52,11 +54,30 @@ export const Profile: React.FC = () => {
             </NavLink>
           </div>
         </div>
+        <div className="container profile-info">
+          <div className="row">
+            <p className="lead col ">
+              <strong>{articles.length}</strong>
+              <br />
+              публикаций
+            </p>
 
-        <p>Публикаций: {articles.length}</p>
-        {/* <a href="/" className="btn btn-light">
-          Редактировать
-        </a> */}
+            <p className="lead col ">
+              <strong>8</strong>
+              <br />
+              подписок
+            </p>
+            <p className="lead col ">
+              <strong>20</strong>
+              <br />
+              подписчиков
+            </p>
+          </div>
+          <div className="mt-auto">
+            <Button className="mt">asdf</Button>
+          </div>
+        </div>
+        {/* <Button className='ms-auto mb-auto'>Подписаться</Button> */}
       </div>
 
       <div className="card-body">
