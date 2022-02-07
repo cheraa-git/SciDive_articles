@@ -33,6 +33,11 @@ class SignupEmailError(Exception):
     Authentification email already in db
     '''
 
+class EmptyValuesAreEntered(Exception):
+    '''
+    Empty values are entered
+    '''
+
 class User(Base):
     __tablename__ = 'users'
     id = Column(Integer, primary_key=True)
@@ -204,6 +209,12 @@ def get_articles_blog_by_user_id(user_id):
     return rez
 
 def set_article(user_id, title, image, prev_content, content, category, tags):
+    title = title.strip()
+    content = content.strip() 
+    category = category.strip()
+    tags = tags.strip()
+    if title == '' or content == '' or category == '' or tags == '':
+        raise EmptyValuesAreEntered
     engine = create_engine('sqlite:///info_data_base.db', echo=True)
     session = Session(bind=engine)
     user = session.query(User).get(user_id)
@@ -242,6 +253,12 @@ def del_subscription(user_id, blog_id):
     session.close()
 
 def update_article(article_id, user_id, title, image, prev_content, content, category, tags):
+    title = title.strip()
+    content = content.strip() 
+    category = category.strip()
+    tags = tags.strip()
+    if title == '' or content == '' or category == '' or tags == '':
+        raise EmptyValuesAreEntered
     engine = create_engine('sqlite:///info_data_base.db', echo=True)
     session = Session(bind=engine)
     article = session.query(Articles).get(article_id)
@@ -264,6 +281,11 @@ def update_article(article_id, user_id, title, image, prev_content, content, cat
     session.close()
 
 def add_user(login, email, password):
+    login = login.strip()
+    email = email.strip() 
+    password = password.strip()
+    if login == '' or email == '' or password == '':
+        raise EmptyValuesAreEntered
     engine = create_engine('sqlite:///info_data_base.db', echo=True)
     session = Session(bind=engine)
     login = login.lower()
@@ -377,6 +399,10 @@ def request_user_login(email):
     return user.login
 
 def change_user_password(email, password_new):
+    email = email.strip() 
+    password_new = password_new.strip()
+    if email == '' or password_new == '':
+        raise EmptyValuesAreEntered
     engine = create_engine('sqlite:///info_data_base.db', echo=True)
     session = Session(bind=engine)
     email = email.lower()
