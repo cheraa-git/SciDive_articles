@@ -1,5 +1,5 @@
 import { Button } from '@mui/material'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { NavLink, useParams } from 'react-router-dom'
 import defaultAvatar from '../../asserts/default_avatar.png'
@@ -9,6 +9,7 @@ import { SpinLoader } from '../../components/UI/Loader/SpinLoader'
 import { STATIC } from '../../config'
 import { fetchUserArticles } from '../../store/actions/ArticleActions'
 import { RootState } from '../../store/rootReducer'
+import { EditProfileDialog } from './EditProfileDialog'
 import './Profile.sass'
 
 export const Profile: React.FC = () => {
@@ -18,6 +19,7 @@ export const Profile: React.FC = () => {
   const { userName } = useParams()
   const isMyProfile = userName === localStorage.getItem('userName')
 
+  const [editDialogOpen, setEditDialogOpen] = useState(false)
   useEffect(() => {
     dispatch(fetchUserArticles(userName))
   }, [dispatch, userName])
@@ -32,7 +34,7 @@ export const Profile: React.FC = () => {
         <>
           <h1 className="display-6 text-center">Статей пока нет...</h1>
           <p className="lead text-center">
-            Хотите{' '}
+            Хотите
             <NavLink className="link" to="/create_article">
               создать
             </NavLink>
@@ -43,13 +45,21 @@ export const Profile: React.FC = () => {
     }
   }
 
+  const Buttons = () => {
+    if (localStorage.getItem('userName') === userName) {
+      return <Button onClick={() => setEditDialogOpen(true)}>Редактировать профиль</Button>
+    } else {
+      return <Button>Подписаться</Button>
+    }
+  }
+
   return (
     <div className="card m-2 p-0">
       <div className="card-header d-flex">
         <div>
           <img className="rounded  me-3" src={avatar} alt="Аватар" height={150}></img>
           <div>
-            <NavLink to="/profile" className="display-6 mb-0 text-decoration-none ">
+            <NavLink to={`/profile/${userName}`} className="display-6 mb-0 text-decoration-none ">
               @{userName}
             </NavLink>
           </div>
@@ -73,11 +83,11 @@ export const Profile: React.FC = () => {
               подписчиков
             </p>
           </div>
-          <div className="mt-auto">
-            <Button className="mt">asdf</Button>
+          <div className="buttons">
+            <Buttons />
+            <EditProfileDialog isOpen={editDialogOpen} handleClose={() => setEditDialogOpen(false)}/>
           </div>
         </div>
-        {/* <Button className='ms-auto mb-auto'>Подписаться</Button> */}
       </div>
 
       <div className="card-body">

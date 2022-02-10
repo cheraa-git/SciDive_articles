@@ -40,7 +40,7 @@ class User(Base):
     login = Column(String(50), nullable=False, unique=True)
     email = Column(String(254), nullable=False, unique=True)
     password = Column(String(20), nullable=False)
-    avatar = Column(String, default='peppa.png', nullable=False)
+    avatar = Column(String, default='default_avatar.png', nullable=False)
     forgot_code = Column(String(10), nullable=False, unique=False, default=0)
     blog = relationship("Blog", cascade="all, delete-orphan", back_populates="user", uselist=False)
     subscriptions = relationship("Subscriptions", cascade="all, delete-orphan")

@@ -12,7 +12,7 @@ export function fetchUserArticles(userName?: string) {
     await axiosApp
       .get(`/user_articles/${userName}`)
       .then((res) => {
-        if (res.data.error) console.log(res.data.error)
+        if (res.data.error) console.log(res.data)
         else if (!res.data.error) {
           console.log(res.data)
 
