@@ -1,7 +1,7 @@
 from flask import Flask, request, session, jsonify, render_template, url_for
 from flask_caching import Cache
 from flask_sockets import Sockets
-from database1 import SignupEmailError, SignupLoginError, get_articles_blog_by_user_id, get_subscriptions, get_article, get_articles_subscriptions, get_articles_blog, set_article, \
+from database1 import EmptyValuesAreEntered, SignupEmailError, SignupLoginError, get_articles_blog_by_user_id, get_subscriptions, get_article, get_articles_subscriptions, get_articles_blog, set_article, \
     set_subscription, del_article, del_subscription, update_article, get_most_recent_articles, get_user_id, request_user_avatar, request_user, check_admin, add_user, check_user_by_email, add_check_password, get_check_password, request_user_login, change_user_password, remove_check_password, get_user_login, plus_view_on_article
 from database1 import AccountNotFound, AccountExists
 from flask_mail import Mail, Message
@@ -211,6 +211,8 @@ def add_article():
         except:
             pass
         return jsonify({"error": False, 'id': article_id})
+    except EmptyValuesAreEntered:
+        return jsonify({"error": 'EmptyValuesAreEntered'})
     except:
         return jsonify({"error": True})
 
@@ -325,6 +327,8 @@ def update_article_(article_id):
         except:
             pass
         return jsonify({"error": False})
+    except EmptyValuesAreEntered:
+        return jsonify({"error": 'EmptyValuesAreEntered'})
     except:
         return jsonify({"error": True})
 
@@ -365,6 +369,8 @@ def post(form):
             return jsonify({"error": 'SignupEmailError'})
         except SignupLoginError:
             return jsonify({"error": 'SignupLoginError'})
+        except EmptyValuesAreEntered:
+            return jsonify({"error": 'EmptyValuesAreEntered'})
         return jsonify({"error": False})
 
     elif form == "forgot":
@@ -394,11 +400,14 @@ def post(form):
             if bool_hash:
                 return jsonify({'error': "Пароли совпадают"})
             else:
-                change_user_password(email, new_password)
-                remove_check_password(email)
-                login = request_user_login(email)
-                session['login'] = login
-                return jsonify({'error': False})
+                try:
+                    change_user_password(email, new_password)
+                    remove_check_password(email)
+                    login = request_user_login(email)
+                    session['login'] = login
+                    return jsonify({'error': False})
+                except EmptyValuesAreEntered:
+                    return jsonify({"error": 'EmptyValuesAreEntered'})
         else:
             return jsonify({'error': "Код подтверждения неверный"})
 
