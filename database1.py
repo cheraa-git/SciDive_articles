@@ -117,8 +117,8 @@ def get_most_recent_articles():
 def get_subscriptions(user_id):
     engine = create_engine('sqlite:///info_data_base.db', echo=True)
     session = Session(bind=engine)
-    subscription = session.query(Subscriptions).filter_by(user_id=user_id)
-    return subscription
+    subscriptions = session.query(Subscriptions).filter_by(user_id=user_id)
+    return subscriptions
 
 # def get_blog(user_id):
 #     engine = create_engine('sqlite:///info_data_base.db', echo=True)
@@ -247,7 +247,7 @@ def del_article(article_id):
 def del_subscription(user_id, blog_id):
     engine = create_engine('sqlite:///info_data_base.db', echo=True)
     session = Session(bind=engine)
-    subscription = session.query(Subscriptions).filter_by(user_id=user_id, blog_id=blog_id)
+    subscription = session.query(Subscriptions).filter_by(user_id=user_id, blog_id=blog_id).first()
     session.delete(subscription)
     session.commit()
     session.close()
@@ -277,6 +277,24 @@ def update_article(article_id, user_id, title, image, prev_content, content, cat
             article.category = category
         if article.tags != 'old':
             article.tags = tags    
+    session.commit()
+    session.close()
+
+def update_user(user_id, login, email):
+    login = login.strip()
+    email = email.strip() 
+    if login == '' or email == '':
+        raise EmptyValuesAreEntered
+    engine = create_engine('sqlite:///info_data_base.db', echo=True)
+    session = Session(bind=engine)
+    user = session.query(User).get(user_id)
+
+    if login != 'old':
+        user.login = login
+    if email != 'old':
+        user.email = email
+            
+    
     session.commit()
     session.close()
 

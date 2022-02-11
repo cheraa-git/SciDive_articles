@@ -2,7 +2,7 @@ from flask import Flask, request, session, jsonify, render_template, url_for
 from flask_caching import Cache
 from flask_sockets import Sockets
 from database1 import EmptyValuesAreEntered, SignupEmailError, SignupLoginError, get_articles_blog_by_user_id, get_subscriptions, get_article, get_articles_subscriptions, get_articles_blog, set_article, \
-    set_subscription, del_article, del_subscription, update_article, get_most_recent_articles, get_user_id, request_user_avatar, request_user, check_admin, add_user, check_user_by_email, add_check_password, get_check_password, request_user_login, change_user_password, remove_check_password, get_user_login, plus_view_on_article
+    set_subscription, del_article, del_subscription, update_article, get_most_recent_articles, get_user_id, request_user_avatar, request_user, check_admin, add_user, check_user_by_email, add_check_password, get_check_password, request_user_login, change_user_password, remove_check_password, get_user_login, plus_view_on_article, update_user
 from database1 import AccountNotFound, AccountExists
 from flask_mail import Mail, Message
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -232,7 +232,6 @@ def add_subscription(blog_id):
             return jsonify({"error": True})
     else:
         return jsonify({"error": True})
-    return 0
 
 
 @app.route('/article/<int:article_id>', methods=["DELETE"])
@@ -260,8 +259,7 @@ def del_subscription_(blog_id):
     user_id = token["login"]
     print(user_id)
     subscriptions = get_subscriptions(user_id)
-    subscriptions_ = [i["blog_id"]
-                      for i in json.loads(subscriptions_m.dumps(subscriptions))]
+    subscriptions_ = [i["blog_id"] for i in json.loads(subscriptions_m.dumps(subscriptions))]
     admin = check_admin(user_id)
     if blog_id in subscriptions_ or admin:
         del_subscription(user_id, blog_id)
@@ -420,6 +418,22 @@ def plus_view(article_id):
     try:
         rez = plus_view_on_article(login, article_id)
         return jsonify({"error": False, "plus": rez})
+    except:
+        return jsonify({"error": True})
+
+@app.route('/edit_profile', methods=["POST"])
+def edit_profile():
+    token = jwt.decode(bytes(request.args.get("token", 1),
+                             encoding='utf-8'), app.secret_key, algorithms=['HS256'])
+    print(token)
+    login = token["login"]
+    new_email = request.json["newEmail"]
+    new_login = request.json["newLogin"]
+    try: 
+        new_user = update_user(login, new_login, new_email)
+        return jsonify({"error": False, "user_id": login})
+    except EmptyValuesAreEntered:
+        return jsonify({"error": 'EmptyValuesAreEntered'})
     except:
         return jsonify({"error": True})
 
