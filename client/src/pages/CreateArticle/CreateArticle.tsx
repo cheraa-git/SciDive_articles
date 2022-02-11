@@ -1,25 +1,20 @@
 import React, { useEffect, useState } from 'react'
-import './CreateArticle.sass'
-import {
-  Tooltip,
-  MenuItem,
-  TextField,
-  Button,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  DialogContentText,
-} from '@mui/material'
+import { Button, Dialog, DialogActions, DialogTitle, MenuItem, TextField, Tooltip } from '@mui/material'
+import { useSnackbar } from 'notistack'
 import { useDispatch, useSelector } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
+import { SpinLoader } from '../../components/UI/Loader/SpinLoader'
+import { STATIC } from '../../config'
+import {
+  createArticle,
+  deleteArticle,
+  editArticle,
+  fetchArticle,
+  setSendArticle,
+} from '../../store/actions/ArticleActions'
 import { RootState } from '../../store/rootReducer'
 import { CreateArticleData } from '../../types/interfaces'
-import { useNavigate } from 'react-router-dom'
-import { createArticle, deleteArticle, editArticle, setSendArticle } from '../../store/actions/ArticleActions'
-import { fetchArticle } from '../../store/actions/ArticleActions'
-import { STATIC } from '../../config'
-import { SpinLoader } from '../../components/UI/Loader/SpinLoader'
-import { useSnackbar } from 'notistack'
+import './CreateArticle.sass'
 
 export const CreateArticle: React.FC = () => {
   const dispatch = useDispatch()
@@ -89,7 +84,9 @@ export const CreateArticle: React.FC = () => {
   const Avatar = () => {
     let path = ''
     if (sendArticle.image?.indexOf('http') === -1) {
-      path = STATIC + sendArticle?.image
+      if (sendArticle.image) {
+        path = STATIC + sendArticle.image
+      }
     } else {
       path = sendArticle?.image + ''
     }
@@ -99,6 +96,9 @@ export const CreateArticle: React.FC = () => {
   const htmlContent = (
     <>
       <div className="card-body">
+    
+          asdf
+        </button>
         <div className="d-flex mb-3">
           <TextField
             value={sendArticle.title}
@@ -159,8 +159,8 @@ export const CreateArticle: React.FC = () => {
           <TextField variant="filled" type="file" onChange={avatarHandler} />
           <i className="bi bi-info-circle opacity-25 my-auto ms-2"></i>
         </div>
-        {/* {sendArticle?.image && <img className="img-fluid rounded mb-3" src={STATIC + sendArticle?.image} alt="" />} */}
         <Avatar />
+
         <div className="d-flex mb-3">
           <TextField
             value={sendArticle.content}

@@ -1,5 +1,6 @@
 
 .profile-info
+    display: block
     p
         margin-bottom: 0
         border-radius: .3rem
@@ -7,6 +8,27 @@
         height: min-content
         width: min-content
         margin-right: .3rem
-    button
-        margin-top: auto
-        
+    .buttons
+        // border: 1px solid #ccc
+        text-align: center
+        width: min-content
+        margin-top: 20%
+        width: max-content
+
+.edit-icon-close
+    margin-left: .5rem
+    float: right
+    padding: 0 5px
+    color: red
+    transition: .3s
+
+    &:hover
+        background: #9797972a
+        opacity: .7
+        border-radius: .1rem
+    &:active
+        background: #97979763
+.edit-avatar
+    width: 70%
+    border: 3px dashed #ccc
+    margin: 1rem 15% 0 15%

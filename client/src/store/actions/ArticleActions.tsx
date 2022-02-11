@@ -12,7 +12,7 @@ export function fetchUserArticles(userName?: string) {
     await axiosApp
       .get(`/user_articles/${userName}`)
       .then((res) => {
-        if (res.data.error) console.log(res.data.error)
+        if (res.data.error) console.log(res.data)
         else if (!res.data.error) {
           console.log(res.data)
 
@@ -82,10 +82,16 @@ export function createArticle(postData: CreateArticleData, navigate: NavigateFun
     try {
       const response = await axiosApp.post('/edit/article', sendFormData)
       const data = response.data
+      console.log('data', data)
+
       if (!data.error) {
         navigate(-1)
         console.log(data)
         dispatch(clearArticles())
+      } else {
+        if (data.error === 'EmptyValuesAreEntered') {
+          throw data.error
+        }
       }
     } catch (error) {
       console.log(error)
@@ -159,7 +165,6 @@ export function subscribe(id: number) {
         console.log('SUBSCRIBE SUCCESS')
       } else {
         console.log('SUBSCRIBE ERROR')
-        
       }
     } catch (e) {
       console.log('Error', e)
