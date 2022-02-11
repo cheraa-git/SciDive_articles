@@ -38,6 +38,11 @@ class EmptyValuesAreEntered(Exception):
     Empty values are entered
     '''
 
+class CreateArticleTokenError(Exception):
+    '''
+    Invalid author token
+    '''
+
 class User(Base):
     __tablename__ = 'users'
     id = Column(Integer, primary_key=True)
@@ -277,8 +282,12 @@ def update_article(article_id, user_id, title, image, prev_content, content, cat
             article.category = category
         if article.tags != 'old':
             article.tags = tags    
-    session.commit()
-    session.close()
+        session.commit()
+        session.close()
+    else:
+        session.commit()
+        session.close()
+        raise CreateArticleTokenError
 
 def update_user(user_id, login, email):
     login = login.strip()
