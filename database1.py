@@ -213,7 +213,7 @@ def set_article(user_id, title, image, prev_content, content, category, tags):
     content = content.strip() 
     category = category.strip()
     tags = tags.strip()
-    if title == '' or content == '' or category == '' or tags == '':
+    if title == '' or content == '' or category == '':
         raise EmptyValuesAreEntered
     engine = create_engine('sqlite:///info_data_base.db', echo=True)
     session = Session(bind=engine)
