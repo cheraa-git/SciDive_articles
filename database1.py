@@ -230,9 +230,9 @@ def set_article(user_id, title, image, prev_content, content, category, tags):
 def set_subscription(user_id, blog_id):
     engine = create_engine('sqlite:///info_data_base.db', echo=True)
     session = Session(bind=engine)
-    user = session.query(User).get(user_id).first()
-    subscription = user.blog.subscriptions
-    subscription.append(Subscriptions(user_id=user_id, blog_id=blog_id))
+    # user = session.query(User).get(user_id)
+    subscription = Subscriptions(user_id=user_id, blog_id=blog_id)
+    session.add(subscription)
     session.commit()
     session.close()
 
