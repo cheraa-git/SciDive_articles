@@ -2,9 +2,9 @@ import axiosApp from '../../axios/axiosApp'
 import { userActions } from '../../types/UserTypes'
 
 export function fetchProfile(login: string) {
-  return (dispatch: any) => {
+  return async (dispatch: any) => {
     try {
-      
+      const response = await axiosApp.get(`/profile/${login}`)
     } catch (e) {
       console.log('Error', e)
     }
