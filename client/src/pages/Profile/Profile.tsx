@@ -6,9 +6,9 @@ import defaultAvatar from '../../asserts/default_avatar.png'
 import { ArticlesCardList } from '../../components/ArticlesCardList/ArticlesCardList'
 import { CategoryDropdown } from '../../components/CategoryDropdown'
 import { SpinLoader } from '../../components/UI/Loader/SpinLoader'
-import MenuList from '../../components/UI/MenuList'
 import { STATIC } from '../../config'
-import { fetchUserArticles, follow, unfollow } from '../../store/actions/ArticleActions'
+import { fetchUserArticles } from '../../store/actions/ArticleActions'
+import { follow } from '../../store/actions/UserActions'
 import { RootState } from '../../store/rootReducer'
 import { EditProfileDialog } from './EditProfileDialog'
 import './Profile.sass'
@@ -52,11 +52,24 @@ export const Profile: React.FC = () => {
     }
   }
 
-  const Buttons = () => {
+  const DropdownItems = () => {
     if (localStorage.getItem('userName') === userName) {
-      return <Button onClick={() => setEditDialogOpen(true)}>профиль</Button>
+      return (
+        <li>
+          <p className="dropdown-item mb-0" onClick={() => setEditDialogOpen(true)}>
+            Редактировать
+          </p>
+        </li>
+      )
     } else {
-      return <Button onClick={() => {}}>Подписаться</Button>
+      
+      return (
+        <li>
+          <p className="dropdown-item mb-0" onClick={() => dispatch(follow(articles[0].blog_id))}>
+            Подписаться
+          </p>
+        </li>
+      )
     }
   }
 
@@ -77,11 +90,7 @@ export const Profile: React.FC = () => {
             </Button>
 
             <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-              <li>
-                <p className="dropdown-item mb-0" onClick={() => setEditDialogOpen(true)}>
-                  Редактировать
-                </p>
-              </li>
+              <DropdownItems />
             </ul>
           </div>
         </div>
