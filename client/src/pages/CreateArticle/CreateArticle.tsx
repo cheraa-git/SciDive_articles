@@ -15,6 +15,7 @@ import {
 import { RootState } from '../../store/rootReducer'
 import { CreateArticleData } from '../../types/interfaces'
 import './CreateArticle.sass'
+import { ContentEditor } from '../../components/UI/ContentEditor'
 
 export const CreateArticle: React.FC = () => {
   const dispatch = useDispatch()
@@ -96,9 +97,6 @@ export const CreateArticle: React.FC = () => {
   const htmlContent = (
     <>
       <div className="card-body">
-    
-          asdf
-        </button>
         <div className="d-flex mb-3">
           <TextField
             value={sendArticle.title}
@@ -161,6 +159,7 @@ export const CreateArticle: React.FC = () => {
         </div>
         <Avatar />
 
+        <ContentEditor setState={(value) => setArticle({ content: value })} />
         <div className="d-flex mb-3">
           <TextField
             value={sendArticle.content}

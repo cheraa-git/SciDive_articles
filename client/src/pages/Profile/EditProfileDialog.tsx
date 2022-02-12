@@ -1,4 +1,4 @@
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@mui/material'
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Divider, TextField } from '@mui/material'
 import React, { useState } from 'react'
 import { STATIC } from '../../config'
 import './Profile.sass'
@@ -29,13 +29,13 @@ export const EditProfileDialog: React.FC<editProfileProps> = ({ isOpen, handleCl
 
   return (
     <div className="">
-      <Dialog open={isOpen} maxWidth="xs" fullWidth>
+      <Dialog open={isOpen} maxWidth="xs" fullScreen>
         <DialogTitle>
           Редактирование профиля
           <i className="bi bi-x-lg edit-icon-close" onClick={closeHandler} />
         </DialogTitle>
         <DialogContent>
-          <div className="container-sm">
+          <div className="edit-container">
             <p className="lead m-0">Никнейм</p>
             <TextField
               className="mb-3"
@@ -52,6 +52,15 @@ export const EditProfileDialog: React.FC<editProfileProps> = ({ isOpen, handleCl
             <TextField onChange={avatarHandler} size="small" variant="filled" fullWidth type="file" />
 
             <img className="edit-avatar" src={showAvatar} alt="Аватар" />
+
+            <Divider className='my-3' />
+
+            <div className='text-center'>
+              <Button >Изменить E-mail</Button>
+              <Button >Изменить Пароль</Button>
+              <br />
+              <Button color="error">Удалить аккаунт</Button>
+            </div>
           </div>
         </DialogContent>
 

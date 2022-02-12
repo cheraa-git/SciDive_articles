@@ -6,8 +6,9 @@ import defaultAvatar from '../../asserts/default_avatar.png'
 import { ArticlesCardList } from '../../components/ArticlesCardList/ArticlesCardList'
 import { CategoryDropdown } from '../../components/CategoryDropdown'
 import { SpinLoader } from '../../components/UI/Loader/SpinLoader'
+import MenuList from '../../components/UI/MenuList'
 import { STATIC } from '../../config'
-import { fetchUserArticles } from '../../store/actions/ArticleActions'
+import { fetchUserArticles, follow, unfollow } from '../../store/actions/ArticleActions'
 import { RootState } from '../../store/rootReducer'
 import { EditProfileDialog } from './EditProfileDialog'
 import './Profile.sass'
@@ -20,9 +21,15 @@ export const Profile: React.FC = () => {
   const isMyProfile = userName === localStorage.getItem('userName')
 
   const [editDialogOpen, setEditDialogOpen] = useState(false)
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
+
   useEffect(() => {
     dispatch(fetchUserArticles(userName))
   }, [dispatch, userName])
+
+  const menuHandler = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget)
+  }
 
   const ArticleList = () => {
     if (loading) {
@@ -47,9 +54,9 @@ export const Profile: React.FC = () => {
 
   const Buttons = () => {
     if (localStorage.getItem('userName') === userName) {
-      return <Button onClick={() => setEditDialogOpen(true)}>Редактировать профиль</Button>
+      return <Button onClick={() => setEditDialogOpen(true)}>профиль</Button>
     } else {
-      return <Button>Подписаться</Button>
+      return <Button onClick={() => {}}>Подписаться</Button>
     }
   }
 
@@ -58,34 +65,45 @@ export const Profile: React.FC = () => {
       <div className="card-header d-flex">
         <div>
           <img className="rounded  me-3" src={avatar} alt="Аватар" height={150}></img>
-          <div>
-            <NavLink to={`/profile/${userName}`} className="display-6 mb-0 text-decoration-none ">
+
+          <div className="dropdown">
+            <Button
+              className="fs-3 link"
+              data-bs-toggle="dropdown"
+              style={{ textTransform: 'none' }}
+              endIcon={<i className="bi bi-caret-down" />}
+            >
               @{userName}
-            </NavLink>
+            </Button>
+
+            <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+              <li>
+                <p className="dropdown-item mb-0" onClick={() => setEditDialogOpen(true)}>
+                  Редактировать
+                </p>
+              </li>
+            </ul>
           </div>
         </div>
         <div className="container profile-info">
-          <div className="row">
-            <p className="lead col ">
-              <strong>{articles.length}</strong>
-              <br />
+          <div>
+            <p className="lead">
+              <strong className="me-2">{articles.length}</strong>
+              {/* <br /> */}
               публикаций
             </p>
 
-            <p className="lead col ">
-              <strong>8</strong>
-              <br />
-              подписок
+            <p className="lead">
+              <strong className="me-2">8</strong> подписок
             </p>
-            <p className="lead col ">
-              <strong>20</strong>
-              <br />
+            <p className="lead">
+              <strong className="me-2">20</strong>
               подписчиков
             </p>
           </div>
-          <div className="buttons">
-            <Buttons />
-            <EditProfileDialog isOpen={editDialogOpen} handleClose={() => setEditDialogOpen(false)}/>
+
+          <div className="buttons ms-auto">
+            <EditProfileDialog isOpen={editDialogOpen} handleClose={() => setEditDialogOpen(false)} />
           </div>
         </div>
       </div>

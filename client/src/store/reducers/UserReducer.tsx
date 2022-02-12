@@ -7,13 +7,15 @@ interface IUserInitialState {
   subscribes: number[]
   avatar?: string
   isProfileEdit: boolean
+  userLoading: boolean
 }
 const initialState: IUserInitialState = {
   login: 'Alex',
   blog_id: 2,
   subscribes: [1, 2, 4, 6, 7],
   avatar: '',
-  isProfileEdit: false
+  isProfileEdit: false,
+  userLoading: false
 }
 
 export function userReducer(state = initialState, action: userActions) {

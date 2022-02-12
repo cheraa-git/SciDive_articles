@@ -47,14 +47,18 @@ export const ArticleItem: React.FC<ArticleItemProps> = ({ article, mode }) => {
   }
 
   let textList = null
+  let textList2 = null
   let style = {}
 
   if (mode === 'preview') {
     textList = article.prev_content + '...'
     style = { width: '40%', minWidth: '20rem' }
   } else if (mode === 'full') {
-    textList = article.content?.split('\n').map((el, i) => <p key={i}>{el}</p>)
-    console.log(textList)
+    // textList = article.content?.split('\n').map((el, i) => <p key={i}>{el}</p>)
+    textList = article.content
+    // textList2 = new DOMParser().parseFromString(article.content, 'text/html')
+    // textList2 = document.createElement(article.content)
+    // console.log(textList2.write())
 
     style = { width: '60%', minWidth: '21rem' }
   }
@@ -85,7 +89,9 @@ export const ArticleItem: React.FC<ArticleItemProps> = ({ article, mode }) => {
       <div className="card-body">
         <h2 className="card-title">{article.title}</h2>
         <img src={articleImage} className="card-img-top" alt="" />
-        <div>{textList}</div>
+        {/* <div>{textList}</div> */}
+      <div dangerouslySetInnerHTML={{ __html: textList! }} />
+
         {mode === 'preview' && (
           <NavLink
             to={`/article/${article.id}`}
