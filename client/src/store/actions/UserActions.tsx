@@ -1,6 +1,16 @@
 import axiosApp from '../../axios/axiosApp'
 import { userActions } from '../../types/UserTypes'
 
+export function fetchProfile(login: string) {
+  return (dispatch: any) => {
+    try {
+      
+    } catch (e) {
+      console.log('Error', e)
+    }
+  }
+}
+
 export function follow(id: number) {
   return async (dispatch: any) => {
     try {
