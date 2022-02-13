@@ -4,7 +4,7 @@ import { userActions } from '../../types/UserTypes'
 export function fetchProfile(login: string) {
   return async (dispatch: any) => {
     try {
-      const response = await axiosApp.get(`/profile/${login}`)
+      const response = await axiosApp.get(`/profile/${login}?token=${localStorage.getItem('token')}`)
     } catch (e) {
       console.log('Error', e)
     }
