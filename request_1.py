@@ -350,7 +350,7 @@ def post(form):
             admin = check_admin(user_id)
             login = get_user_login(email)
             token = jwt.encode(
-                {'login': user_id}, key=app.secret_key, algorithm='HS256').decode('utf-8')
+                {'login': user_id}, key=app.secret_key, algorithm='HS256')
             print(token)
             return jsonify({'token': token, 'avatar': f"{avatar}", "admin": admin, "login": login})
         else:
