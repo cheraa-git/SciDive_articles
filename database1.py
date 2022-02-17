@@ -1,3 +1,5 @@
+from calendar import c
+from email import message
 import sys
 import datetime
 # from nis import cat
@@ -7,6 +9,10 @@ from sqlalchemy.orm import relationship, Session, backref
 from sqlalchemy.exc import IntegrityError
 from werkzeug.security import generate_password_hash
 import numpy as np
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+import smtplib
+from random import randint
 
 
 a = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
@@ -496,8 +502,24 @@ def get_profile_info(login):
     session.close()
     return rez
 
+def send_message(to_email, subject, message):
+    msg = MIMEMultipart()    
+    password = "testPassword.111"
+    msg['From'] = "python.app159@gmail.com"
+    msg['To'] = to_email.decode('ascii')
+    msg['Subject'] = subject.decode('ascii')
+    msg.attach(MIMEText(message.decode('ascii'), 'plain'))
+    server = smtplib.SMTP('smtp.gmail.com: 587')
+    server.starttls()
+    server.login(msg['From'], password)
+    server.sendmail(msg['From'], msg['To'], msg.as_string())
+    server.quit()
 
-
+def generate_c_c():
+    c_c = ''
+    for i in range(6):
+        c_c += str(randint(0, 9))
+    return c_c
 
 # add_user("AYE88", 'sss@mail.ru', "2281337")
 

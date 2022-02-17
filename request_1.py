@@ -1,7 +1,8 @@
+from inspect import Attribute
 from flask import Flask, request, session, jsonify, render_template, url_for
 from flask_caching import Cache
 from flask_sockets import Sockets
-from database1 import CreateArticleTokenError, EmptyValuesAreEntered, SignupEmailError, SignupLoginError, get_articles_blog_by_user_id, get_profile_info, get_subscriptions, get_article, get_articles_subscriptions, get_articles_blog, set_article, \
+from database1 import CreateArticleTokenError, EmptyValuesAreEntered, SignupEmailError, SignupLoginError, generate_c_c, get_articles_blog_by_user_id, get_profile_info, get_subscriptions, get_article, get_articles_subscriptions, get_articles_blog, send_message, set_article, \
     set_subscription, del_article, del_subscription, update_article, get_most_recent_articles, get_user_id, request_user_avatar, request_user, check_admin, add_user, check_user_by_email, add_check_password, get_check_password, request_user_login, change_user_password, remove_check_password, get_user_login, plus_view_on_article, update_user
 from database1 import AccountNotFound, AccountExists
 from flask_mail import Mail, Message
@@ -14,6 +15,7 @@ import os
 import subprocess
 import json
 from copy import deepcopy
+
 
 
 app = Flask(__name__, template_folder="templates")
@@ -446,5 +448,24 @@ def edit_profile():
         return jsonify({"error": 'EmptyValuesAreEntered'})
     except:
         return jsonify({"error": True})
+
+@app.route('/send_confirmation_code', methods=["POST"])
+def send_confirmation_code():
+    toEmail = request.json["toEmail"]
+    try:
+        send_message(toEmail.encode('ascii', 'ignore'), "Код подтверждения".encode('ascii', 'ignore'), f"Ваш код подтверждения: {generate_c_c()}".encode('ascii', 'ignore'))
+        return jsonify({'error': False})
+    except AccountExists:
+        return jsonify({'error': True})
+
+@app.route('/confirm_email', methods=["POST"])
+def confirm_email():
+    toEmail = request.json["toEmail"]
+    try:
+        send_message(toEmail, "Подтверждение почты", f"Для подтверждения почты прейдите по ссылке")
+        return jsonify({'error': False})
+    except:
+        return jsonify({'error': True})
+    
 
 app.run()
