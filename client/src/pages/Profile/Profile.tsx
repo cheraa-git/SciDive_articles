@@ -10,8 +10,9 @@ import { STATIC } from '../../config'
 import { fetchUserArticles } from '../../store/actions/ArticleActions'
 import { follow } from '../../store/actions/UserActions'
 import { RootState } from '../../store/rootReducer'
-import { EditProfileDialog } from './EditProfileDialog'
+import { EditProfileDialog } from './ProfileDialogs/EditProfileDialog'
 import './Profile.sass'
+import { EditAuthData } from './ProfileDialogs/EditAuthData'
 
 export const Profile: React.FC = () => {
   const dispatch = useDispatch()
@@ -21,15 +22,10 @@ export const Profile: React.FC = () => {
   const isMyProfile = userName === localStorage.getItem('userName')
 
   const [editDialogOpen, setEditDialogOpen] = useState(false)
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
 
   useEffect(() => {
     dispatch(fetchUserArticles(userName))
   }, [dispatch, userName])
-
-  const menuHandler = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(event.currentTarget)
-  }
 
   const ArticleList = () => {
     if (loading) {
@@ -62,7 +58,6 @@ export const Profile: React.FC = () => {
         </li>
       )
     } else {
-      
       return (
         <li>
           <p className="dropdown-item mb-0" onClick={() => dispatch(follow(articles[0].blog_id))}>
@@ -123,6 +118,8 @@ export const Profile: React.FC = () => {
         <CategoryDropdown />
 
         <ArticleList />
+
+        {/* <EdtiEmail isOpen={true} handleClose={() => {}} /> */}
       </div>
     </div>
   )

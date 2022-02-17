@@ -1,7 +1,8 @@
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Divider, TextField } from '@mui/material'
 import React, { useState } from 'react'
-import { STATIC } from '../../config'
-import './Profile.sass'
+import { STATIC } from '../../../config'
+import '../Profile.sass'
+import { EditAuthData } from './EditAuthData'
 
 interface editProfileProps {
   isOpen: boolean
@@ -12,6 +13,9 @@ export const EditProfileDialog: React.FC<editProfileProps> = ({ isOpen, handleCl
   const [userName, setUserName] = useState(localStorage.getItem('userName'))
   const [sendAvatar, setSendAvatar] = useState<File>()
   const [showAvatar, setShowAvatar] = useState(STATIC + localStorage.getItem('userAvatar'))
+
+
+  const [authMode, setAuthMode] = useState<'password' | 'email' | null>(null)
 
   const saveHandler = () => {}
   const closeHandler = () => {
@@ -28,7 +32,7 @@ export const EditProfileDialog: React.FC<editProfileProps> = ({ isOpen, handleCl
   }
 
   return (
-    <div className="">
+    <div>
       <Dialog open={isOpen} maxWidth="xs" fullScreen>
         <DialogTitle>
           Редактирование профиля
@@ -53,13 +57,14 @@ export const EditProfileDialog: React.FC<editProfileProps> = ({ isOpen, handleCl
 
             <img className="edit-avatar" src={showAvatar} alt="Аватар" />
 
-            <Divider className='my-3' />
+            <Divider className="my-3" />
 
-            <div className='text-center'>
-              <Button >Изменить E-mail</Button>
-              <Button >Изменить Пароль</Button>
+            <div className="text-center">
+              <Button onClick={() => setAuthMode('email')}>Изменить E-mail</Button>
+              <Button onClick={() => setAuthMode('password')}>Изменить Пароль</Button>
               <br />
               <Button color="error">Удалить аккаунт</Button>
+              <EditAuthData mode={authMode} handleClose={() => setAuthMode(null)} />
             </div>
           </div>
         </DialogContent>
