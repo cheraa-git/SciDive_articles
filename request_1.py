@@ -15,6 +15,7 @@ import os
 import subprocess
 import json
 from copy import deepcopy
+from send_email import send_email_handler
 
 
 
@@ -453,7 +454,7 @@ def edit_profile():
 def send_confirmation_code():
     toEmail = request.json["toEmail"]
     try:
-        send_message(toEmail.encode('ascii', 'ignore'), "Код подтверждения".encode('ascii', 'ignore'), f"Ваш код подтверждения: {generate_c_c()}".encode('ascii', 'ignore'))
+        send_message(toEmail, "SciDive Articles", f"Ваш код подтврежднеия {generate_c_c()}")
         return jsonify({'error': False})
     except AccountExists:
         return jsonify({'error': True})

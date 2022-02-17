@@ -14,8 +14,7 @@ export const EditProfileDialog: React.FC<editProfileProps> = ({ isOpen, handleCl
   const [sendAvatar, setSendAvatar] = useState<File>()
   const [showAvatar, setShowAvatar] = useState(STATIC + localStorage.getItem('userAvatar'))
 
-
-  const [authMode, setAuthMode] = useState<'password' | 'email' | null>(null)
+  const [authMode, setAuthMode] = useState<'password' | 'email' | 'delete' | null>(null)
 
   const saveHandler = () => {}
   const closeHandler = () => {
@@ -63,7 +62,7 @@ export const EditProfileDialog: React.FC<editProfileProps> = ({ isOpen, handleCl
               <Button onClick={() => setAuthMode('email')}>Изменить E-mail</Button>
               <Button onClick={() => setAuthMode('password')}>Изменить Пароль</Button>
               <br />
-              <Button color="error">Удалить аккаунт</Button>
+              <Button onClick={() => setAuthMode('delete')} color="error">Удалить аккаунт</Button>
               <EditAuthData mode={authMode} handleClose={() => setAuthMode(null)} />
             </div>
           </div>

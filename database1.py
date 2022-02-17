@@ -502,18 +502,22 @@ def get_profile_info(login):
     session.close()
     return rez
 
+
 def send_message(to_email, subject, message):
     msg = MIMEMultipart()    
     password = "testPassword.111"
     msg['From'] = "python.app159@gmail.com"
-    msg['To'] = to_email.decode('ascii')
-    msg['Subject'] = subject.decode('ascii')
-    msg.attach(MIMEText(message.decode('ascii'), 'plain'))
-    server = smtplib.SMTP('smtp.gmail.com: 587')
-    server.starttls()
+    msg['To'] = to_email
+    msg['Subject'] = subject
+    
+    msg.attach(MIMEText(message, 'plain'))
+
+    
+    server = smtplib.SMTP_SSL('smtp.gmail.com: 465')
     server.login(msg['From'], password)
-    server.sendmail(msg['From'], msg['To'], msg.as_string())
+    server.sendmail(msg['From'], msg['To'], msg.as_string().encode('utf-8'))
     server.quit()
+
 
 def generate_c_c():
     c_c = ''
