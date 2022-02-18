@@ -8,7 +8,7 @@ import { CategoryDropdown } from '../../components/CategoryDropdown'
 import { SpinLoader } from '../../components/UI/Loader/SpinLoader'
 import { STATIC } from '../../config'
 import { fetchUserArticles } from '../../store/actions/ArticleActions'
-import { follow } from '../../store/actions/UserActions'
+import { fetchProfile, follow } from '../../store/actions/UserActions'
 import { RootState } from '../../store/rootReducer'
 import { EditProfileDialog } from './ProfileDialogs/EditProfileDialog'
 import './Profile.sass'
@@ -70,6 +70,7 @@ export const Profile: React.FC = () => {
 
   return (
     <div className="card m-2 p-0">
+      <button onClick={() => dispatch(fetchProfile(userName!))}>fetchProfile</button>
       <div className="card-header d-flex">
         <div>
           <img className="rounded  me-3" src={avatar} alt="Аватар" height={150}></img>

@@ -15,7 +15,6 @@ import os
 import subprocess
 import json
 from copy import deepcopy
-from send_email import send_email_handler
 
 
 
