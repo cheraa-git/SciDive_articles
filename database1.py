@@ -473,8 +473,8 @@ def get_profile_info(login):
     session = Session(bind=engine)
     user = session.query(User).filter_by(login=login).first()
     subscrip = session.query(Subscriptions).filter_by(user_id=user.id).all()
-    subscriptions = {}
-    subscribers = {}
+    subscriptions = []
+    subscribers = []
     for i in range(len(subscrip)):
         usr = session.query(User).get(subscrip[i].blog_id)
         sub = {
@@ -482,7 +482,7 @@ def get_profile_info(login):
             'login': usr.login,
             'avatar': usr.avatar
         }
-        subscriptions[i] = sub
+        subscriptions.append(sub)
     subscrib = session.query(Subscriptions).filter_by(blog_id=user.id).all()
     for i in range(len(subscrib)):
         usr = session.query(User).get(subscrib[i].user_id)
@@ -491,10 +491,11 @@ def get_profile_info(login):
             'login': usr.login,
             'avatar': usr.avatar
         }
-        subscribers[i] = sub
+        subscribers.append(sub)
     rez = {
         "login": user.login,
-        "email": user.email,
+        # "email": user.email,
+        "blog_id": user.id,
         "avatar": user.avatar,
         "subscriptions": subscriptions,
         "subscribers": subscribers,

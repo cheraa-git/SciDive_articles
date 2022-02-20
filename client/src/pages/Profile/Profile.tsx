@@ -1,4 +1,4 @@
-import { Button } from '@mui/material'
+import { Backdrop, Box, Button, LinearProgress } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { NavLink, useParams } from 'react-router-dom'
@@ -8,15 +8,15 @@ import { CategoryDropdown } from '../../components/CategoryDropdown'
 import { SpinLoader } from '../../components/UI/Loader/SpinLoader'
 import { STATIC } from '../../config'
 import { fetchUserArticles } from '../../store/actions/ArticleActions'
-import { fetchProfile, follow } from '../../store/actions/UserActions'
+import { fetchProfile, follow, unfollow } from '../../store/actions/UserActions'
 import { RootState } from '../../store/rootReducer'
 import { EditProfileDialog } from './ProfileDialogs/EditProfileDialog'
 import './Profile.sass'
-import { EditAuthData } from './ProfileDialogs/EditAuthData'
 
 export const Profile: React.FC = () => {
   const dispatch = useDispatch()
-  const { articles, currentCategory, loading } = useSelector((state: RootState) => state.article)
+  const { articles, currentCategory, loading: articleLoading } = useSelector((state: RootState) => state.article)
+  const { loading: profileLoading, subscribers, subscriptions, blog_id } = useSelector((state: RootState) => state.user)
   const avatar = articles[0]?.author.avatar ? STATIC + articles[0]?.author.avatar : defaultAvatar
   const { userName } = useParams()
   const isMyProfile = userName === localStorage.getItem('userName')
@@ -24,11 +24,18 @@ export const Profile: React.FC = () => {
   const [editDialogOpen, setEditDialogOpen] = useState(false)
 
   useEffect(() => {
+    if (userName) {
+      dispatch(fetchProfile(userName))
+    } else {
+      console.log('userName not found')
+    }
+  }, [dispatch])
+  useEffect(() => {
     dispatch(fetchUserArticles(userName))
   }, [dispatch, userName])
 
   const ArticleList = () => {
-    if (loading) {
+    if (articleLoading) {
       return <SpinLoader />
     } else {
       return articles.length > 0 ? (
@@ -58,20 +65,33 @@ export const Profile: React.FC = () => {
         </li>
       )
     } else {
-      return (
-        <li>
-          <p className="dropdown-item mb-0" onClick={() => dispatch(follow(articles[0].blog_id))}>
-            Подписаться
-          </p>
-        </li>
-      )
+      if (subscribers.findIndex((el) => el.login === localStorage.getItem('userName')) >= 0) {
+        return (
+          <li>
+            <p
+              className="dropdown-item mb-0"
+              onClick={() => dispatch(unfollow(blog_id, localStorage.getItem('userName')!))}
+            >
+              Отменить подписку
+            </p>
+          </li>
+        )
+      } else {
+        return (
+          <li>
+            <p className="dropdown-item mb-0" onClick={() => dispatch(follow(articles[0].blog_id))}>
+              Подписаться
+            </p>
+          </li>
+        )
+      }
     }
   }
 
   return (
     <div className="card m-2 p-0">
-      <button onClick={() => dispatch(fetchProfile(userName!))}>fetchProfile</button>
-      <div className="card-header d-flex">
+      {profileLoading && <LinearProgress />}
+      <div className={`card-header d-flex ${profileLoading && 'opacity-50'}`}>
         <div>
           <img className="rounded  me-3" src={avatar} alt="Аватар" height={150}></img>
 
@@ -93,18 +113,41 @@ export const Profile: React.FC = () => {
         <div className="container profile-info">
           <div>
             <p className="lead">
-              <strong className="me-2">{articles.length}</strong>
-              {/* <br /> */}
-              публикаций
+              Публикаций: <strong className="me-2">{articles.length}</strong>
             </p>
 
-            <p className="lead">
-              <strong className="me-2">8</strong> подписок
+            <p className="lead" data-bs-toggle="dropdown">
+              <strong className="me-2">Подписок: {subscriptions.length}</strong>
             </p>
-            <p className="lead">
-              <strong className="me-2">20</strong>
-              подписчиков
+            <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton2">
+              {subscriptions.map((el, index) => (
+                <li key={index}>
+                  <NavLink to={`/profile/${el.login}`} className="dropdown-item mb-0">
+                    {el.login}
+                  </NavLink>
+                </li>
+              ))}
+            </ul>
+
+            <p className="lead" data-bs-toggle="dropdown">
+              <strong className="me-2">Подписчиков: {subscribers.length}</strong>
             </p>
+            <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton3">
+              {subscribers.map((el, index) => (
+                <li key={index} className="d-flex">
+                  <NavLink to={`/profile/${el.login}`} className="dropdown-item mb-0">
+                    <img
+                      className="float-start rounded-circle me-3"
+                      src={STATIC + el.avatar}
+                      width={25}
+                      height={25}
+                      alt=""
+                    />
+                    {el.login}
+                  </NavLink>
+                </li>
+              ))}
+            </ul>
           </div>
 
           <div className="buttons ms-auto">
@@ -119,8 +162,6 @@ export const Profile: React.FC = () => {
         <CategoryDropdown />
 
         <ArticleList />
-
-        {/* <EdtiEmail isOpen={true} handleClose={() => {}} /> */}
       </div>
     </div>
   )

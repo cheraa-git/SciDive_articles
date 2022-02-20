@@ -9,3 +9,12 @@ export const SET_SEND_ARTICLE = 'SET_SEND_ARTICLE'
 export const LOGIN_USER = 'LOGIN_USER'
 export const LOGOUT_USER = 'LOGOUT_USER'
 export const AUTO_AUTH_SUCCESS = 'AUTO_AUTH_SUCCESS'
+
+// PROFILE
+export const SET_PROFILE = 'SET_PROFILE'
+export const SET_PROFLE_LOADING = 'SET_PROFLE_LOADING'
+export const START_PROFILE = 'START_PROFILE'
+export const FOLLOW = 'FOLLOW'
+export const UNFOLLOW = 'UNFOLLOW'
+
+

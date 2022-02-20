@@ -1,3 +1,4 @@
+// ARTICLE
 export interface Article {
   id: number
   blog_id: number
@@ -27,3 +28,17 @@ export interface CreateArticleData {
 }
 
 ////////////////////////////////////////////////////
+//PROFILE
+export interface ProfileSubscribeItem {
+  login: string
+  avatar: string
+  blog_id: number
+}
+
+export interface ProfilePayload {
+  avatar: string
+  login: string
+  blog_id: number
+  subscribers: ProfileSubscribeItem[]
+  subscriptions: ProfileSubscribeItem[]
+}
