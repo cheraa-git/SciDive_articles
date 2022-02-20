@@ -151,8 +151,8 @@ export const AuthPage: React.FC = () => {
   }
 
   return (
-    <div className="container">
-      <div className="bg-opacity-10 mx-auto border p-4" style={{ width: '60%', minWidth: '21rem' }}>
+    <div className="container bg-translucent-light">
+      <div className="mx-auto p-4" style={{ width: '60%', minWidth: '21rem' }}>
         {content}
       </div>
     </div>

@@ -54,17 +54,12 @@ export const ArticleItem: React.FC<ArticleItemProps> = ({ article, mode }) => {
     textList = article.prev_content + '...'
     style = { width: '40%', minWidth: '20rem' }
   } else if (mode === 'full') {
-    // textList = article.content?.split('\n').map((el, i) => <p key={i}>{el}</p>)
     textList = article.content
-    // textList2 = new DOMParser().parseFromString(article.content, 'text/html')
-    // textList2 = document.createElement(article.content)
-    // console.log(textList2.write())
-
     style = { width: '60%', minWidth: '21rem' }
   }
   return (
-    <div className="card m-2 p-0" style={style}>
-      <div className="card-header d-block">
+    <div className="card m-2 p-3 bg-translucent-light" style={style}>
+      <div className="d-block">
         <div className="d-flex">
           <img className="float-start rounded-circle" src={avatarImage} width={30} height={30} alt="" />
           <NavLink to={`/profile/${article.author.login}`} className="float-start ms-2 link">
@@ -87,25 +82,26 @@ export const ArticleItem: React.FC<ArticleItemProps> = ({ article, mode }) => {
       </div>
 
       <div className="card-body">
-        <h2 className="card-title">{article.title}</h2>
+        <h2 className="card-title display-5">{article.title}</h2>
         <img src={articleImage} className="card-img-top" alt="" />
         {/* <div>{textList}</div> */}
-      <div dangerouslySetInnerHTML={{ __html: textList! }} />
+        <div dangerouslySetInnerHTML={{ __html: textList! }} />
 
         {mode === 'preview' && (
           <NavLink
             to={`/article/${article.id}`}
             onClick={() => dispatch(addView(Number(article.id)))}
-            className="btn btn-primary mt-2"
+            className="btn btn-primary mt-2 align-bottom"
           >
             Читать далее
           </NavLink>
         )}
       </div>
-
-      <div className="card-footer text-muted text-end">
-        <i className="bi bi-eye"></i>
-        {article.views}
+      <div style={{ height: '100%' }} className={'align-bottom'}>
+        <div className="card-footer text-muted d-flex">
+          <i className="bi bi-eye ms-auto"></i>
+          {article.views}
+        </div>
       </div>
     </div>
   )

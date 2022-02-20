@@ -25,7 +25,7 @@ function App() {
       return (
         <>
           <NavBar />
-          <div className="container-xxl">
+          <div className="container-fluid bg-main">
             <Routes>
               <Route element={<HomePage />} path="/" />
               <Route element={<CreateArticle />} path="/create_article" />
@@ -40,7 +40,7 @@ function App() {
       return (
         <>
           <NavBar />
-          <div className="container-xxl">
+          <div className="container-fluid bg-main">
             <Routes>
               <Route element={<AuthPage />} path="/auth/:mode" />
               <Route element={<HomePage />} path="/" />
