@@ -159,7 +159,9 @@ export const Profile: React.FC = () => {
       <div className="card-body">
         {isMyProfile && <h1 className="display-6 mb-0">Мои статьи</h1>}
 
-        <CategoryDropdown />
+        <div style={{width: 'min-content'}}>
+          <CategoryDropdown />
+        </div>
 
         <ArticleList />
       </div>

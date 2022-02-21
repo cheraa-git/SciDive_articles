@@ -2,25 +2,25 @@ import React from 'react'
 import { Editor } from '@tinymce/tinymce-react'
 
 interface ContentEditonProps {
-  setState: (value: string) => void
+  setValue: (value: string) => void
+  value: string
 }
 
-export const ContentEditor: React.FC<ContentEditonProps> = ({ setState }) => {
+export const ContentEditor: React.FC<ContentEditonProps> = ({ setValue, value }) => {
   const handleEditorChange = (e: any) => {
-    setState(e.target.getContent())
-    console.log('Content was updated:', e.target.getContent())
+    setValue(e)
   }
   return (
     <>
       <Editor
         apiKey="ni51cpobo4hmhf0n91j5vjva4c7903zur4lmvljalmlqetf9"
-        initialValue="<p>Initial content</p>"
+        value={value}
         init={{
           height: 550,
           toolbar1:
-            'undo redo | fontsizeselect | fontselect | alignleft aligncenter alignright alignjustify | outdent indent | lineheight | bold italic  | h1 h2 h3 h4 h5 h6 | forecolor backcolory | ',
+            'undo redo | fontsizeselect | alignleft aligncenter alignright alignjustify | outdent indent | lineheight | bold italic  | h1 h2 h3 h4 h5 h6 | forecolor backcolory | ',
         }}
-        onChange={handleEditorChange}
+        onEditorChange={(value) => setValue(value)}
       />
     </>
   )

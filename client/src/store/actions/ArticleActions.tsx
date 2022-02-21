@@ -104,6 +104,8 @@ export function editArticle(postData: CreateArticleData, navigate: NavigateFunct
     const sendFormData = new FormData()
     if (postData.sendAvatar) {
       sendFormData.append('image', postData.sendAvatar)
+      console.log('IMAGE', sendFormData.get('image'))
+      
     }
     sendFormData.append('token', postData.token!)
     sendFormData.append('title', postData.title)

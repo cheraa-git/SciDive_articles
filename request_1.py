@@ -284,16 +284,22 @@ def update_article_(article_id):
     category = data['category']
     tags = data['tags']
     try:
-        file = request.files["image"]
-        extens = file.filename.split(".")[-1].replace("\"", "")
-        # Создаём имя файла, хэшируя его
-        file_name = generate_password_hash(title + secret_key_for_images)
-        # Убираем из названия все : и тп
-        file_name = file_name.replace(":", "") + '.' + extens
-        path = app.config["UPLOAD_FOLDER"]
-        full_path = path + file_name
-        print("Это full path: " + full_path)
+        try:
+          if data["image"] == "old":
+            file_name = 'old'
+        except:
+          print('OLD_ERROR')
+          file = request.files["image"]
+          extens = file.filename.split(".")[-1].replace("\"", "")
+          # Создаём имя файла, хэшируя его
+          file_name = generate_password_hash(title + secret_key_for_images)
+          # Убираем из названия все : и тп
+          file_name = file_name.replace(":", "") + '.' + extens
+          path = app.config["UPLOAD_FOLDER"]
+          full_path = path + file_name
+          print("Это full path: " + full_path)
     except:
+        print('FILES_ERROR')
         file_name = ''
     # info = []
     # info_dict = {}

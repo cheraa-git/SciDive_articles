@@ -56,6 +56,9 @@ export const CreateArticle: React.FC = () => {
       }
       if (editId) {
         payload.id = editId
+        if (!payload.sendAvatar) {
+          payload.sendAvatar = 'old'
+        }
         dispatch(editArticle(payload, navigate))
       } else {
         dispatch(createArticle(payload, navigate))
@@ -94,14 +97,14 @@ export const CreateArticle: React.FC = () => {
     return <img className="img-fluid rounded mb-3" src={path} alt="" />
   }
 
-  const htmlContent = (
+  const htmlContent = () => (
     <>
-      <div className="card-body">
+      <div className="card-body bg-translucent-light">
         <div className="d-flex mb-3">
           <TextField
             value={sendArticle.title}
             onChange={(e) => setArticle({ title: e.target.value })}
-            variant="filled"
+            variant="standard"
             label="Название *"
             size="small"
             fullWidth
@@ -116,7 +119,7 @@ export const CreateArticle: React.FC = () => {
           <TextField
             value={sendArticle.category}
             onChange={(e) => setArticle({ category: e.target.value })}
-            variant="filled"
+            variant="standard"
             select
             fullWidth
             label="Категория *"
@@ -136,7 +139,7 @@ export const CreateArticle: React.FC = () => {
           <TextField
             value={sendArticle.prev_content}
             onChange={(e) => setArticle({ prev_content: e.target.value })}
-            variant="filled"
+            // variant="filled"
             label="Краткое описание"
             size="small"
             fullWidth
@@ -154,12 +157,12 @@ export const CreateArticle: React.FC = () => {
 
         <div className="d-flex mb-3">
           <p className="lead my-auto me-2">Аватарка:</p>
-          <TextField variant="filled" type="file" onChange={avatarHandler} />
+          <TextField variant="standard" type="file" onChange={avatarHandler} />
           <i className="bi bi-info-circle opacity-25 my-auto ms-2"></i>
         </div>
         <Avatar />
 
-        <ContentEditor setState={(value) => setArticle({ content: value })} />
+        <ContentEditor value={sendArticle.content} setValue={(value) => setArticle({ content: value })} />
         <div className="d-flex mb-3">
           <TextField
             value={sendArticle.content}
@@ -185,7 +188,7 @@ export const CreateArticle: React.FC = () => {
   )
 
   return (
-    <div className="create-article card mx-auto" style={{ width: '65%', minWidth: '21rem' }}>
+    <div className="create-article card mx-auto bg-translucent-light" style={{ width: '65%', minWidth: '21rem' }}>
       <div className="card-header">
         <h1 className="display-5">{editId ? 'Редактирование' : 'Создание'} статьи</h1>
         {editId ? (
@@ -205,7 +208,8 @@ export const CreateArticle: React.FC = () => {
           </div>
         ) : null}
       </div>
-      {loading ? <SpinLoader /> : htmlContent}
+      {loading ? <SpinLoader /> : htmlContent()}
+     
     </div>
   )
 }

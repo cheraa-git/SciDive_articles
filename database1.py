@@ -279,15 +279,15 @@ def update_article(article_id, user_id, title, image, prev_content, content, cat
     if user.id == article.blog_id:
         if title != 'old':
             article.title = title
-        if article.image != 'old':
+        if image != 'old':
             article.image = image
-        if article.prev_content != 'old':
+        if prev_content != 'old':
             article.prev_content = prev_content
-        if article.content != 'old':
+        if content != 'old':
             article.content = content
-        if article.category != 'old':
+        if category != 'old':
             article.category = category
-        if article.tags != 'old':
+        if tags != 'old':
             article.tags = tags    
         session.commit()
         session.close()
