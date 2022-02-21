@@ -162,23 +162,14 @@ export const CreateArticle: React.FC = () => {
         </div>
         <Avatar />
 
-        <ContentEditor value={sendArticle.content} setValue={(value) => setArticle({ content: value })} />
-        <div className="d-flex mb-3">
-          <TextField
-            value={sendArticle.content}
-            onChange={(e) => setArticle({ content: e.target.value })}
-            variant="filled"
-            label="Содержание *"
-            size="small"
-            fullWidth
-            multiline
-            rows={7}
-          />
+        <div className="d-flex">
+          <p className="lead fs-3 mb-1">Содержание:</p>
           <Tooltip title={'Обязательное поле'} placement="right">
             <i className="bi bi-info-circle my-auto ms-2"></i>
           </Tooltip>
         </div>
-        <div className="text-end">
+        <ContentEditor value={sendArticle.content} setValue={(value) => setArticle({ content: value })} />
+        <div className="text-end mt-3">
           <Button variant="contained" onClick={submitHandler}>
             {editId ? 'Сохранить изменения' : 'Создать'}
           </Button>
@@ -209,7 +200,6 @@ export const CreateArticle: React.FC = () => {
         ) : null}
       </div>
       {loading ? <SpinLoader /> : htmlContent()}
-     
     </div>
   )
 }

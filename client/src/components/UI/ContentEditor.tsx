@@ -17,8 +17,8 @@ export const ContentEditor: React.FC<ContentEditonProps> = ({ setValue, value })
         value={value}
         init={{
           height: 550,
-          toolbar1:
-            'undo redo | fontsizeselect | alignleft aligncenter alignright alignjustify | outdent indent | lineheight | bold italic  | h1 h2 h3 h4 h5 h6 | forecolor backcolory | ',
+          toolbar:
+            'undo redo | fontsizeselect | alignleft aligncenter alignright alignjustify | outdent indent | lineheight | bold italic underline | forecolor backcolory | ',
         }}
         onEditorChange={(value) => setValue(value)}
       />
