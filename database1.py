@@ -3,7 +3,7 @@ from email import message
 import sys
 import datetime
 # from nis import cat
-from sqlalchemy import Column, Integer, String, Text, ForeignKey, Boolean, create_engine, DateTime, desc
+from sqlalchemy import Column, Integer, String, Text, ForeignKey, Boolean, create_engine, DateTime, desc, null
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, Session, backref
 from sqlalchemy.exc import IntegrityError
@@ -279,15 +279,15 @@ def update_article(article_id, user_id, title, image, prev_content, content, cat
     if user.id == article.blog_id:
         if title != 'old':
             article.title = title
-        if image != 'old':
+        if article.image != 'old':
             article.image = image
-        if prev_content != 'old':
+        if article.prev_content != 'old':
             article.prev_content = prev_content
-        if content != 'old':
+        if article.content != 'old':
             article.content = content
-        if category != 'old':
+        if article.category != 'old':
             article.category = category
-        if tags != 'old':
+        if article.tags != 'old':
             article.tags = tags    
         session.commit()
         session.close()
@@ -473,8 +473,7 @@ def get_profile_info(login):
     session = Session(bind=engine)
     user = session.query(User).filter_by(login=login).first()
     subscrip = session.query(Subscriptions).filter_by(user_id=user.id).all()
-    subscriptions = []
-    subscribers = []
+    print(subscrip)
     for i in range(len(subscrip)):
         usr = session.query(User).get(subscrip[i].blog_id)
         sub = {
@@ -482,8 +481,9 @@ def get_profile_info(login):
             'login': usr.login,
             'avatar': usr.avatar
         }
-        subscriptions.append(sub)
+        subscriptions = {i: sub}
     subscrib = session.query(Subscriptions).filter_by(blog_id=user.id).all()
+    print(subscrib)
     for i in range(len(subscrib)):
         usr = session.query(User).get(subscrib[i].user_id)
         sub = {
@@ -491,11 +491,10 @@ def get_profile_info(login):
             'login': usr.login,
             'avatar': usr.avatar
         }
-        subscribers.append(sub)
+        subscribers = {i: sub}
     rez = {
         "login": user.login,
-        # "email": user.email,
-        "blog_id": user.id,
+        "email": user.email,
         "avatar": user.avatar,
         "subscriptions": subscriptions,
         "subscribers": subscribers,
@@ -525,6 +524,71 @@ def generate_c_c():
     for i in range(6):
         c_c += str(randint(0, 9))
     return c_c
+
+def add_forgot_code_to_user(email):
+    engine = create_engine('sqlite:///info_data_base.db', echo=True)
+    session = Session(bind=engine)
+    email = email.lower()
+    user = session.query(User).filter_by(email=email).first()
+    if not user:
+        session.close()
+        raise AccountNotFound
+    code = generate_c_c()
+    user.forgot_code = code
+    session.commit()
+    send_message(email, 'Код подтверждения для смены данных', f'Ваш код подтврежднеия: {code}')
+    session.close()
+
+def change_user_login(user_id, old_login, new_login, forgot_code):
+    old_login = old_login.strip()
+    new_login = new_login.strip() 
+    if old_login == '' or new_login == '':
+        raise EmptyValuesAreEntered
+    engine = create_engine('sqlite:///info_data_base.db', echo=True)
+    session = Session(bind=engine)
+    user = session.query(User).get(user_id)
+    if old_login != new_login and user.forgot_code == forgot_code and user.forgot_code != 0:
+        user.login = new_login 
+        user.forgot_code = 0   
+    session.commit()
+    session.close()
+
+def change_user_email(user_id, old_email, new_email, forgot_code):
+    old_email = old_email.strip()
+    new_email = new_email.strip() 
+    if old_email == '' or new_email == '':
+        raise EmptyValuesAreEntered
+    engine = create_engine('sqlite:///info_data_base.db', echo=True)
+    session = Session(bind=engine)
+    user = session.query(User).get(user_id)
+    if old_email != new_email and user.forgot_code == forgot_code and user.forgot_code != 0:
+        user.login = new_email    
+        user.forgot_code = 0
+    session.commit()
+    session.close()
+
+def change_user_password(user_id, old_password, new_password, forgot_code):
+    old_password = old_password.strip()
+    new_password = new_password.strip() 
+    if old_password == '' or new_password == '':
+        raise EmptyValuesAreEntered
+    engine = create_engine('sqlite:///info_data_base.db', echo=True)
+    session = Session(bind=engine)
+    user = session.query(User).get(user_id)
+    new_password = generate_password_hash(new_password)
+    if old_password != new_password and user.forgot_code == forgot_code and user.forgot_code != 0:
+        user.login = new_password  
+        user.forgot_code = 0  
+    session.commit()
+    session.close()
+
+def change_user_avatar(user_id, new_avatar_path):
+    engine = create_engine('sqlite:///info_data_base.db', echo=True)
+    session = Session(bind=engine)
+    user = session.query(User).get(user_id)
+    user.avatar = new_avatar_path  
+    session.commit()
+    session.close()
 
 # add_user("AYE88", 'sss@mail.ru', "2281337")
 
