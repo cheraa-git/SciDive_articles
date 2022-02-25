@@ -16,7 +16,7 @@ import './Profile.sass'
 export const Profile: React.FC = () => {
   const dispatch = useDispatch()
   const { articles, currentCategory, loading: articleLoading } = useSelector((state: RootState) => state.article)
-  const { loading: profileLoading, subscribers, subscriptions, blog_id } = useSelector((state: RootState) => state.user)
+  let { loading: profileLoading, subscribers, subscriptions, blog_id } = useSelector((state: RootState) => state.user)
   const avatar = articles[0]?.author.avatar ? STATIC + articles[0]?.author.avatar : defaultAvatar
   const { userName } = useParams()
   const isMyProfile = userName === localStorage.getItem('userName')
@@ -117,12 +117,19 @@ export const Profile: React.FC = () => {
             </p>
 
             <p className="lead" data-bs-toggle="dropdown">
-              <strong className="me-2">Подписок: {subscriptions.length}</strong>
+              Подписок: <strong className="me-2">{subscriptions.length}</strong>
             </p>
             <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton2">
               {subscriptions.map((el, index) => (
                 <li key={index}>
                   <NavLink to={`/profile/${el.login}`} className="dropdown-item mb-0">
+                    <img
+                      className="float-start rounded-circle me-3"
+                      src={STATIC + el.avatar}
+                      width={25}
+                      height={25}
+                      alt=""
+                    />
                     {el.login}
                   </NavLink>
                 </li>
@@ -130,7 +137,7 @@ export const Profile: React.FC = () => {
             </ul>
 
             <p className="lead" data-bs-toggle="dropdown">
-              <strong className="me-2">Подписчиков: {subscribers.length}</strong>
+              Подписчиков: <strong className="me-2"> {subscribers.length}</strong>
             </p>
             <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton3">
               {subscribers.map((el, index) => (

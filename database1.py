@@ -279,15 +279,15 @@ def update_article(article_id, user_id, title, image, prev_content, content, cat
     if user.id == article.blog_id:
         if title != 'old':
             article.title = title
-        if article.image != 'old':
+        if image != 'old':
             article.image = image
-        if article.prev_content != 'old':
+        if prev_content != 'old':
             article.prev_content = prev_content
-        if article.content != 'old':
+        if content != 'old':
             article.content = content
-        if article.category != 'old':
+        if category != 'old':
             article.category = category
-        if article.tags != 'old':
+        if tags != 'old':
             article.tags = tags    
         session.commit()
         session.close()
@@ -473,7 +473,8 @@ def get_profile_info(login):
     session = Session(bind=engine)
     user = session.query(User).filter_by(login=login).first()
     subscrip = session.query(Subscriptions).filter_by(user_id=user.id).all()
-    print(subscrip)
+    subscriptions = []
+    subscribers = []
     for i in range(len(subscrip)):
         usr = session.query(User).get(subscrip[i].blog_id)
         sub = {
@@ -481,7 +482,7 @@ def get_profile_info(login):
             'login': usr.login,
             'avatar': usr.avatar
         }
-        subscriptions = {i: sub}
+        subscriptions.append(sub)
     subscrib = session.query(Subscriptions).filter_by(blog_id=user.id).all()
     print(subscrib)
     for i in range(len(subscrib)):
@@ -491,10 +492,10 @@ def get_profile_info(login):
             'login': usr.login,
             'avatar': usr.avatar
         }
-        subscribers = {i: sub}
+        subscribers.append(sub)
     rez = {
         "login": user.login,
-        "email": user.email,
+        # "email": user.email,
         "avatar": user.avatar,
         "subscriptions": subscriptions,
         "subscribers": subscribers,
