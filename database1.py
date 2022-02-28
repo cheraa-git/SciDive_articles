@@ -43,7 +43,10 @@ class EmptyValuesAreEntered(Exception):
     '''
     Empty values are entered
     '''
-
+class EditAuthDataError(Exception) :
+  '''
+  asfd
+  '''
 class CreateArticleTokenError(Exception):
     '''
     Invalid author token
@@ -540,17 +543,16 @@ def add_forgot_code_to_user(email):
     send_message(email, 'Код подтверждения для смены данных', f'Ваш код подтврежднеия: {code}')
     session.close()
 
-def change_user_login(user_id, old_login, new_login, forgot_code):
-    old_login = old_login.strip()
+def change_user_login(user_id, new_login):
     new_login = new_login.strip() 
-    if old_login == '' or new_login == '':
+    if new_login == '':
         raise EmptyValuesAreEntered
     engine = create_engine('sqlite:///info_data_base.db', echo=True)
     session = Session(bind=engine)
+    check_login = session.query(User).filter_by(login = new_login).first()
     user = session.query(User).get(user_id)
-    if old_login != new_login and user.forgot_code == forgot_code and user.forgot_code != 0:
+    if user.login != new_login and check_login.login != new_login:
         user.login = new_login 
-        user.forgot_code = 0   
     session.commit()
     session.close()
 
@@ -561,10 +563,13 @@ def change_user_email(user_id, old_email, new_email, forgot_code):
         raise EmptyValuesAreEntered
     engine = create_engine('sqlite:///info_data_base.db', echo=True)
     session = Session(bind=engine)
+    check_user = session.query(User).filter_by(email = new_email).first()
     user = session.query(User).get(user_id)
-    if old_email != new_email and user.forgot_code == forgot_code and user.forgot_code != 0:
-        user.login = new_email    
+    if old_email != new_email and user.forgot_code == forgot_code and user.forgot_code != 0 and check_user.email != new_email:
+        user.email = new_email    
         user.forgot_code = 0
+    else:
+      raise EditAuthDataError
     session.commit()
     session.close()
 

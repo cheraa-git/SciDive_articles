@@ -2,7 +2,7 @@ from inspect import Attribute
 from flask import Flask, request, session, jsonify, render_template, url_for
 from flask_caching import Cache
 from flask_sockets import Sockets
-from database1 import CreateArticleTokenError, EmptyValuesAreEntered, SignupEmailError, SignupLoginError, add_forgot_code_to_user, change_user_avatar, change_user_email, change_user_login, generate_c_c, get_articles_blog_by_user_id, get_profile_info, get_subscriptions, get_article, get_articles_subscriptions, get_articles_blog, send_message, set_article, \
+from database1 import CreateArticleTokenError, EmptyValuesAreEntered, SignupEmailError, SignupLoginError, EditAuthDataError, add_forgot_code_to_user, change_user_avatar, change_user_email, change_user_login, generate_c_c, get_articles_blog_by_user_id, get_profile_info, get_subscriptions, get_article, get_articles_subscriptions, get_articles_blog, send_message, set_article, \
     set_subscription, del_article, del_subscription, update_article, get_most_recent_articles, get_user_id, request_user_avatar, request_user, check_admin, add_user, check_user_by_email, add_check_password, get_check_password, request_user_login, change_user_password, remove_check_password, get_user_login, plus_view_on_article, update_user
 from database1 import AccountNotFound, AccountExists
 from flask_mail import Mail, Message
@@ -352,29 +352,29 @@ def post(form):
             forAction = request.json['forAction']
         except:
             forAction = ''
-        if (forAction == ''):
-            try:
-                email, password_hash_valid = request_user(email)
-                bool_hash = check_password_hash(password_hash_valid, password)
-            except AccountNotFound:
-                return jsonify({"error": True})
-            if bool_hash:
-                avatar = request_user_avatar(email)
-                user_id = get_user_id(email)
-                admin = check_admin(user_id)
-                login = get_user_login(email)
-                token = jwt.encode(
-                    {'login': user_id}, key=app.secret_key, algorithm='HS256')
-                print(token)
-                return jsonify({'token': token, 'avatar': f"{avatar}", "admin": admin, "login": login})
-            else:
-                return jsonify({"error": True})
-        elif (forAction == 'change'):
-            try:
-                add_forgot_code_to_user(email)
-                return jsonify({"error": False})
-            except AccountNotFound:
-                return jsonify({"error": True})
+        
+        try:
+            email, password_hash_valid = request_user(email)
+            bool_hash = check_password_hash(password_hash_valid, password)
+        except AccountNotFound:
+            return jsonify({"error": True})
+        if bool_hash:
+            avatar = request_user_avatar(email)
+            user_id = get_user_id(email)
+            admin = check_admin(user_id)
+            login = get_user_login(email)
+            token = jwt.encode(
+                {'login': user_id}, key=app.secret_key, algorithm='HS256')
+            print(token)
+            if (forAction == 'change'):
+                try:
+                    add_forgot_code_to_user(email)
+                except AccountNotFound:
+                    return jsonify({"error": "AccountNotFound"})
+            return jsonify({'token': token, 'avatar': f"{avatar}", "admin": admin, "login": login})
+        else:
+            return jsonify({"error": True})
+
 
     elif form == "sign_up":
 
@@ -419,7 +419,10 @@ def edit_profile():
                              encoding='utf-8'), app.secret_key, algorithms=['HS256'])
     print(token)
     login = token["login"]
-    forgot_code = request.json["forgotCode"]
+    try: 
+      forgot_code = request.json["forgotCode"]
+    except: 
+      pass
     try:
         old_email = request.json["oldEmail"]
         new_email = request.json["newEmail"]
@@ -427,12 +430,13 @@ def edit_profile():
         return jsonify({"error": False, "user_id": login})
     except EmptyValuesAreEntered:
         return jsonify({"error": 'EmptyValuesAreEntered'})
+    except EditAuthDataError:
+      return jsonify({"error": 'EditAuthDataError'})
     except: pass
 
     try:
-        old_login = request.json["oldLogin"]
         new_login = request.json["newLogin"]
-        change_user_login(login, old_login, new_login, forgot_code)
+        change_user_login(login, new_login)
         return jsonify({"error": False, "user_id": login})
     except EmptyValuesAreEntered:
         return jsonify({"error": 'EmptyValuesAreEntered'})
@@ -451,13 +455,14 @@ def edit_profile():
         file = request.files["image"]
         extens = file.filename.split(".")[-1].replace("\"", "")
         # Создаём имя файла, хэшируя его
-        file_name = generate_password_hash(title + secret_key_for_images)
+        file_name = generate_password_hash(str(login) + secret_key_for_images)
         # Убираем из названия все : и тп
         file_name = file_name.replace(":", "") + '.' + extens
         path = app.config["UPLOAD_FOLDER"]
         full_path = path + file_name
     except:
         file_name = ''
+        print('EXCEPT')
     try:
         change_user_avatar(login, file_name)
         try:

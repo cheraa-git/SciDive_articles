@@ -2,7 +2,7 @@ import { Button, Dialog, DialogActions, DialogContent, DialogContentText, Dialog
 import { useSnackbar } from 'notistack'
 import React, { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { authCheck } from '../../../store/actions/UserActions'
+import { authCheck, editProfile } from '../../../store/actions/UserActions'
 import '../Profile.sass'
 
 interface EdtiAuthDataProps {
@@ -33,7 +33,7 @@ export const EditAuthData: React.FC<EdtiAuthDataProps> = ({ mode, handleClose })
   const authHandler = async () => {
     if (email.match(/^[A-Z0-9._%+-]+@[A-Z0-9-]+.+.[A-Z]{2,4}$/i) && password.length >= 6) {
       if (mode === 'email' || mode === 'password') {
-        const isAuth = await dispatch(authCheck(email, password))
+        const isAuth = await dispatch(authCheck(email, password, 'edit'))
         console.log('IS_AUTH', String(isAuth))
         if (String(isAuth) === 'success') {
           snackbar('Успешно', { variant: 'success' })
@@ -51,7 +51,11 @@ export const EditAuthData: React.FC<EdtiAuthDataProps> = ({ mode, handleClose })
     }
   }
 
-  const saveHandler = () => {}
+  const saveHandler = () => {
+    if (mode === 'email') {
+      dispatch(editProfile({ oldEmail: email, newEmail: newData, forgotCode: confirmCode }))
+    }
+  }
 
   const closeHandler = () => {
     setEmail('')
@@ -118,6 +122,13 @@ export const EditAuthData: React.FC<EdtiAuthDataProps> = ({ mode, handleClose })
               onChange={(e) => setConfirmCode(e.target.value)}
               label="Код подтверждения"
               inputProps={{ maxLength: 6 }}
+            />
+
+            <TextField
+              value={mode === 'email' ? email : password}
+              onChange={(e) => (mode === 'email' ? setEmail(e.target.value) : setPassword(e.target.value))}
+              size="small"
+              label={`Старый ${formatMode()}`}
             />
             <TextField
               value={newData}

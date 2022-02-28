@@ -1,6 +1,8 @@
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Divider, TextField } from '@mui/material'
 import React, { useState } from 'react'
+import { useDispatch } from 'react-redux'
 import { STATIC } from '../../../config'
+import { editProfile } from '../../../store/actions/UserActions'
 import '../Profile.sass'
 import { EditAuthData } from './EditAuthData'
 
@@ -10,13 +12,27 @@ interface editProfileProps {
 }
 
 export const EditProfileDialog: React.FC<editProfileProps> = ({ isOpen, handleClose }) => {
+  const dispatch = useDispatch()
   const [userName, setUserName] = useState(localStorage.getItem('userName'))
   const [sendAvatar, setSendAvatar] = useState<File>()
   const [showAvatar, setShowAvatar] = useState(STATIC + localStorage.getItem('userAvatar'))
 
   const [authMode, setAuthMode] = useState<'password' | 'email' | 'delete' | null>(null)
 
-  const saveHandler = () => {}
+  const saveHandler = () => {
+    const sendData: any = {} // написать интерфейс 
+    if (userName !== localStorage.getItem('userName')){
+      // sendData.oldLogin = localStorage.getItem('userName')
+      sendData.newLogin = userName
+    }
+    if (sendAvatar) {
+      sendData.image = sendAvatar
+    }
+    
+    console.log('sendData', sendData)
+    
+    dispatch(editProfile(sendData))
+  }
   const closeHandler = () => {
     setUserName(localStorage.getItem('userName'))
     handleClose()

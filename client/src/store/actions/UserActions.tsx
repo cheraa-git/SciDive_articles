@@ -54,16 +54,45 @@ export function unfollow(id: number, login: string) {
   }
 }
 
-export function authCheck(email: string, password: string) {
+export function authCheck(email: string, password: string, mode?: string) {
   return async (dispatch: any) => {
+    const sendData: any = { email, password }
+    if (mode === 'edit') {
+      sendData['forAction'] = 'change'
+    }
     try {
-      const response = await axiosApp.post('authorization/log_in', { email, password })
+      const response = await axiosApp.post('authorization/log_in', sendData)
       const data = response.data
       if (!data.error && data.token === localStorage.getItem('token')) {
         console.log('authCheck: ', data)
         return 'success'
       } else {
         console.log('authCheck Error: ', data)
+        return 'failed'
+      }
+    } catch (e) {
+      console.log('Error', e)
+    }
+  }
+}
+
+export function editProfile(sendData: any) {
+  return async (dispatch: any) => {
+    const formData = new FormData()
+
+    if (sendData.image) {
+      formData.append('image', sendData.image)
+      sendData = formData
+    }
+    try {
+      console.log('SEND_DATA', sendData)
+      const response = await axiosApp.post(`/edit_profile?token=${localStorage.getItem('token')}`, sendData)
+      const data = response.data
+      if (!data.error) {
+        console.log('Edit profile success: ', data)
+        return 'success'
+      } else {
+        console.log('Edit profile faild: ', data)
         return 'failed'
       }
     } catch (e) {

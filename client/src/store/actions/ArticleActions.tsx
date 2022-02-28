@@ -57,8 +57,7 @@ export function fetchSubscribe() {
 export function fetchHome() {
   return async (dispatch: any) => {
     dispatch(clearArticles())
-    const token = localStorage.getItem('token')
-    const response = await axiosApp.get(`/main_page?token=${token}`)
+    const response = await axiosApp.get(`/main_page`)
     const data = response.data
     console.log(data)
     dispatch(setUserArticles(data))
@@ -105,7 +104,6 @@ export function editArticle(postData: CreateArticleData, navigate: NavigateFunct
     if (postData.sendAvatar) {
       sendFormData.append('image', postData.sendAvatar)
       console.log('IMAGE', sendFormData.get('image'))
-      
     }
     sendFormData.append('token', postData.token!)
     sendFormData.append('title', postData.title)
@@ -158,8 +156,6 @@ export function addView(id: number) {
     }
   }
 }
-
-
 
 //////////////////////////////////////////////////////////////////////////////////////
 
