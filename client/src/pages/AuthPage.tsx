@@ -21,7 +21,7 @@ export const AuthPage: React.FC = () => {
   ) => func(event.target.value)
 
   const loginHandler = () => {
-    dispatch(authDataPost({ email, password }, navigate, snackbar))
+    dispatch(authDataPost({ email, password } ,snackbar))
   }
 
   const singupHandler = () => {

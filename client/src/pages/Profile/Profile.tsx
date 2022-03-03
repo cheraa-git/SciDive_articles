@@ -17,10 +17,14 @@ export const Profile: React.FC = () => {
   const dispatch = useDispatch()
   const { articles, currentCategory, loading: articleLoading } = useSelector((state: RootState) => state.article)
   let { loading: profileLoading, subscribers, subscriptions, blog_id } = useSelector((state: RootState) => state.user)
-  const avatar = articles[0]?.author.avatar ? STATIC + articles[0]?.author.avatar : defaultAvatar
-  const { userName } = useParams()
-  const isMyProfile = userName === localStorage.getItem('userName')
+  const avatar = localStorage.getItem('userAvatar') ? STATIC + localStorage.getItem('userAvatar') : defaultAvatar
+  let { userName } = useParams()
 
+  if (!userName ) {
+    userName = localStorage.getItem('userName')!
+  }
+
+  const isMyProfile = userName === localStorage.getItem('userName')
   const [editDialogOpen, setEditDialogOpen] = useState(false)
 
   useEffect(() => {
@@ -44,7 +48,7 @@ export const Profile: React.FC = () => {
         <>
           <h1 className="display-6 text-center">Статей пока нет...</h1>
           <p className="lead text-center">
-            Хотите
+            Хотите{' '}
             <NavLink className="link" to="/create_article">
               создать
             </NavLink>

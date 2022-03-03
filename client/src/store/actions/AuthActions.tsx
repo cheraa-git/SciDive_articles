@@ -17,13 +17,13 @@ export const postRegisterData = (data: any, navigate: any, snackbar: any) => {
       } else if (!res.data.error) {
         console.log('signup success', res.data)
         const authData = { email: data.email, password: data.password }
-        dispatch(authDataPost(authData, navigate, snackbar))
+        dispatch(authDataPost(authData, snackbar))
       }
     })
   }
 }
 
-export const authDataPost = (userData: any, navigate: any, snackbar: any) => {
+export const authDataPost = (userData: any, snackbar: any) => {
   return async (dispatch: any) => {
     console.log('authDataPost')
     await axiosApp
@@ -42,7 +42,7 @@ export const authDataPost = (userData: any, navigate: any, snackbar: any) => {
           localStorage.setItem('expirationDate', JSON.stringify(expirationDate))
           localStorage.setItem('userAvatar', res.data.avatar)
           localStorage.setItem('userName', res.data.login)
-          navigate('/')
+          document.location.href = '/'
         }
       })
       .catch(function (error) {
@@ -51,17 +51,15 @@ export const authDataPost = (userData: any, navigate: any, snackbar: any) => {
   }
 }
 
-export function autoLogin(navigate: any) {
+export function autoLogin() {
   return (dispatch: any) => {
     const token = localStorage.getItem('token')
     if (!token) {
       dispatch(logoutUser())
-      // navigate('/')
     } else {
       const expirationDate = new Date(JSON.stringify(localStorage.getItem('expirationDate')))
       if (expirationDate <= new Date()) {
         dispatch(logoutUser())
-        // navigate('/')
       } else {
         dispatch(autoAuthSuccess(token))
       }

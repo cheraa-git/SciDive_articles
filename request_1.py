@@ -1,3 +1,4 @@
+from fileinput import filename
 from inspect import Attribute
 from flask import Flask, request, session, jsonify, render_template, url_for
 from flask_caching import Cache
@@ -415,19 +416,20 @@ def view_user_profile(login):
 
 @app.route('/edit_profile', methods=["POST"])
 def edit_profile():
+    data = dict(request.form)
     token = jwt.decode(bytes(request.args.get("token", 1),
                              encoding='utf-8'), app.secret_key, algorithms=['HS256'])
     print(token)
     login = token["login"]
     try: 
-      forgot_code = request.json["forgotCode"]
+      forgot_code = data["forgotCode"]
     except: 
       pass
     try:
-        old_email = request.json["oldEmail"]
-        new_email = request.json["newEmail"]
+        old_email = data["oldEmail"]
+        new_email = data["newEmail"]
         change_user_email(login, old_email, new_email, forgot_code)
-        return jsonify({"error": False, "user_id": login})
+        return jsonify({"error": False, "newEmail": True})
     except EmptyValuesAreEntered:
         return jsonify({"error": 'EmptyValuesAreEntered'})
     except EditAuthDataError:
@@ -435,18 +437,19 @@ def edit_profile():
     except: pass
 
     try:
-        new_login = request.json["newLogin"]
-        change_user_login(login, new_login)
-        return jsonify({"error": False, "user_id": login})
+        old_password = data["oldPassword"]
+        new_password = data["newPassword"] 
+        change_user_password(login, old_password, new_password, forgot_code)
+        return jsonify({"error": False, "newPassword": True})
     except EmptyValuesAreEntered:
         return jsonify({"error": 'EmptyValuesAreEntered'})
     except: pass
-
+    
+    result = {"error": False}
     try:
-        old_password = request.json["oldPassword"]
-        new_password = request.json["newPassword"]
-        change_user_password(login, old_password, new_password, forgot_code)
-        return jsonify({"error": False, "user_id": login})
+        new_login = data["newLogin"]
+        change_user_login(login, new_login)
+        result['newLogin'] = new_login
     except EmptyValuesAreEntered:
         return jsonify({"error": 'EmptyValuesAreEntered'})
     except: pass
@@ -462,16 +465,17 @@ def edit_profile():
         full_path = path + file_name
     except:
         file_name = ''
-        print('EXCEPT')
+
     try:
         change_user_avatar(login, file_name)
         try:
             file.save(os.path.join(path, file_name))
         except:
             pass
-        return jsonify({"error": False})
+        result['newImage'] = file_name
     except:
-        return jsonify({"error": True})
+        return jsonify({"error": "POST /edit_profile: change_user_avatar(login, file_name)"})
+    return jsonify(result)
 
 # Это позже внедрим
 @app.route('/confirm_email', methods=["POST"])

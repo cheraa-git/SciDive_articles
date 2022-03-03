@@ -1,5 +1,6 @@
+import { NavigateFunction } from 'react-router-dom'
 import axiosApp from '../../axios/axiosApp'
-import { ProfilePayload, ProfileSubscribeItem } from '../../types/interfaces'
+import { EditProfileSendData, ProfilePayload, ProfileSubscribeItem } from '../../types/interfaces'
 import { userActions } from '../../types/UserTypes'
 import { FOLLOW, SET_PROFILE, SET_PROFLE_LOADING, START_PROFILE, UNFOLLOW } from '../actionTypes'
 
@@ -76,20 +77,33 @@ export function authCheck(email: string, password: string, mode?: string) {
   }
 }
 
-export function editProfile(sendData: any) {
+export function editProfile(sendData: EditProfileSendData, navigate: NavigateFunction) {
   return async (dispatch: any) => {
     const formData = new FormData()
+    let key: keyof typeof sendData
 
-    if (sendData.image) {
-      formData.append('image', sendData.image)
-      sendData = formData
+    if (sendData) {
+      for (key in sendData) {
+        formData.append(key, sendData[key]!)
+      }
     }
+
     try {
-      console.log('SEND_DATA', sendData)
-      const response = await axiosApp.post(`/edit_profile?token=${localStorage.getItem('token')}`, sendData)
+      const response = await axiosApp.post(`/edit_profile?token=${localStorage.getItem('token')}`, formData)
       const data = response.data
       if (!data.error) {
         console.log('Edit profile success: ', data)
+
+        if (data.newLogin) {
+          localStorage.setItem('userName', data.newLogin)
+          document.location.href = `/profile`
+        }
+
+        if (data.newImage) {
+          localStorage.setItem('userAvatar', data.newImage)
+          document.location.href = `/profile`
+        }
+
         return 'success'
       } else {
         console.log('Edit profile faild: ', data)

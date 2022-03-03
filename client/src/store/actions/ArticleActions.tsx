@@ -131,7 +131,7 @@ export function deleteArticle(id: number, navigate: NavigateFunction, snachbar: 
     try {
       const response = await axiosApp.delete(`/article/${id}?token=${localStorage.getItem('token')}`)
       if (!response.data.error) {
-        navigate(-1)
+        navigate('/profile')
         snachbar('Статья удалена')
       }
       console.log(response.data)

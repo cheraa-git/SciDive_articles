@@ -1,8 +1,10 @@
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Divider, TextField } from '@mui/material'
 import React, { useState } from 'react'
 import { useDispatch } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
 import { STATIC } from '../../../config'
 import { editProfile } from '../../../store/actions/UserActions'
+import { EditProfileSendData } from '../../../types/interfaces'
 import '../Profile.sass'
 import { EditAuthData } from './EditAuthData'
 
@@ -13,6 +15,8 @@ interface editProfileProps {
 
 export const EditProfileDialog: React.FC<editProfileProps> = ({ isOpen, handleClose }) => {
   const dispatch = useDispatch()
+  const navigate = useNavigate()
+
   const [userName, setUserName] = useState(localStorage.getItem('userName'))
   const [sendAvatar, setSendAvatar] = useState<File>()
   const [showAvatar, setShowAvatar] = useState(STATIC + localStorage.getItem('userAvatar'))
@@ -20,9 +24,8 @@ export const EditProfileDialog: React.FC<editProfileProps> = ({ isOpen, handleCl
   const [authMode, setAuthMode] = useState<'password' | 'email' | 'delete' | null>(null)
 
   const saveHandler = () => {
-    const sendData: any = {} // написать интерфейс 
-    if (userName !== localStorage.getItem('userName')){
-      // sendData.oldLogin = localStorage.getItem('userName')
+    const sendData: EditProfileSendData = {} // написать интерфейс 
+    if (userName && userName !== localStorage.getItem('userName')){
       sendData.newLogin = userName
     }
     if (sendAvatar) {
@@ -31,7 +34,7 @@ export const EditProfileDialog: React.FC<editProfileProps> = ({ isOpen, handleCl
     
     console.log('sendData', sendData)
     
-    dispatch(editProfile(sendData))
+    dispatch(editProfile(sendData, navigate))
   }
   const closeHandler = () => {
     setUserName(localStorage.getItem('userName'))

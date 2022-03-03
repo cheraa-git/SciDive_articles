@@ -71,6 +71,7 @@ export const CreateArticle: React.FC = () => {
 
   const deleteHandler = () => {
     dispatch(deleteArticle(sendArticle.id, navigate, snackbar))
+    // if 
   }
 
   const avatarHandler = (e: React.ChangeEvent<HTMLInputElement>) => {

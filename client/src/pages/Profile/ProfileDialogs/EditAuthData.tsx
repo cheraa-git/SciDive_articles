@@ -2,6 +2,7 @@ import { Button, Dialog, DialogActions, DialogContent, DialogContentText, Dialog
 import { useSnackbar } from 'notistack'
 import React, { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
 import { authCheck, editProfile } from '../../../store/actions/UserActions'
 import '../Profile.sass'
 
@@ -15,6 +16,8 @@ type Stage = 'start' | 'success' | 'deleteStart' | 'deleteSuccess' | null
 export const EditAuthData: React.FC<EdtiAuthDataProps> = ({ mode, handleClose }) => {
   const dispatch = useDispatch()
   const { enqueueSnackbar: snackbar } = useSnackbar()
+  const navigate = useNavigate()
+
   let isOpen = Boolean(mode)
   const [stage, setStage] = useState<Stage>('start')
   const [email, setEmail] = useState('')
@@ -37,6 +40,8 @@ export const EditAuthData: React.FC<EdtiAuthDataProps> = ({ mode, handleClose })
         console.log('IS_AUTH', String(isAuth))
         if (String(isAuth) === 'success') {
           snackbar('Успешно', { variant: 'success' })
+          setEmail('')
+          setPassword('')
           setStage('success')
         } else if (JSON.stringify(isAuth) === 'failed') {
           snackbar('Неверный логин или пароль')
@@ -53,7 +58,9 @@ export const EditAuthData: React.FC<EdtiAuthDataProps> = ({ mode, handleClose })
 
   const saveHandler = () => {
     if (mode === 'email') {
-      dispatch(editProfile({ oldEmail: email, newEmail: newData, forgotCode: confirmCode }))
+      dispatch(editProfile({ oldEmail: email, newEmail: newData, forgotCode: confirmCode }, navigate))
+    } if (mode = 'password') {
+      dispatch(editProfile({oldPassword: password, newPassword: newData, forgotCode: confirmCode}, navigate))
     }
   }
 

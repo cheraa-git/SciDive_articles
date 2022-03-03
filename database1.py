@@ -435,18 +435,18 @@ def request_user_login(email):
         raise AccountNotFound
     return user.login
 
-def change_user_password(email, password_new):
-    email = email.strip() 
-    password_new = password_new.strip()
-    if email == '' or password_new == '':
-        raise EmptyValuesAreEntered
-    engine = create_engine('sqlite:///info_data_base.db', echo=True)
-    session = Session(bind=engine)
-    email = email.lower()
-    user = session.query(User).filter_by(email=email).first()
-    user.password = generate_password_hash(password_new)
-    session.commit()
-    session.close()
+# def change_user_password(email, password_new):
+#     email = email.strip() 
+#     password_new = password_new.strip()
+#     if email == '' or password_new == '':
+#         raise EmptyValuesAreEntered
+#     engine = create_engine('sqlite:///info_data_base.db', echo=True)
+#     session = Session(bind=engine)
+#     email = email.lower()
+#     user = session.query(User).filter_by(email=email).first()
+#     user.password = generate_password_hash(password_new)
+#     session.commit()
+#     session.close()
 
 def remove_check_password(email):
     engine = create_engine('sqlite:///info_data_base.db', echo=True)
@@ -551,7 +551,12 @@ def change_user_login(user_id, new_login):
     session = Session(bind=engine)
     check_login = session.query(User).filter_by(login = new_login).first()
     user = session.query(User).get(user_id)
-    if user.login != new_login and check_login.login != new_login:
+
+    try: 
+        check_login = check_login.login
+    except:
+      check_login = ''
+    if user.login != new_login and check_login != new_login:
         user.login = new_login 
     session.commit()
     session.close()
@@ -563,13 +568,20 @@ def change_user_email(user_id, old_email, new_email, forgot_code):
         raise EmptyValuesAreEntered
     engine = create_engine('sqlite:///info_data_base.db', echo=True)
     session = Session(bind=engine)
-    check_user = session.query(User).filter_by(email = new_email).first()
+    check_email = session.query(User).filter_by(email = new_email).first()
     user = session.query(User).get(user_id)
-    if old_email != new_email and user.forgot_code == forgot_code and user.forgot_code != 0 and check_user.email != new_email:
+   
+    try:
+        check_email = check_email.email
+    except:
+        check_email = ''
+
+    if old_email != new_email and user.forgot_code == forgot_code and user.forgot_code != 0 and check_email != new_email:
         user.email = new_email    
         user.forgot_code = 0
     else:
-      raise EditAuthDataError
+        raise EditAuthDataError
+
     session.commit()
     session.close()
 
@@ -583,7 +595,7 @@ def change_user_password(user_id, old_password, new_password, forgot_code):
     user = session.query(User).get(user_id)
     new_password = generate_password_hash(new_password)
     if old_password != new_password and user.forgot_code == forgot_code and user.forgot_code != 0:
-        user.login = new_password  
+        user.password = new_password  
         user.forgot_code = 0  
     session.commit()
     session.close()
