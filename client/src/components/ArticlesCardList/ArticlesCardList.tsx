@@ -13,9 +13,13 @@ export const ArticlesCardList: React.FC<ArticlesCardListProps> = (props) => {
     filterArticles = filterArticles.filter((art) => art.category === props.currentCategory)
   }
 
+  let a = [{'a': 1}, {'b': 2}, {'c': 3}, {'d': 4}, {'e': 5}]
+  a.reverse()
+  console.log('A',a)
+  
   const content =
     props.articles.length > 0 ? (
-      filterArticles.map((art, index) => {
+      filterArticles.reverse().map((art, index) => {
         return <ArticleItem article={art} mode="preview" key={index} />
       })
     ) : (

@@ -21,13 +21,6 @@ export const NavBar: React.FC = () => {
           <img src={avatar} className="rounded ms-2" height={30} alt="" />
         </NavLink>
       </div>
-      {/* <hr className="dropdown-divider" />
-      <li>
-        <NavLink className="dropdown-item" to="/profile">
-          <i className="bi bi-gear-fill me-2" />
-          Настройка профиля
-        </NavLink>
-      </li> */}
 
       <hr className="dropdown-divider" />
 

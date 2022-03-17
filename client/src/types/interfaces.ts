@@ -42,3 +42,13 @@ export interface ProfilePayload {
   subscribers: ProfileSubscribeItem[]
   subscriptions: ProfileSubscribeItem[]
 }
+
+export interface EditProfileSendData {
+  image?: File
+  newPassword?: string
+  oldPassword?: string
+  oldEmail?: string
+  newEmail?: string
+  newLogin?: string
+  forgotCode?: string
+}

@@ -57,8 +57,7 @@ export function fetchSubscribe() {
 export function fetchHome() {
   return async (dispatch: any) => {
     dispatch(clearArticles())
-    const token = localStorage.getItem('token')
-    const response = await axiosApp.get(`/main_page?token=${token}`)
+    const response = await axiosApp.get(`/main_page`)
     const data = response.data
     console.log(data)
     dispatch(setUserArticles(data))
@@ -105,7 +104,6 @@ export function editArticle(postData: CreateArticleData, navigate: NavigateFunct
     if (postData.sendAvatar) {
       sendFormData.append('image', postData.sendAvatar)
       console.log('IMAGE', sendFormData.get('image'))
-      
     }
     sendFormData.append('token', postData.token!)
     sendFormData.append('title', postData.title)
@@ -133,7 +131,7 @@ export function deleteArticle(id: number, navigate: NavigateFunction, snachbar: 
     try {
       const response = await axiosApp.delete(`/article/${id}?token=${localStorage.getItem('token')}`)
       if (!response.data.error) {
-        navigate(-1)
+        navigate('/profile')
         snachbar('Статья удалена')
       }
       console.log(response.data)
@@ -158,8 +156,6 @@ export function addView(id: number) {
     }
   }
 }
-
-
 
 //////////////////////////////////////////////////////////////////////////////////////
 

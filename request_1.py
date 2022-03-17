@@ -1,8 +1,9 @@
+from fileinput import filename
 from inspect import Attribute
 from flask import Flask, request, session, jsonify, render_template, url_for
 from flask_caching import Cache
 from flask_sockets import Sockets
-from database1 import CreateArticleTokenError, EmptyValuesAreEntered, SignupEmailError, SignupLoginError, add_forgot_code_to_user, change_user_avatar, change_user_email, change_user_login, generate_c_c, get_articles_blog_by_user_id, get_profile_info, get_subscriptions, get_article, get_articles_subscriptions, get_articles_blog, send_message, set_article, \
+from database1 import CreateArticleTokenError, EmptyValuesAreEntered, SignupEmailError, SignupLoginError, EditAuthDataError, add_forgot_code_to_user, change_user_avatar, change_user_email, change_user_login, delete_user, generate_c_c, get_articles_blog_by_user_id, get_profile_info, get_subscriptions, get_article, get_articles_subscriptions, get_articles_blog, send_message, set_article, \
     set_subscription, del_article, del_subscription, update_article, get_most_recent_articles, get_user_id, request_user_avatar, request_user, check_admin, add_user, check_user_by_email, add_check_password, get_check_password, request_user_login, change_user_password, remove_check_password, get_user_login, plus_view_on_article, update_user
 from database1 import AccountNotFound, AccountExists
 from flask_mail import Mail, Message
@@ -15,8 +16,7 @@ import os
 import subprocess
 import json
 from copy import deepcopy
-from send_email import send_email_handler
-
+# from send_email import send_email_handler
 
 
 app = Flask(__name__, template_folder="templates")
@@ -130,7 +130,7 @@ def show_user_blog(login):
     # token = jwt.decode(bytes(request.args.get("token", 1), encoding='utf-8'), app.secret_key, algorithms=['HS256'])
     # print(token)
     # user_id = token["login"]
-    try: 
+    try:
         articles = get_articles_blog(login)
         print(articles)
         result = articles
@@ -170,7 +170,7 @@ def add_article():
     content = data['content']
     category = data['category']
     tags = data['tags']
-    try: 
+    try:
         file = request.files["image"]
         extens = file.filename.split(".")[-1].replace("\"", "")
         # Создаём имя файла, хэшируя его
@@ -207,9 +207,10 @@ def add_article():
     #     info_dict = {}
     # info = json.dumps(info)
     try:
-        article_id = set_article(user_id, title, file_name, prev_content, content, category, tags)
+        article_id = set_article(
+            user_id, title, file_name, prev_content, content, category, tags)
         print(article_id)
-        try: 
+        try:
             file.save(os.path.join(path, file_name))
         except:
             pass
@@ -262,7 +263,8 @@ def del_subscription_(blog_id):
     user_id = token["login"]
     print(user_id)
     subscriptions = get_subscriptions(user_id)
-    subscriptions_ = [i["blog_id"] for i in json.loads(subscriptions_m.dumps(subscriptions))]
+    subscriptions_ = [i["blog_id"]
+                      for i in json.loads(subscriptions_m.dumps(subscriptions))]
     admin = check_admin(user_id)
     if blog_id in subscriptions_ or admin:
         del_subscription(user_id, blog_id)
@@ -285,16 +287,22 @@ def update_article_(article_id):
     category = data['category']
     tags = data['tags']
     try:
-        file = request.files["image"]
-        extens = file.filename.split(".")[-1].replace("\"", "")
-        # Создаём имя файла, хэшируя его
-        file_name = generate_password_hash(title + secret_key_for_images)
-        # Убираем из названия все : и тп
-        file_name = file_name.replace(":", "") + '.' + extens
-        path = app.config["UPLOAD_FOLDER"]
-        full_path = path + file_name
-        print("Это full path: " + full_path)
+        try:
+            if data["image"] == "old":
+                file_name = 'old'
+        except:
+            print('OLD_ERROR')
+            file = request.files["image"]
+            extens = file.filename.split(".")[-1].replace("\"", "")
+            # Создаём имя файла, хэшируя его
+            file_name = generate_password_hash(title + secret_key_for_images)
+            # Убираем из названия все : и тп
+            file_name = file_name.replace(":", "") + '.' + extens
+            path = app.config["UPLOAD_FOLDER"]
+            full_path = path + file_name
+            print("Это full path: " + full_path)
     except:
+        print('FILES_ERROR')
         file_name = ''
     # info = []
     # info_dict = {}
@@ -346,29 +354,28 @@ def post(form):
             forAction = request.json['forAction']
         except:
             forAction = ''
-        if (forAction == ''):
-            try:
-                email, password_hash_valid = request_user(email)
-                bool_hash = check_password_hash(password_hash_valid, password)
-            except AccountNotFound:
-                return jsonify({"error": True})
-            if bool_hash:
-                avatar = request_user_avatar(email)
-                user_id = get_user_id(email)
-                admin = check_admin(user_id)
-                login = get_user_login(email)
-                token = jwt.encode(
-                    {'login': user_id}, key=app.secret_key, algorithm='HS256')
-                print(token)
-                return jsonify({'token': token, 'avatar': f"{avatar}", "admin": admin, "login": login})
-            else:
-                return jsonify({"error": True})
-        elif (forAction == 'change'):
-            try:
-                add_forgot_code_to_user(email)
-                return jsonify({"error": False})
-            except AccountNotFound:
-                return jsonify({"error": True})
+
+        try:
+            email, password_hash_valid = request_user(email)
+            bool_hash = check_password_hash(password_hash_valid, password)
+        except AccountNotFound:
+            return jsonify({"error": True})
+        if bool_hash:
+            avatar = request_user_avatar(email)
+            user_id = get_user_id(email)
+            admin = check_admin(user_id)
+            login = get_user_login(email)
+            token = jwt.encode(
+                {'login': user_id}, key=app.secret_key, algorithm='HS256')
+            print(token)
+            if (forAction == 'change'):
+                try:
+                    add_forgot_code_to_user(email)
+                except AccountNotFound:
+                    return jsonify({"error": "AccountNotFound"})
+            return jsonify({'token': token, 'avatar': f"{avatar}", "admin": admin, "login": login})
+        else:
+            return jsonify({"error": True})
 
     elif form == "sign_up":
 
@@ -387,6 +394,7 @@ def post(form):
             return jsonify({"error": 'EmptyValuesAreEntered'})
         return jsonify({"error": False})
 
+
 @app.route('/plus/view/<int:article_id>', methods=["GET"])
 def plus_view(article_id):
     token = jwt.decode(bytes(request.args.get("token", 1),
@@ -399,6 +407,7 @@ def plus_view(article_id):
     except:
         return jsonify({"error": True})
 
+
 @app.route('/profile/<login>', methods=["GET"])
 def view_user_profile(login):
     try:
@@ -407,71 +416,97 @@ def view_user_profile(login):
     except:
         return jsonify({'error': True})
 
+
 @app.route('/edit_profile', methods=["POST"])
 def edit_profile():
+    data = dict(request.form)
     token = jwt.decode(bytes(request.args.get("token", 1),
                              encoding='utf-8'), app.secret_key, algorithms=['HS256'])
     print(token)
     login = token["login"]
-    forgot_code = request.json["forgotCode"]
     try:
-        old_email = request.json["oldEmail"]
-        new_email = request.json["newEmail"]
+        forgot_code = data["forgotCode"]
+    except:
+        pass
+    try:
+        old_email = data["oldEmail"]
+        new_email = data["newEmail"]
         change_user_email(login, old_email, new_email, forgot_code)
-        return jsonify({"error": False, "user_id": login})
+        return jsonify({"error": False, "newEmail": True})
     except EmptyValuesAreEntered:
         return jsonify({"error": 'EmptyValuesAreEntered'})
-    except: pass
+    except EditAuthDataError:
+        return jsonify({"error": 'EditAuthDataError'})
+    except:
+        pass
 
     try:
-        old_login = request.json["oldLogin"]
-        new_login = request.json["newLogin"]
-        change_user_login(login, old_login, new_login, forgot_code)
-        return jsonify({"error": False, "user_id": login})
-    except EmptyValuesAreEntered:
-        return jsonify({"error": 'EmptyValuesAreEntered'})
-    except: pass
-
-    try:
-        old_password = request.json["oldPassword"]
-        new_password = request.json["newPassword"]
+        old_password = data["oldPassword"]
+        new_password = data["newPassword"]
         change_user_password(login, old_password, new_password, forgot_code)
-        return jsonify({"error": False, "user_id": login})
+        return jsonify({"error": False, "newPassword": True})
     except EmptyValuesAreEntered:
         return jsonify({"error": 'EmptyValuesAreEntered'})
-    except: pass
+    except:
+        pass
+
+    result = {"error": False}
+    try:
+        new_login = data["newLogin"]
+        change_user_login(login, new_login)
+        result['newLogin'] = new_login
+    except EmptyValuesAreEntered:
+        return jsonify({"error": 'EmptyValuesAreEntered'})
+    except:
+        pass
 
     try:
         file = request.files["image"]
         extens = file.filename.split(".")[-1].replace("\"", "")
         # Создаём имя файла, хэшируя его
-        file_name = generate_password_hash(title + secret_key_for_images)
+        file_name = generate_password_hash(str(login) + secret_key_for_images)
         # Убираем из названия все : и тп
         file_name = file_name.replace(":", "") + '.' + extens
         path = app.config["UPLOAD_FOLDER"]
         full_path = path + file_name
     except:
         file_name = ''
+
     try:
         change_user_avatar(login, file_name)
         try:
             file.save(os.path.join(path, file_name))
         except:
             pass
-        return jsonify({"error": False})
+        result['newImage'] = file_name
     except:
-        return jsonify({"error": True})
+        return jsonify({"error": "POST /edit_profile: change_user_avatar(login, file_name)"})
+    return jsonify(result)
 
 # Это позже внедрим
+
+
 @app.route('/confirm_email', methods=["POST"])
 def confirm_email():
     toEmail = request.json["toEmail"]
     try:
-        send_message(toEmail, "Подтверждение почты", f"Для подтверждения почты прейдите по ссылке")
+        send_message(toEmail, "Подтверждение почты",
+                     f"Для подтверждения почты прейдите по ссылке")
         return jsonify({'error': False})
     except:
         return jsonify({'error': True})
-    
+
+
+@app.route('/delete_profile', methods=["POST"])
+def delete_profile_():
+    token = jwt.decode(bytes(request.args.get("token", 1),
+                             encoding='utf-8'), app.secret_key, algorithms=['HS256'])
+    user_id = token['login']
+    try:
+        forgot_code = request.json["forgotCode"]
+        delete_user(user_id, forgot_code)
+        return jsonify({'error': False})
+    except:
+      return jsonify({'error': True})
 
 app.run()
-

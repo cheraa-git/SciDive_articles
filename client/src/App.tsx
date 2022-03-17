@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { NavBar } from './components/UI/NavBar'
-import { Route, Routes, useNavigate } from 'react-router-dom'
+import { Route, Routes } from 'react-router-dom'
 import { HomePage } from './pages/HomePage'
 import { CreateArticle } from './pages/CreateArticle/CreateArticle'
 // import { MyArticles } from './pages/MyArticles'
@@ -14,12 +14,11 @@ import { autoLogin } from './store/actions/AuthActions'
 
 function App() {
   const dispatch = useDispatch()
-  const navigate = useNavigate()
   const { isAuth } = useSelector((state: RootState) => state.auth)
 
   useEffect(() => {
-    dispatch(autoLogin(navigate))
-  }, [dispatch, navigate])
+    dispatch(autoLogin())
+  }, [dispatch])
   const AuthRouterHandler = () => {
     if (isAuth) {
       return (
@@ -29,6 +28,7 @@ function App() {
             <Routes>
               <Route element={<HomePage />} path="/" />
               <Route element={<CreateArticle />} path="/create_article" />
+              <Route element={<Profile />} path="/profile" />
               <Route element={<Profile />} path="/profile/:userName" />
               <Route element={<ArticlePage />} path="/article/:id" />
               <Route element={<SubscribePage />} path="/subscribe" />
@@ -48,6 +48,7 @@ function App() {
 
               <Route element={<AuthPage />} path="/create_article" />
               <Route element={<AuthPage />} path="/my_articles" />
+              <Route element={<AuthPage />} path="/profile" />
               <Route element={<AuthPage />} path="/profile/:userName" />
               <Route element={<AuthPage />} path="/subscribe" />
             </Routes>

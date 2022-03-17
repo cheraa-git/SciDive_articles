@@ -43,7 +43,10 @@ class EmptyValuesAreEntered(Exception):
     '''
     Empty values are entered
     '''
-
+class EditAuthDataError(Exception) :
+  '''
+  asfd
+  '''
 class CreateArticleTokenError(Exception):
     '''
     Invalid author token
@@ -279,15 +282,15 @@ def update_article(article_id, user_id, title, image, prev_content, content, cat
     if user.id == article.blog_id:
         if title != 'old':
             article.title = title
-        if article.image != 'old':
+        if image != 'old':
             article.image = image
-        if article.prev_content != 'old':
+        if prev_content != 'old':
             article.prev_content = prev_content
-        if article.content != 'old':
+        if content != 'old':
             article.content = content
-        if article.category != 'old':
+        if category != 'old':
             article.category = category
-        if article.tags != 'old':
+        if tags != 'old':
             article.tags = tags    
         session.commit()
         session.close()
@@ -432,18 +435,18 @@ def request_user_login(email):
         raise AccountNotFound
     return user.login
 
-def change_user_password(email, password_new):
-    email = email.strip() 
-    password_new = password_new.strip()
-    if email == '' or password_new == '':
-        raise EmptyValuesAreEntered
-    engine = create_engine('sqlite:///info_data_base.db', echo=True)
-    session = Session(bind=engine)
-    email = email.lower()
-    user = session.query(User).filter_by(email=email).first()
-    user.password = generate_password_hash(password_new)
-    session.commit()
-    session.close()
+# def change_user_password(email, password_new):
+#     email = email.strip() 
+#     password_new = password_new.strip()
+#     if email == '' or password_new == '':
+#         raise EmptyValuesAreEntered
+#     engine = create_engine('sqlite:///info_data_base.db', echo=True)
+#     session = Session(bind=engine)
+#     email = email.lower()
+#     user = session.query(User).filter_by(email=email).first()
+#     user.password = generate_password_hash(password_new)
+#     session.commit()
+#     session.close()
 
 def remove_check_password(email):
     engine = create_engine('sqlite:///info_data_base.db', echo=True)
@@ -473,7 +476,8 @@ def get_profile_info(login):
     session = Session(bind=engine)
     user = session.query(User).filter_by(login=login).first()
     subscrip = session.query(Subscriptions).filter_by(user_id=user.id).all()
-    print(subscrip)
+    subscriptions = []
+    subscribers = []
     for i in range(len(subscrip)):
         usr = session.query(User).get(subscrip[i].blog_id)
         sub = {
@@ -481,7 +485,7 @@ def get_profile_info(login):
             'login': usr.login,
             'avatar': usr.avatar
         }
-        subscriptions = {i: sub}
+        subscriptions.append(sub)
     subscrib = session.query(Subscriptions).filter_by(blog_id=user.id).all()
     print(subscrib)
     for i in range(len(subscrib)):
@@ -491,10 +495,10 @@ def get_profile_info(login):
             'login': usr.login,
             'avatar': usr.avatar
         }
-        subscribers = {i: sub}
+        subscribers.append(sub)
     rez = {
         "login": user.login,
-        "email": user.email,
+        # "email": user.email,
         "avatar": user.avatar,
         "subscriptions": subscriptions,
         "subscribers": subscribers,
@@ -539,17 +543,21 @@ def add_forgot_code_to_user(email):
     send_message(email, 'Код подтверждения для смены данных', f'Ваш код подтврежднеия: {code}')
     session.close()
 
-def change_user_login(user_id, old_login, new_login, forgot_code):
-    old_login = old_login.strip()
+def change_user_login(user_id, new_login):
     new_login = new_login.strip() 
-    if old_login == '' or new_login == '':
+    if new_login == '':
         raise EmptyValuesAreEntered
     engine = create_engine('sqlite:///info_data_base.db', echo=True)
     session = Session(bind=engine)
+    check_login = session.query(User).filter_by(login = new_login).first()
     user = session.query(User).get(user_id)
-    if old_login != new_login and user.forgot_code == forgot_code and user.forgot_code != 0:
+
+    try: 
+        check_login = check_login.login
+    except:
+      check_login = ''
+    if user.login != new_login and check_login != new_login:
         user.login = new_login 
-        user.forgot_code = 0   
     session.commit()
     session.close()
 
@@ -560,10 +568,20 @@ def change_user_email(user_id, old_email, new_email, forgot_code):
         raise EmptyValuesAreEntered
     engine = create_engine('sqlite:///info_data_base.db', echo=True)
     session = Session(bind=engine)
+    check_email = session.query(User).filter_by(email = new_email).first()
     user = session.query(User).get(user_id)
-    if old_email != new_email and user.forgot_code == forgot_code and user.forgot_code != 0:
-        user.login = new_email    
+   
+    try:
+        check_email = check_email.email
+    except:
+        check_email = ''
+
+    if old_email != new_email and user.forgot_code == forgot_code and user.forgot_code != 0 and check_email != new_email:
+        user.email = new_email    
         user.forgot_code = 0
+    else:
+        raise EditAuthDataError
+
     session.commit()
     session.close()
 
@@ -577,7 +595,7 @@ def change_user_password(user_id, old_password, new_password, forgot_code):
     user = session.query(User).get(user_id)
     new_password = generate_password_hash(new_password)
     if old_password != new_password and user.forgot_code == forgot_code and user.forgot_code != 0:
-        user.login = new_password  
+        user.password = new_password  
         user.forgot_code = 0  
     session.commit()
     session.close()
@@ -589,7 +607,16 @@ def change_user_avatar(user_id, new_avatar_path):
     user.avatar = new_avatar_path  
     session.commit()
     session.close()
+  
+def delete_user(user_id, forgot_code):
+    engine = create_engine('sqlite:///info_data_base.db', echo=True)
+    session = Session(bind=engine)
+    user = session.query(User).get(user_id)
 
+    if user.forgot_code == forgot_code:
+        session.delete(user)
+    session.commit()
+    session.close()
 # add_user("AYE88", 'sss@mail.ru', "2281337")
 
 # get_articles_subscriptions(1)

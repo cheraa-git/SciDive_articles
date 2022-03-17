@@ -1,5 +1,6 @@
+import { NavigateFunction } from 'react-router-dom'
 import axiosApp from '../../axios/axiosApp'
-import { ProfilePayload, ProfileSubscribeItem } from '../../types/interfaces'
+import { EditProfileSendData, ProfilePayload, ProfileSubscribeItem } from '../../types/interfaces'
 import { userActions } from '../../types/UserTypes'
 import { FOLLOW, SET_PROFILE, SET_PROFLE_LOADING, START_PROFILE, UNFOLLOW } from '../actionTypes'
 
@@ -54,10 +55,14 @@ export function unfollow(id: number, login: string) {
   }
 }
 
-export function authCheck(email: string, password: string) {
+export function authCheck(email: string, password: string, mode?: string) {
   return async (dispatch: any) => {
+    const sendData: any = { email, password }
+    if (mode === 'edit') {
+      sendData['forAction'] = 'change'
+    }
     try {
-      const response = await axiosApp.post('authorization/log_in', { email, password })
+      const response = await axiosApp.post('authorization/log_in', sendData)
       const data = response.data
       if (!data.error && data.token === localStorage.getItem('token')) {
         console.log('authCheck: ', data)
@@ -72,6 +77,65 @@ export function authCheck(email: string, password: string) {
   }
 }
 
+export function editProfile(sendData: EditProfileSendData, snackbar: any) {
+  return async (dispatch: any) => {
+    const formData = new FormData()
+    let key: keyof typeof sendData
+
+    if (sendData) {
+      for (key in sendData) {
+        formData.append(key, sendData[key]!)
+      }
+    }
+
+    try {
+      const response = await axiosApp.post(`/edit_profile?token=${localStorage.getItem('token')}`, formData)
+      const data = response.data
+      if (!data.error) {
+        console.log('Edit profile success: ', data)
+
+        if (data.newLogin) {
+          localStorage.setItem('userName', data.newLogin)
+          document.location.href = `/profile`
+        }
+
+        if (data.newImage) {
+          localStorage.setItem('userAvatar', data.newImage)
+          document.location.href = `/profile`
+        }
+
+        if (data.newEmail) {
+          document.location.href = `/profile`
+        }
+
+        if (data.newPassword) {
+          document.location.href = `/profile`
+        }
+
+        return 'success'
+      } else {
+        console.log('Edit profile faild: ', data)
+        return 'failed'
+      }
+    } catch (e) {
+      console.log('Error', e)
+    }
+  }
+}
+
+export function deleteProfile(forgotCode: string, snackbar: any) {
+  return async (dispatch: any) => {
+    try {
+      const response = await axiosApp.post(`/delete_profile?token=${localStorage.getItem('token')}`, { forgotCode })
+      const data = response.data
+      if (!data.error) {
+        snackbar('Успешно', { variant: 'success' })
+      }
+    } catch (e) {
+      console.log('Error', e)
+    }
+  }
+}
 ////////////////////////////////////////////////////////////
 
 export function setProfileLoading(load: boolean): userActions {

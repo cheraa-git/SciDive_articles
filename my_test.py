@@ -5,7 +5,6 @@ from sqlalchemy.orm import Session
 pos_test = requests.post('http://127.0.0.1:5000/authorization/sign_up', json={"login": "User11",
 "password": "111111",
 "email": "user11@mail.ru"})
-
 engine = create_engine('sqlite:///info_data_base.db')
 engine.connect()
 session = Session(bind=engine)
@@ -26,7 +25,7 @@ if pos_test.status_code == 200 and user_id != -1:
     print('Корректно')
 else:
     print('Некорректно')
-if unpos_test.status_code == 501:
+if unpos_test.status_code == 500:
     print('Корректно')
 else:
     print('Некорректно')
