@@ -77,7 +77,7 @@ export function authCheck(email: string, password: string, mode?: string) {
   }
 }
 
-export function editProfile(sendData: EditProfileSendData, navigate: NavigateFunction) {
+export function editProfile(sendData: EditProfileSendData, snackbar: any) {
   return async (dispatch: any) => {
     const formData = new FormData()
     let key: keyof typeof sendData
@@ -104,6 +104,14 @@ export function editProfile(sendData: EditProfileSendData, navigate: NavigateFun
           document.location.href = `/profile`
         }
 
+        if (data.newEmail) {
+          document.location.href = `/profile`
+        }
+
+        if (data.newPassword) {
+          document.location.href = `/profile`
+        }
+
         return 'success'
       } else {
         console.log('Edit profile faild: ', data)
@@ -115,6 +123,19 @@ export function editProfile(sendData: EditProfileSendData, navigate: NavigateFun
   }
 }
 
+export function deleteProfile(forgotCode: string, snackbar: any) {
+  return async (dispatch: any) => {
+    try {
+      const response = await axiosApp.post(`/delete_profile?token=${localStorage.getItem('token')}`, { forgotCode })
+      const data = response.data
+      if (!data.error) {
+        snackbar('Успешно', { variant: 'success' })
+      }
+    } catch (e) {
+      console.log('Error', e)
+    }
+  }
+}
 ////////////////////////////////////////////////////////////
 
 export function setProfileLoading(load: boolean): userActions {

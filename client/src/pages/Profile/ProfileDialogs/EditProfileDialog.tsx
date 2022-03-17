@@ -1,4 +1,5 @@
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Divider, TextField } from '@mui/material'
+import { useSnackbar } from 'notistack'
 import React, { useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
@@ -15,7 +16,7 @@ interface editProfileProps {
 
 export const EditProfileDialog: React.FC<editProfileProps> = ({ isOpen, handleClose }) => {
   const dispatch = useDispatch()
-  const navigate = useNavigate()
+  const { enqueueSnackbar: snackbar } = useSnackbar()
 
   const [userName, setUserName] = useState(localStorage.getItem('userName'))
   const [sendAvatar, setSendAvatar] = useState<File>()
@@ -34,7 +35,7 @@ export const EditProfileDialog: React.FC<editProfileProps> = ({ isOpen, handleCl
     
     console.log('sendData', sendData)
     
-    dispatch(editProfile(sendData, navigate))
+    dispatch(editProfile(sendData, snackbar))
   }
   const closeHandler = () => {
     setUserName(localStorage.getItem('userName'))

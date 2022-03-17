@@ -3,7 +3,7 @@ import { useSnackbar } from 'notistack'
 import React, { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
-import { authCheck, editProfile } from '../../../store/actions/UserActions'
+import { authCheck, deleteProfile, editProfile } from '../../../store/actions/UserActions'
 import '../Profile.sass'
 
 interface EdtiAuthDataProps {
@@ -16,7 +16,6 @@ type Stage = 'start' | 'success' | 'deleteStart' | 'deleteSuccess' | null
 export const EditAuthData: React.FC<EdtiAuthDataProps> = ({ mode, handleClose }) => {
   const dispatch = useDispatch()
   const { enqueueSnackbar: snackbar } = useSnackbar()
-  const navigate = useNavigate()
 
   let isOpen = Boolean(mode)
   const [stage, setStage] = useState<Stage>('start')
@@ -24,7 +23,7 @@ export const EditAuthData: React.FC<EdtiAuthDataProps> = ({ mode, handleClose })
   const [password, setPassword] = useState('')
   const [newData, setNewData] = useState('')
   const [confirmCode, setConfirmCode] = useState('')
-
+  console.log('MODE', mode)
   useEffect(() => {
     if (mode === 'email' || mode === 'password') {
       setStage('start')
@@ -43,13 +42,24 @@ export const EditAuthData: React.FC<EdtiAuthDataProps> = ({ mode, handleClose })
           setEmail('')
           setPassword('')
           setStage('success')
-        } else if (JSON.stringify(isAuth) === 'failed') {
+        } else if (String(isAuth) === 'failed') {
           snackbar('Неверный логин или пароль')
         } else {
           console.log('ERROR', JSON.stringify(isAuth))
         }
       } else if (mode === 'delete') {
-        setStage('deleteSuccess')
+        const isAuth = await dispatch(authCheck(email, password, 'edit'))
+        console.log('IS_AUTH', String(isAuth))
+        if (String(isAuth) === 'success') {
+          snackbar('Успешно', { variant: 'success' })
+          setEmail('')
+          setPassword('')
+          setStage('deleteSuccess')
+        } else if (String(isAuth) === 'failed') {
+          snackbar('Неверный логин или пароль')
+        } else {
+          console.log('ERROR', JSON.stringify(isAuth))
+        }
       }
     } else {
       snackbar('Данные некорректны')
@@ -58,9 +68,11 @@ export const EditAuthData: React.FC<EdtiAuthDataProps> = ({ mode, handleClose })
 
   const saveHandler = () => {
     if (mode === 'email') {
-      dispatch(editProfile({ oldEmail: email, newEmail: newData, forgotCode: confirmCode }, navigate))
-    } if (mode = 'password') {
-      dispatch(editProfile({oldPassword: password, newPassword: newData, forgotCode: confirmCode}, navigate))
+      dispatch(editProfile({ oldEmail: email, newEmail: newData, forgotCode: confirmCode }, snackbar))
+    } else if (mode === 'password') {
+      dispatch(editProfile({oldPassword: password, newPassword: newData, forgotCode: confirmCode}, snackbar))
+    } else if (mode === 'delete') {
+      dispatch(deleteProfile(confirmCode, snackbar))
     }
   }
 

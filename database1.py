@@ -607,7 +607,16 @@ def change_user_avatar(user_id, new_avatar_path):
     user.avatar = new_avatar_path  
     session.commit()
     session.close()
+  
+def delete_user(user_id, forgot_code):
+    engine = create_engine('sqlite:///info_data_base.db', echo=True)
+    session = Session(bind=engine)
+    user = session.query(User).get(user_id)
 
+    if user.forgot_code == forgot_code:
+        session.delete(user)
+    session.commit()
+    session.close()
 # add_user("AYE88", 'sss@mail.ru', "2281337")
 
 # get_articles_subscriptions(1)
