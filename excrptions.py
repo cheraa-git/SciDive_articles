@@ -27,3 +27,8 @@ class CreateArticleTokenError(Exception):
     '''
     Invalid author token
     '''
+
+class EditAuthDataError(Exception) :
+  '''
+  asfd
+  '''
