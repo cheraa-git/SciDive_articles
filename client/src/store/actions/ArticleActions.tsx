@@ -2,7 +2,14 @@ import { NavigateFunction } from 'react-router-dom'
 import axiosApp from '../../axios/axiosApp'
 import { articleActions } from '../../types/ArticleTypes'
 import { Article, CreateArticleData } from '../../types/interfaces'
-import { CLEAR_ARTICLES, SET_CURRENT_CATEGORY, SET_SEND_ARTICLE, SET_USER_ARTICLES } from '../actionTypes'
+import {
+  ARTICLE_ERROR,
+  ARTICLE_SEARCH,
+  CLEAR_ARTICLES,
+  SET_CURRENT_CATEGORY,
+  SET_SEND_ARTICLE,
+  SET_USER_ARTICLES,
+} from '../actionTypes'
 
 ////////// FETCH DATA //////////
 export function fetchUserArticles(userName?: string) {
@@ -11,15 +18,19 @@ export function fetchUserArticles(userName?: string) {
 
     await axiosApp
       .get(`/user_articles/${userName}`)
-      .then((res) => {
-        if (res.data.error) console.log(res.data)
-        else if (!res.data.error) {
+      .then(res => {
+        if (res.data.error) {
+          console.log(res.data)
+          dispatch(setUserArticles([]))
+          dispatch(articleError(true))
+        } else if (!res.data.error) {
+          dispatch(articleError(false))
           console.log(res.data)
 
           dispatch(setUserArticles(res.data))
         }
       })
-      .catch((error) => console.log(error))
+      .catch(error => console.log(error))
   }
 }
 export function fetchArticle(id: number, edit?: boolean) {
@@ -76,7 +87,7 @@ export function createArticle(postData: CreateArticleData, navigate: NavigateFun
     sendFormData.append('prev_content', postData.prevContent)
     sendFormData.append('content', postData.content)
     sendFormData.append('category', postData.category)
-    sendFormData.append('tags', postData.tags)
+    sendFormData.append('tags', JSON.stringify(postData.tags))
 
     try {
       const response = await axiosApp.post('/edit/article', sendFormData)
@@ -110,7 +121,7 @@ export function editArticle(postData: CreateArticleData, navigate: NavigateFunct
     sendFormData.append('prev_content', postData.prevContent)
     sendFormData.append('content', postData.content)
     sendFormData.append('category', postData.category)
-    sendFormData.append('tags', postData.tags)
+    sendFormData.append('tags', JSON.stringify(postData.tags))
 
     try {
       const response = await axiosApp.put(`/edit/article/${postData.id}`, sendFormData)
@@ -183,5 +194,19 @@ export function setSendArticle(article: Article): articleActions {
   return {
     type: SET_SEND_ARTICLE,
     article,
+  }
+}
+
+export function articleError(error: boolean): articleActions {
+  return {
+    type: ARTICLE_ERROR,
+    payload: error,
+  }
+}
+
+export function articleSearch(search: string): articleActions {
+  return {
+    type: ARTICLE_SEARCH,
+    payload: search,
   }
 }

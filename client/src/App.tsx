@@ -11,6 +11,7 @@ import { AuthPage } from './pages/AuthPage'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from './store/rootReducer'
 import { autoLogin } from './store/actions/AuthActions'
+import { SearchPage } from './pages/SearchPage'
 
 function App() {
   const dispatch = useDispatch()
@@ -32,6 +33,7 @@ function App() {
               <Route element={<Profile />} path="/profile/:userName" />
               <Route element={<ArticlePage />} path="/article/:id" />
               <Route element={<SubscribePage />} path="/subscribe" />
+              <Route element={<SearchPage />} path="/search" />
             </Routes>
           </div>
         </>
@@ -51,6 +53,7 @@ function App() {
               <Route element={<AuthPage />} path="/profile" />
               <Route element={<AuthPage />} path="/profile/:userName" />
               <Route element={<AuthPage />} path="/subscribe" />
+              <Route element={<SearchPage />} path="/search" />
             </Routes>
           </div>
         </>

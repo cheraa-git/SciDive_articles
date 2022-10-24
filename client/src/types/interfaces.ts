@@ -4,7 +4,7 @@ export interface Article {
   blog_id: number
   date: string
   views: number
-  tags?: string
+  tags?: string[]
   title: string
   content: string
   image?: string
@@ -23,7 +23,7 @@ export interface CreateArticleData {
   prevContent: string
   content: string
   category: string
-  tags: string
+  tags: string[]
   id?: number
 }
 

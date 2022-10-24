@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { NavLink } from 'react-router-dom'
 import logo from '../../asserts/logotip.png'
@@ -6,12 +6,20 @@ import { logoutUser } from '../../store/actions/AuthActions'
 import { RootState } from '../../store/rootReducer'
 import defaultAvatar from '../../asserts/default_avatar.png'
 import { STATIC } from '../../config'
+import { Dropdown } from './Dropdown/Dropdown'
+import { Button, MenuItem } from '@mui/material'
+import { articleSearch } from '../../store/actions/ArticleActions'
 
 export const NavBar: React.FC = () => {
   const dispatch = useDispatch()
   const { isAuth } = useSelector((state: RootState) => state.auth)
-  // const personIconHref = isAuth ? '/profile' : '/auth'
   const avatar = localStorage.getItem('userAvatar') ? STATIC + localStorage.getItem('userAvatar') : defaultAvatar
+  const [searchInput, setSearchInput] = useState('')
+
+  const searchHandler = () => {
+    console.log('search', searchInput)
+    dispatch(articleSearch(searchInput))
+  }
 
   const dropdownLinks = isAuth ? (
     <>
@@ -24,22 +32,18 @@ export const NavBar: React.FC = () => {
 
       <hr className="dropdown-divider" />
 
-      <li>
-        <button className="dropdown-item" onClick={() => dispatch(logoutUser())}>
-          Выход
-        </button>
-      </li>
+      <MenuItem onClick={() => dispatch(logoutUser())}>Выход</MenuItem>
     </>
   ) : (
     <>
       <li>
-        <NavLink className="dropdown-item" to="/auth/login">
+        <NavLink className="dropdown-item rounded" to="/auth/login">
           Вход
         </NavLink>
       </li>
       <hr className="dropdown-divider" />
       <li>
-        <NavLink className="dropdown-item" to="/auth/signup">
+        <NavLink className="dropdown-item rounded" to="/auth/signup">
           Регистрация
         </NavLink>
       </li>
@@ -59,6 +63,7 @@ export const NavBar: React.FC = () => {
           aria-controls="navbarNav"
           aria-expanded="false"
         >
+          {' '}
           <span className="navbar-toggler-icon"></span>
         </button>
         <div className="collapse navbar-collapse fs-5" id="navbarNav">
@@ -77,15 +82,22 @@ export const NavBar: React.FC = () => {
               </NavLink>
             </li>
           </ul>
+          <div className="d-flex ms-auto">
+            <input
+              className="form-control me-2"
+              value={searchInput}
+              onChange={(e) => setSearchInput(e.target.value)}
+              placeholder="Поиск статей"
+              aria-label="Search"
+            />
+            <Button onClick={searchHandler}>Поиск</Button>
+          </div>
           <ul className="navbar-nav ms-auto">
-            <>
-              <div className="btn-group me-2 d-block" style={{ width: '3rem' }}>
-                <button className="btn btn-dark dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                  <img src={avatar} className="img-fluid rounded" alt="" />
-                </button>
-                <ul className="dropdown-menu dropdown-menu-end p-2">{dropdownLinks}</ul>
-              </div>
-            </>
+            <div className="me-5">
+              <Dropdown dropHeader={<img src={avatar} className="img-fluid rounded" alt="" width={30} />}>
+                {dropdownLinks}
+              </Dropdown>
+            </div>
           </ul>
         </div>
       </div>

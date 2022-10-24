@@ -1,12 +1,13 @@
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import { NavLink, useNavigate } from 'react-router-dom'
 import { Article } from '../../types/interfaces'
 import defaultAvatar from '../../asserts/default_avatar.png'
 import { STATIC } from '../../config'
-import { IconButton } from '@mui/material'
+import { Card, CardMedia, IconButton } from '@mui/material'
 import MenuList from '../UI/MenuList'
 import { useDispatch } from 'react-redux'
 import { addView, fetchArticle } from '../../store/actions/ArticleActions'
+import './Article.sass'
 
 interface ArticleItemProps {
   article: Article
@@ -33,6 +34,8 @@ export const ArticleItem: React.FC<ArticleItemProps> = ({ article, mode }) => {
   const avatarImage = article.author.avatar ? STATIC + article.author.avatar : defaultAvatar
   let listItems = [{ label: 'Открыть статью', onClick: () => navigate(`/article/${article.id}`) }]
 
+  const footerRef = useRef<HTMLDivElement>(null)
+
   if (article.author.login === localStorage.getItem('userName')) {
     listItems.push({
       label: 'Редактировать',
@@ -57,6 +60,13 @@ export const ArticleItem: React.FC<ArticleItemProps> = ({ article, mode }) => {
     textList = article.content
     style = { width: '60%', minWidth: '21rem' }
   }
+
+  const tags = () => {
+    if (article.tags) {
+      return article.tags.map((tag, i) => <a key={i}>#{tag}&nbsp;</a>)
+    }
+  }
+
   return (
     <div className="card m-2 p-3 bg-translucent-light" style={style}>
       <div className="d-block">
@@ -83,8 +93,7 @@ export const ArticleItem: React.FC<ArticleItemProps> = ({ article, mode }) => {
 
       <div className="card-body">
         <h2 className="card-title display-5">{article.title}</h2>
-        <img src={articleImage} className="card-img-top" alt="" />
-        {/* <div>{textList}</div> */}
+        <img src={articleImage} className="" alt="" decoding="async" height="200px" />
         <div dangerouslySetInnerHTML={{ __html: textList! }} />
 
         {mode === 'preview' && (
@@ -92,16 +101,16 @@ export const ArticleItem: React.FC<ArticleItemProps> = ({ article, mode }) => {
             to={`/article/${article.id}`}
             onClick={() => dispatch(addView(Number(article.id)))}
             className="btn btn-primary mt-2 align-bottom"
+            style={{ marginBottom: `${footerRef.current ? footerRef.current?.offsetHeight : 50}px` }}
           >
             Читать далее
           </NavLink>
         )}
       </div>
-      <div style={{ height: '100%' }} className={'align-bottom'}>
-        <div className="card-footer text-muted d-flex">
-          <i className="bi bi-eye ms-auto"></i>
-          {article.views}
-        </div>
+      <div className="artFooter" ref={footerRef} style={{ position: 'absolute', bottom: '10px', marginTop: '100px' }}>
+        {tags()}
+        <i className="bi bi-eye ms-auto"></i>
+        {article.views}
       </div>
     </div>
   )

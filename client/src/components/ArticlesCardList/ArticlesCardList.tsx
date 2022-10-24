@@ -1,6 +1,11 @@
 import React from 'react'
+import { useSelector } from 'react-redux'
+import { translit } from '../../auxiliary_functions'
+import { RootState } from '../../store/rootReducer'
 import { Article } from '../../types/interfaces'
 import { ArticleItem } from './ArticleItem'
+
+console.log('translit', translit('привет как дела'))
 
 interface ArticlesCardListProps {
   articles: Article[]
@@ -8,18 +13,25 @@ interface ArticlesCardListProps {
 }
 
 export const ArticlesCardList: React.FC<ArticlesCardListProps> = (props) => {
+  const { searchText } = useSelector((state: RootState) => state.article)
+
   let filterArticles = props.articles
   if (props.currentCategory !== 'Все категории') {
     filterArticles = filterArticles.filter((art) => art.category === props.currentCategory)
   }
+  if (searchText) {
+    filterArticles = filterArticles.filter((art) => art.title.toLowerCase().indexOf(searchText.toLowerCase()) > -1)
+  }
 
-  let a = [{'a': 1}, {'b': 2}, {'c': 3}, {'d': 4}, {'e': 5}]
-  a.reverse()
-  console.log('A',a)
-  
+  filterArticles = filterArticles.reverse()
+  const reverseArticles = []
+  for (let i = 0; i < filterArticles.length; i++) {
+    reverseArticles[i] = filterArticles[filterArticles.length - 1 - i]
+  }
+
   const content =
     props.articles.length > 0 ? (
-      filterArticles.reverse().map((art, index) => {
+      reverseArticles.map((art, index) => {
         return <ArticleItem article={art} mode="preview" key={index} />
       })
     ) : (

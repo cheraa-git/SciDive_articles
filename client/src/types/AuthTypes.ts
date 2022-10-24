@@ -1,4 +1,4 @@
-import { AUTO_AUTH_SUCCESS, LOGIN_USER, LOGOUT_USER, TEST } from '../store/actionTypes'
+import { ARTICLE_ERROR, AUTO_AUTH_SUCCESS, LOGIN_USER, LOGOUT_USER, TEST } from '../store/actionTypes'
 
 interface IloginUser {
   type: typeof LOGIN_USER

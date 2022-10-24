@@ -1,16 +1,20 @@
-from flask import Flask, request, jsonify
-from flask_caching import Cache
-from flask_sockets import Sockets
-from dbnqs import MUsers, MArticles, Feed
-from excrptions import AccountExists, AccountNotFound, SignupLoginError, SignupEmailError, EmptyValuesAreEntered, CreateArticleTokenError, EditAuthDataError
-from send_mail import send_message
-from werkzeug.security import generate_password_hash, check_password_hash
-from flask_marshmallow import Marshmallow
-from flask_cors import CORS
-import jwt
-import os
 import json
+import os
 
+import jwt
+from flask import Flask, jsonify, request
+from flask_caching import Cache
+from flask_cors import CORS
+from flask_marshmallow import Marshmallow
+from flask_sockets import Sockets
+from werkzeug.security import check_password_hash, generate_password_hash
+
+from dbnqs import Feed, MArticles, MUsers
+from excrptions import (AccountExists, AccountNotFound,
+                        CreateArticleTokenError, EditAuthDataError,
+                        EmptyValuesAreEntered, SignupEmailError,
+                        SignupLoginError)
+from send_mail import send_message
 
 app = Flask(__name__, template_folder="templates")
 # Отмена кэширования статических файлов

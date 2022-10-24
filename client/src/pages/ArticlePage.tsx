@@ -15,7 +15,7 @@ export const ArticlePage: React.FC = () => {
     dispatch(fetchArticle(Number(articleId)))
   }, [dispatch, articleId])
 
-  const { articles, loading } = useSelector((state: RootState) => state.article)
+  const { articles, loading, error } = useSelector((state: RootState) => state.article)
 
   const Content = () => {
     if (loading) {

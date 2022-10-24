@@ -9,13 +9,18 @@ import { RootState } from '../store/rootReducer'
 export const HomePage: React.FC = () => {
   const dispatch = useDispatch()
   const { articles, currentCategory, loading } = useSelector((state: RootState) => state.article)
+  // ассинхронное получение списка статей
   useEffect(() => {
     dispatch(fetchHome())
   }, [dispatch])
   return (
     <div>
       <SecondNavBar />
-      {loading ? <SpinLoader /> : <ArticlesCardList articles={articles} currentCategory={currentCategory} />}
+      {
+        loading 
+        ? <SpinLoader /> 
+        : <ArticlesCardList articles={articles} currentCategory={currentCategory} />
+      }
     </div>
   )
 }

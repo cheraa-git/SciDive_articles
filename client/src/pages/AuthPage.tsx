@@ -21,7 +21,7 @@ export const AuthPage: React.FC = () => {
   ) => func(event.target.value)
 
   const loginHandler = () => {
-    dispatch(authDataPost({ email, password } ,snackbar))
+    dispatch(authDataPost({ email, password }, snackbar))
   }
 
   const singupHandler = () => {
@@ -33,19 +33,19 @@ export const AuthPage: React.FC = () => {
     ) {
       if (password === confirmPassword) {
         dispatch(postRegisterData({ login, password, email }, navigate, snackbar))
-        console.log('success')
+        console.log('password === confirmPassword')
       } else {
-        setValid((prev) => ({ ...prev, secondPassword: 'invalid' }))
+        setValid(prev => ({ ...prev, secondPassword: 'invalid' }))
       }
     }
     if (password.length < 6) {
-      setValid((prev) => ({ ...prev, password: 'invalid' }))
+      setValid(prev => ({ ...prev, password: 'invalid' }))
     }
     if (!login.match(/^[a-zA-Z0-9]{3,16}$/)) {
-      setValid((prev) => ({ ...prev, login: 'invalid' }))
+      setValid(prev => ({ ...prev, login: 'invalid' }))
     }
     if (!email.match(/^[A-Z0-9._%+-]+@[A-Z0-9-]+.+.[A-Z]{2,4}$/i)) {
-      setValid((prev) => ({ ...prev, email: 'invalid' }))
+      setValid(prev => ({ ...prev, email: 'invalid' }))
     }
   }
 
@@ -56,7 +56,7 @@ export const AuthPage: React.FC = () => {
         <h1 className="display-6">Вход</h1>
         <div className="mb-3">
           <label className="lead form-label">E-mail</label>
-          <input className="form-control" value={email} onChange={(e) => inputHandler(e, setEmail)} required />
+          <input className="form-control" value={email} onChange={e => inputHandler(e, setEmail)} required />
         </div>
 
         <div className="mb-3">
@@ -65,7 +65,7 @@ export const AuthPage: React.FC = () => {
             type="password"
             className="form-control"
             value={password}
-            onChange={(e) => inputHandler(e, setPassword)}
+            onChange={e => inputHandler(e, setPassword)}
             minLength={6}
             required
           />
@@ -92,7 +92,7 @@ export const AuthPage: React.FC = () => {
             type="email"
             className={`form-control is-${valid.email}`}
             value={email}
-            onChange={(e) => inputHandler(e, setEmail)}
+            onChange={e => inputHandler(e, setEmail)}
             required
           />
           <div className="invalid-feedback">Некорректный E-mail</div>
@@ -103,7 +103,7 @@ export const AuthPage: React.FC = () => {
           <input
             className={`form-control is-${valid.login}`}
             value={login}
-            onChange={(e) => inputHandler(e, setLogin)}
+            onChange={e => inputHandler(e, setLogin)}
             required
           />
           <div className="invalid-feedback">
@@ -117,7 +117,7 @@ export const AuthPage: React.FC = () => {
             type="password"
             className={`form-control is-${valid.password}`}
             value={password}
-            onChange={(e) => inputHandler(e, setPassword)}
+            onChange={e => inputHandler(e, setPassword)}
             required
             minLength={6}
           />
@@ -130,7 +130,7 @@ export const AuthPage: React.FC = () => {
             type="password"
             className={`form-control is-${valid.secondPassword}`}
             value={confirmPassword}
-            onChange={(e) => inputHandler(e, setConfirmPassword)}
+            onChange={e => inputHandler(e, setConfirmPassword)}
             required
             minLength={6}
           />
@@ -151,7 +151,7 @@ export const AuthPage: React.FC = () => {
   }
 
   return (
-    <div className="container bg-translucent-light">
+    <div className="container bg-translucent-light" style={{ height: '670px' }}>
       <div className="mx-auto p-4" style={{ width: '60%', minWidth: '21rem' }}>
         {content}
       </div>

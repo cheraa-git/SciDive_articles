@@ -1,0 +1,86 @@
+.dropdown_main
+    // display: flex
+    // flex-direction: column-reverse
+
+.dropdown_content
+    position: absolute
+    border-radius: 4px
+    background-color: #fff
+    z-index: 100
+    margin-right: 100px
+
+// from top to BOTTOM
+.dropdown_bottom-enter
+    opacity: 0
+    transform: translateY(-50px)
+    &-active
+        opacity: 1
+        transform: translateY(10px)
+        transition: .2s
+    &-done
+        transform: translateY(0px)
+        transition: .2s
+
+.dropdown_bottom-exit
+    opacity: 1
+    &-active
+        opacity: 0
+        transform: translateY(-50px)
+        transition: .4s
+
+// from bottom to TOP
+.dropdown_top-enter
+    opacity: 0
+    transform: translateY(50px)
+    &-active
+        opacity: 1
+        transform: translateY(-10px)
+        transition: .2s
+    &-done
+        transform: translateY(0px)
+        transition: .2s
+
+.dropdown_top-exit
+    opacity: 1
+    &-active
+        opacity: 0
+        transform: translateY(50px)
+        transition: .4s
+
+// from right to LEFT
+.dropdown_left-enter
+    opacity: 0
+    transform: translateX(50px)
+    &-active
+        opacity: 1
+        transform: translateX(-10px)
+        transition: .2s
+    &-done
+        transform: translateX(0px)
+        transition: .2s
+
+.dropdown_left-exit
+    opacity: 1
+    &-active
+        opacity: 0
+        transform: translateX(50px)
+        transition: .4s
+
+// from left to RIGHT
+.dropdown_right-enter
+    opacity: 0
+    transform: translateX(-50px)
+    &-active
+        opacity: 1
+        transform: translateX(10px)
+        transition: .2s
+    &-done
+        transform: translateX(0px)
+        transition: .2s
+
+.dropdown_right-exit
+    opacity: 1
+    &-active
+        opacity: 0
+        transform: translateX(-50px)
+        transition: .4s

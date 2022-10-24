@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import { Button, Dialog, DialogActions, DialogTitle, MenuItem, TextField, Tooltip } from '@mui/material'
+import React, { useEffect, useRef, useState } from 'react'
+import { Button, Dialog, DialogActions, DialogTitle, IconButton, MenuItem, TextField, Tooltip } from '@mui/material'
 import { useSnackbar } from 'notistack'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
@@ -16,6 +16,8 @@ import { RootState } from '../../store/rootReducer'
 import { CreateArticleData } from '../../types/interfaces'
 import './CreateArticle.sass'
 import { ContentEditor } from '../../components/UI/ContentEditor'
+import { InputDataList } from '../../components/InputDataList'
+import { EditTagsArea } from './EditTagsArea'
 
 export const CreateArticle: React.FC = () => {
   const dispatch = useDispatch()
@@ -24,6 +26,9 @@ export const CreateArticle: React.FC = () => {
   const { categoryList, loading, sendArticle } = useSelector((state: RootState) => state.article)
   const [sendAvatar, setSendAvatar] = useState<File>()
   const [dialogOpen, setDialogOpen] = useState(false)
+  let tagList = ['JavaScript', 'React', 'Hooks', 'Bootstrap']
+
+  const tagsInpRef = useRef<HTMLInputElement>(null)
 
   if (categoryList[0] === 'Все категории') {
     categoryList.shift()
@@ -32,7 +37,7 @@ export const CreateArticle: React.FC = () => {
   const urlParams: any = {}
   decodeURI(window.location.search.substring(1))
     .split('&')
-    .forEach((element) => {
+    .forEach(element => {
       urlParams[element.split('=')[0]] = element.split('=')[1]
     })
   const editId = Number(urlParams.editArticleId)
@@ -52,7 +57,7 @@ export const CreateArticle: React.FC = () => {
         prevContent: sendArticle.prev_content,
         content: sendArticle.content,
         category: sendArticle.category,
-        tags: '',
+        tags: sendArticle.tags || [],
       }
       if (editId) {
         payload.id = editId
@@ -71,7 +76,7 @@ export const CreateArticle: React.FC = () => {
 
   const deleteHandler = () => {
     dispatch(deleteArticle(sendArticle.id, navigate, snackbar))
-    // if 
+    // if
   }
 
   const avatarHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -79,6 +84,24 @@ export const CreateArticle: React.FC = () => {
       console.log(e.target.files[0])
       setArticle({ image: URL.createObjectURL(e.target.files[0]!) })
       setSendAvatar(e.target.files[0])
+    }
+  }
+
+  const tagsHandler = (event?: React.KeyboardEvent<HTMLDivElement>) => {
+    if (!event || event?.code === 'Enter') {
+      const input = tagsInpRef.current
+      if (input && input.value) {
+        if (sendArticle.tags) {
+          if (sendArticle.tags.indexOf(input.value) >= 0) {
+            snackbar('Такое ключевое слово уже добавлено')
+            return
+          }
+          setArticle({ tags: [...sendArticle.tags, input.value] })
+        } else {
+          setArticle({ tags: [input.value] })
+        }
+        input.value = ''
+      }
     }
   }
 
@@ -100,15 +123,14 @@ export const CreateArticle: React.FC = () => {
 
   const htmlContent = () => (
     <>
-      <div className="card-body bg-translucent-light">
-        <div className="d-flex mb-3">
+      <div className="input-container">
+        <div>
           <TextField
             value={sendArticle.title}
-            onChange={(e) => setArticle({ title: e.target.value })}
+            onChange={e => setArticle({ title: e.target.value })}
             variant="standard"
             label="Название *"
             size="small"
-            fullWidth
             inputProps={{ maxLength: 70 }}
           />
           <Tooltip title={'Заголовок статьи, не более 70 символов. (обязательное поле)'} placement="right">
@@ -116,13 +138,12 @@ export const CreateArticle: React.FC = () => {
           </Tooltip>
         </div>
 
-        <div className="d-flex mb-3">
+        <div>
           <TextField
             value={sendArticle.category}
-            onChange={(e) => setArticle({ category: e.target.value })}
+            onChange={e => setArticle({ category: e.target.value })}
             variant="standard"
             select
-            fullWidth
             label="Категория *"
           >
             {categoryList.map((el, index) => (
@@ -136,10 +157,30 @@ export const CreateArticle: React.FC = () => {
           </Tooltip>
         </div>
 
-        <div className="d-flex mb-3">
+        <div>
+          <InputDataList
+            inputRef={tagsInpRef}
+            width="30vw"
+            data={tagList}
+            label="Ключевые слова"
+            id="create-article-inp-data-list"
+            onKeyDown={e => tagsHandler(e)}
+          />
+
+          <IconButton className="text-dark ms-1 mt-3" onClick={() => tagsHandler()} size="small">
+            <i className="bi bi-plus-lg text-primary"></i>
+          </IconButton>
+
+          <Tooltip title={'Добавьте ключевые слова, для удобного поиска вашей статьи'} placement="right">
+            <i className="bi bi-info-circle my-auto ms-2"></i>
+          </Tooltip>
+        </div>
+        <EditTagsArea />
+
+        <div>
           <TextField
             value={sendArticle.prev_content}
-            onChange={(e) => setArticle({ prev_content: e.target.value })}
+            onChange={e => setArticle({ prev_content: e.target.value })}
             // variant="filled"
             label="Краткое описание"
             size="small"
@@ -156,21 +197,23 @@ export const CreateArticle: React.FC = () => {
           </Tooltip>
         </div>
 
-        <div className="d-flex mb-3">
+        <div>
           <p className="lead my-auto me-2">Аватарка:</p>
           <TextField variant="standard" type="file" onChange={avatarHandler} />
           <i className="bi bi-info-circle opacity-25 my-auto ms-2"></i>
         </div>
         <Avatar />
 
-        <div className="d-flex">
+        <div>
           <p className="lead fs-3 mb-1">Содержание:</p>
           <Tooltip title={'Обязательное поле'} placement="right">
             <i className="bi bi-info-circle my-auto ms-2"></i>
           </Tooltip>
         </div>
-        <ContentEditor value={sendArticle.content} setValue={(value) => setArticle({ content: value })} />
-        <div className="text-end mt-3">
+
+        <ContentEditor value={sendArticle.content} setValue={value => setArticle({ content: value })} />
+
+        <div>
           <Button variant="contained" onClick={submitHandler}>
             {editId ? 'Сохранить изменения' : 'Создать'}
           </Button>
