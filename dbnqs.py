@@ -23,9 +23,9 @@ class User(Base):
     email = Column(String(254), nullable=False, unique=True)
     password = Column(String(20), nullable=False)
     avatar = Column(String, default='default_avatar.png', nullable=False)
-    is_confirmed_email = Column(Boolean, nullable=False, default=False)
+    is_confirmed_email = Column(Boolean, nullable=False, default=False) 
     forgot_code = Column(String(10), nullable=False, unique=False, default=0)
-    subscriptions = relationship("Subscriptions", cascade="all, delete-orphan")
+    subscriptions = relationship("Subscriptions" , cascade="all, delete-orphan")
     def __str__(self):
         return ' | '.join([str(self.id), self.login])
 
