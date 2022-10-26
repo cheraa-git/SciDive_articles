@@ -6,7 +6,7 @@ import {
   SET_SEND_ARTICLE,
   SET_USER_ARTICLES,
 } from '../store/actionTypes'
-import { Article } from './interfaces'
+import { Article, Search } from './interfaces'
 
 interface IclearArticles {
   type: typeof CLEAR_ARTICLES
@@ -33,7 +33,7 @@ interface IarticleError {
 
 interface IarticleSearch {
   type: typeof ARTICLE_SEARCH
-  payload: string
+  payload?: Search 
 }
 
 export type articleActions =

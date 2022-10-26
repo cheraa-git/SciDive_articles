@@ -1,24 +1,42 @@
-import React, { useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { NavLink } from 'react-router-dom'
-import logo from '../../asserts/logotip.png'
-import { logoutUser } from '../../store/actions/AuthActions'
-import { RootState } from '../../store/rootReducer'
-import defaultAvatar from '../../asserts/default_avatar.png'
-import { STATIC } from '../../config'
-import { Dropdown } from './Dropdown/Dropdown'
-import { Button, MenuItem } from '@mui/material'
-import { articleSearch } from '../../store/actions/ArticleActions'
+import logo from '../../../asserts/logotip.png'
+import { logoutUser } from '../../../store/actions/AuthActions'
+import { RootState } from '../../../store/rootReducer'
+import defaultAvatar from '../../../asserts/default_avatar.png'
+import { STATIC } from '../../../config'
+import { Dropdown } from '../Dropdown/Dropdown'
+import { MenuItem } from '@mui/material'
+import { articleSearch } from '../../../store/actions/ArticleActions'
+import './NavBar.sass'
+import { Search } from '../../../types/interfaces'
 
 export const NavBar: React.FC = () => {
   const dispatch = useDispatch()
   const { isAuth } = useSelector((state: RootState) => state.auth)
+  const { search } = useSelector((state: RootState) => state.article)
   const avatar = localStorage.getItem('userAvatar') ? STATIC + localStorage.getItem('userAvatar') : defaultAvatar
   const [searchInput, setSearchInput] = useState('')
+  const [searchTitle, setSearchTitle] = useState(true)
+  const [searchTags, setSearchTags] = useState(false)
+  const [searchContent, setSearchContent] = useState(false)
+
+  const [searchSettingsToggle, setSearchSettingsToggle] = useState<HTMLElement | null>(null)
+  const [profileImgToggle, setProfileImgToggle] = useState<HTMLElement | null>(null)
 
   const searchHandler = () => {
-    console.log('search', searchInput)
-    dispatch(articleSearch(searchInput))
+    const payload: Search = {
+      request: searchInput,
+      title: searchTitle,
+      tags: searchTags,
+      content: searchContent,
+    }
+    dispatch(articleSearch(payload))
+  }
+  const cancelSearch = () => {
+    setSearchInput('')
+    dispatch(articleSearch())
   }
 
   const dropdownLinks = isAuth ? (
@@ -63,7 +81,6 @@ export const NavBar: React.FC = () => {
           aria-controls="navbarNav"
           aria-expanded="false"
         >
-          {' '}
           <span className="navbar-toggler-icon"></span>
         </button>
         <div className="collapse navbar-collapse fs-5" id="navbarNav">
@@ -82,19 +99,48 @@ export const NavBar: React.FC = () => {
               </NavLink>
             </li>
           </ul>
+
           <div className="d-flex ms-auto">
-            <input
-              className="form-control me-2"
-              value={searchInput}
-              onChange={(e) => setSearchInput(e.target.value)}
-              placeholder="Поиск статей"
-              aria-label="Search"
-            />
-            <Button onClick={searchHandler}>Поиск</Button>
+            <div className="settings-input">
+              
+              <i
+                className="bi bi-sliders "
+                onClick={e => setSearchSettingsToggle(prev => (prev ? null : e.currentTarget))}
+              />
+              <Dropdown anchorEl={searchSettingsToggle} onClose={() => setSearchSettingsToggle(null)}>
+                <div>
+                  <p className="asdf">asdf1</p>
+                  <p className="asdf2">asdf2</p>
+                  <p className="asdf3">asdf3</p>
+                  <i className="bi bi-sliders" />
+                </div>
+              </Dropdown>
+
+              <input
+                className="form-control"
+                value={searchInput}
+                onChange={e => setSearchInput(e.target.value)}
+                placeholder="Поиск статей"
+                aria-label="Search"
+              />
+              {search.request ? (
+                <i className="bi bi-x-lg" onClick={cancelSearch} />
+              ) : (
+                <i className="bi bi-search" onClick={searchHandler} />
+              )}
+            </div>
           </div>
           <ul className="navbar-nav ms-auto">
             <div className="me-5">
-              <Dropdown dropHeader={<img src={avatar} className="img-fluid rounded" alt="" width={30} />}>
+              <img
+                src={avatar}
+                className="img-fluid rounded"
+                alt=""
+                width={30}
+                id="navbar__profile-img"
+                onClick={e => setProfileImgToggle(prev => (prev ? null : e.currentTarget))}
+              />
+              <Dropdown anchorEl={profileImgToggle} onClose={() => setProfileImgToggle(null)}>
                 {dropdownLinks}
               </Dropdown>
             </div>

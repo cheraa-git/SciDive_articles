@@ -1,7 +1,7 @@
 import { NavigateFunction } from 'react-router-dom'
 import axiosApp from '../../axios/axiosApp'
 import { articleActions } from '../../types/ArticleTypes'
-import { Article, CreateArticleData } from '../../types/interfaces'
+import { Article, CreateArticleData, Search } from '../../types/interfaces'
 import {
   ARTICLE_ERROR,
   ARTICLE_SEARCH,
@@ -204,9 +204,9 @@ export function articleError(error: boolean): articleActions {
   }
 }
 
-export function articleSearch(search: string): articleActions {
+export function articleSearch(search?: Search): articleActions {
   return {
     type: ARTICLE_SEARCH,
-    payload: search,
+    payload: search ? search : undefined,
   }
 }

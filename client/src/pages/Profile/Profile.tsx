@@ -38,6 +38,7 @@ export const Profile: React.FC = () => {
 
   const isMyProfile = userName === localStorage.getItem('userName')
   const [editDialogOpen, setEditDialogOpen] = useState(false)
+  const [userDropToggle, setUserDropToggle] = useState<HTMLElement | null>(null)
 
   useEffect(() => {
     if (userName) {
@@ -55,7 +56,7 @@ export const Profile: React.FC = () => {
         <div className="bg-translucent-light">
           <h1 className="display-6 text-center">Что-то пошло не так...</h1>
           <p className="lead text-center fs-5">
-            Попробуйте перейти на <NavLink to={'/'}>главную</NavLink> или{' '}
+            Попробуйте перейти на <NavLink to={'/'}>главную</NavLink> или
             <a href={window.location.href}>перезагрузить</a> страницу
           </p>
         </div>
@@ -69,7 +70,7 @@ export const Profile: React.FC = () => {
         <>
           <h1 className="display-6 text-center">Статей пока нет...</h1>
           <p className="lead text-center">
-            Хотите{' '}
+            Хотите
             <NavLink className="link" to="/create_article">
               создать
             </NavLink>
@@ -91,7 +92,7 @@ export const Profile: React.FC = () => {
       )
     }
 
-    if (subscribers.findIndex((el) => el.login === localStorage.getItem('userName')) >= 0) {
+    if (subscribers.findIndex(el => el.login === localStorage.getItem('userName')) >= 0) {
       return (
         <>
           <MenuItem onClick={() => dispatch(unfollow(blog_id, localStorage.getItem('userName')!))}>
@@ -113,31 +114,26 @@ export const Profile: React.FC = () => {
       {profileLoading && <LinearProgress />}
       <div className={`bg-translucent-dark d-flex ${profileLoading && 'opacity-50'}`}>
         <div>
-          <img className="rounded  m-3" src={userAvatar} alt="Аватар" height={150}></img>
-          <Dropdown
-            dropHeader={
-              <Button
-                className="fs-3 link"
-                data-bs-toggle="dropdown"
-                style={{ textTransform: 'none' }}
-                endIcon={<i className="bi bi-caret-down" />}
-              >
-                @{userName}{' '}
-              </Button>
-            }
-            mouseEvent
+          <img className="rounded m-3" src={userAvatar} alt="Аватар" height={150} />
+          <Button
+            className="fs-3 link"
+            style={{ textTransform: 'none' }}
+            endIcon={<i className="bi bi-caret-down" />}
+            id="username-dropdown-button"
+            onClick={e => setUserDropToggle(prev => (prev ? null : e.currentTarget))}
           >
+            @{userName}
+          </Button>
+          <Dropdown anchorEl={userDropToggle} onClose={() => setUserDropToggle(null)}>
             <DropdownItems />
           </Dropdown>
-        </div>{' '}
+        </div>
         <div className="container profile-info">
-          {' '}
           <div>
             <p className="lead">
               Публикаций: <strong className="me-2">{articles.length}</strong>
             </p>
             <p className="lead" data-bs-toggle="dropdown">
-              {' '}
               Подписок: <strong className="me-2">{subscriptions.length}</strong>
             </p>
             <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton2">
@@ -151,19 +147,17 @@ export const Profile: React.FC = () => {
                       height={25}
                       alt=""
                     />
-                    {el.login}{' '}
-                  </NavLink>{' '}
+                    {el.login}
+                  </NavLink>
                 </li>
               ))}
             </ul>
             <p className="lead" data-bs-toggle="dropdown">
-              {' '}
-              Подписчиков: <strong className="me-2">{subscribers.length}</strong>{' '}
+              Подписчиков: <strong className="me-2">{subscribers.length}</strong>
             </p>
             <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton3">
               {subscribers.map((el, index) => (
                 <li key={index} className="d-flex">
-                  {' '}
                   <NavLink to={`/profile/${el.login}`} className="dropdown-item mb-0">
                     <img
                       className="float-start rounded-circle me-3"
@@ -171,9 +165,9 @@ export const Profile: React.FC = () => {
                       width={25}
                       height={25}
                       alt=""
-                    />{' '}
+                    />
                     {el.login}
-                  </NavLink>{' '}
+                  </NavLink>
                 </li>
               ))}
             </ul>

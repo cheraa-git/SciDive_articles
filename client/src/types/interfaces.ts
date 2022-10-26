@@ -52,3 +52,10 @@ export interface EditProfileSendData {
   newLogin?: string
   forgotCode?: string
 }
+
+export interface Search {
+  request: string
+  title: boolean
+  tags: boolean
+  content: boolean
+}

@@ -12,15 +12,16 @@ interface ArticlesCardListProps {
   currentCategory: string
 }
 
-export const ArticlesCardList: React.FC<ArticlesCardListProps> = (props) => {
-  const { searchText } = useSelector((state: RootState) => state.article)
+export const ArticlesCardList: React.FC<ArticlesCardListProps> = props => {
+  const { search } = useSelector((state: RootState) => state.article)
 
   let filterArticles = props.articles
   if (props.currentCategory !== 'Все категории') {
-    filterArticles = filterArticles.filter((art) => art.category === props.currentCategory)
+    filterArticles = filterArticles.filter(art => art.category === props.currentCategory)
   }
-  if (searchText) {
-    filterArticles = filterArticles.filter((art) => art.title.toLowerCase().indexOf(searchText.toLowerCase()) > -1)
+  if (search.request) {
+    const request = search.request.toLowerCase()
+    filterArticles = filterArticles.filter(art => art.title.toLowerCase().indexOf(request) > -1)
   }
 
   filterArticles = filterArticles.reverse()

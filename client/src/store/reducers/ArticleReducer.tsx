@@ -1,5 +1,5 @@
 import { articleActions } from '../../types/ArticleTypes'
-import { Article } from '../../types/interfaces'
+import { Article, Search } from '../../types/interfaces'
 import {
   ARTICLE_ERROR,
   ARTICLE_SEARCH,
@@ -16,7 +16,7 @@ interface IArticleInitialState {
   sendArticle: Article
   loading: boolean
   error: boolean
-  searchText: string
+  search: Search
 }
 const initialState: IArticleInitialState = {
   articles: [],
@@ -39,7 +39,12 @@ const initialState: IArticleInitialState = {
   },
   loading: false,
   error: false,
-  searchText: '',
+  search: {
+    request: '',
+    title: true,
+    tags: false,
+    content: false,
+  },
 }
 
 export function articleReducer(state = initialState, action: articleActions) {
@@ -68,7 +73,10 @@ export function articleReducer(state = initialState, action: articleActions) {
     case ARTICLE_ERROR:
       return { ...state, error: action.payload }
     case ARTICLE_SEARCH:
-      return { ...state, searchText: action.payload }
+      if (!action.payload) {
+        action.payload = initialState.search
+      }
+      return { ...state, search: { ...state.search, ...action.payload } }
     default:
       return state
   }

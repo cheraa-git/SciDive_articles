@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { NavBar } from './components/UI/NavBar'
+import { NavBar } from './components/UI/NavBar/NavBar'
 import { Route, Routes } from 'react-router-dom'
 import { HomePage } from './pages/HomePage'
 import { CreateArticle } from './pages/CreateArticle/CreateArticle'
