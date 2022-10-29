@@ -16,12 +16,7 @@ import { Dropdown } from '../../components/UI/Dropdown/Dropdown'
 
 export const Profile: React.FC = () => {
   const dispatch = useDispatch()
-  const {
-    articles,
-    currentCategory,
-    loading: articleLoading,
-    error: articleError,
-  } = useSelector((state: RootState) => state.article)
+  const { articles, loading: articleLoading, error: articleError } = useSelector((state: RootState) => state.article)
   let {
     loading: profileLoading,
     subscribers,
@@ -65,7 +60,7 @@ export const Profile: React.FC = () => {
       return <SpinLoader />
     } else {
       return articles.length > 0 ? (
-        <ArticlesCardList articles={articles} currentCategory={currentCategory} />
+        <ArticlesCardList />
       ) : (
         <>
           <h1 className="display-6 text-center">Статей пока нет...</h1>

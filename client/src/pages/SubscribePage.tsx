@@ -8,7 +8,7 @@ import { RootState } from '../store/rootReducer'
 
 export const SubscribePage: React.FC = () => {
   const dispatch = useDispatch()
-  const { articles, currentCategory, loading } = useSelector((state: RootState) => state.article)
+  const { loading } = useSelector((state: RootState) => state.article)
 
   useEffect(() => {
     dispatch(fetchSubscribe())
@@ -16,7 +16,7 @@ export const SubscribePage: React.FC = () => {
   return (
     <div>
       <SecondNavBar />
-      {loading ? <SpinLoader /> : <ArticlesCardList articles={articles} currentCategory={currentCategory} />}{' '}
+      {loading ? <SpinLoader /> : <ArticlesCardList />}{' '}
     </div>
   )
 }

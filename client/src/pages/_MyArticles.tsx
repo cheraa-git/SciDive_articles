@@ -16,7 +16,7 @@ export const MyArticles: React.FC = () => {
   return (
     <div>
       <SecondNavBar />
-      <ArticlesCardList articles={articles} currentCategory={currentCategory} />
+      <ArticlesCardList />
       {articles.length === 0 && (
         <p className="lead text-center">
           Хотите

@@ -1,4 +1,4 @@
-import React, { ReactElement, ReactNode, Ref, RefObject, useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { CSSTransition } from 'react-transition-group'
 import './Dropdown.sass'
 
@@ -6,8 +6,8 @@ interface DropdownProps {
   anchorEl: HTMLElement | null
   onClose: () => void
   dir?: 'left' | 'right' | 'top' | 'bottom'
-  mouseEvent?: boolean
-  posit?: 'start' | 'center' | 'end'
+  align?: 'start' | 'center' | 'end'
+  className?: string
 }
 
 export const Dropdown: React.FC<DropdownProps> = ({
@@ -15,31 +15,26 @@ export const Dropdown: React.FC<DropdownProps> = ({
   onClose,
   children,
   dir = 'bottom',
-  mouseEvent = false,
-  posit = 'start',
+  align = 'start',
+  className,
 }) => {
-  const [toggle, setToggle] = useState(false)
-  const divV = document.getElementsByClassName('dropdown_main')[0]
-  const [pos, setPos] = useState(anchorEl)
-  const transitionRef = useRef(null)
-
-  useEffect(() => {
-    if (!anchorEl) {
-      setTimeout(() => setPos(null), 200)
-    } else {
-      setPos(anchorEl)
-    }
-  }, [anchorEl])
+  const [localAnchor, setLocalAnchor] = useState(anchorEl)
+  const transitionRef = useRef<HTMLDivElement>(null)
 
   const positionHandler = () => {
-    if (pos) {
-      const { offsetLeft: x, offsetTop: y, offsetHeight: h, offsetWidth: w } = pos
+    let result = { left: 0, top: 0 }
+    if (localAnchor && transitionRef.current) {
+      const { offsetLeft: posX, offsetTop: posY, offsetHeight: posH, offsetWidth: posW } = localAnchor
+      const { offsetLeft: divX, offsetTop: divY, offsetHeight: divH, offsetWidth: divW } = transitionRef.current
 
-      let result = { left: 0, top: 0 }
-      if (dir === 'bottom') {
-        result = { left: x, top: y + h }
-        return result
+      if (align === 'start') {
+        result = { left: posX, top: posY + posH }
+      } else if (align === 'end') {
+        result = { left: posX - divW + posW, top: posY + posH }
+      } else if (align === 'center') {
+        result = { left: posX + posW / 2 - divW / 2, top: posY + posH }
       }
+      return result
     }
   }
 
@@ -56,7 +51,10 @@ export const Dropdown: React.FC<DropdownProps> = ({
   }
 
   useEffect(() => {
-    if (anchorEl) {
+    if (!anchorEl) {
+      setTimeout(() => setLocalAnchor(null), 200)
+    } else {
+      setLocalAnchor(anchorEl)
       document.addEventListener('click', listnerHandler)
     }
   }, [anchorEl])
@@ -70,7 +68,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
       mountOnEnter
       unmountOnExit
     >
-      <div className="dropdown_content" style={positionHandler()} ref={transitionRef}>
+      <div className={`dropdown_content ${className && className} `} style={positionHandler()} ref={transitionRef}>
         {children}
       </div>
     </CSSTransition>
